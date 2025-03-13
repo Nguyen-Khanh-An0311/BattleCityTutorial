@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1741849645 source:c:\users\admin\documents\dev\battlecitytutorial\main.cpp
+	<SDL.h>
+	<SDL_image.h>
+
