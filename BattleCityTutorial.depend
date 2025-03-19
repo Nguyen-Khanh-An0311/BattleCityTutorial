@@ -1,5 +1,27 @@
 # depslib dependency file v1.0
-1742062715 source:c:\users\admin\documents\dev\battlecitytutorial\main.cpp
+1742321870 source:c:\users\admin\documents\dev\battlecitytutorial\main.cpp
+	<iostream>
+	<SDL.h>
+	"Game.h"
+
+1742323017 c:\users\admin\documents\dev\battlecitytutorial\game.h
+	<iostream>
+	<SDL.h>
+	<vector>
+	"Wall.h"
+
+1742323048 source:c:\users\admin\documents\dev\battlecitytutorial\wall.cpp
+	<iostream>
+	<SDL.h>
+	"Wall.h"
+
+1742323017 c:\users\admin\documents\dev\battlecitytutorial\wall.h
+	<iostream>
+	<SDL.h>
+	<vector>
+
+1742322096 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
+	"Game.h"
 	<iostream>
 	<SDL.h>
 
