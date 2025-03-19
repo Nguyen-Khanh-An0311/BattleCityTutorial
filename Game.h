@@ -1,7 +1,8 @@
 #include <iostream>
 #include <SDL.h>
 #include <vector>
-#include "Wall.h"
+#include "PlayerTank.h"
+#include "EnemyTank.h"
 using namespace std;
 
 const int SCREEN_WIDTH = 800;
@@ -16,12 +17,18 @@ public:
     SDL_Renderer* renderer;
     bool running;
     vector<Wall> walls;
+    PlayerTank player;
+    int enemyNumber = 3;
+    vector<EnemyTank> enemies;
 
     Game();
+    void handleEvents();
+    void update();
     void render();
     void run();
 
     void generateWalls();
+    void spawnEnemies();
 
     ~Game();
 };

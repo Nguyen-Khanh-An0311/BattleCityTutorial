@@ -1,6 +1,14 @@
+#ifndef WALL_H_INCLUDED
+#define WALL_H_INCLUDED
+
+
+
+
 #include <iostream>
 #include <SDL.h>
 #include <vector>
+
+
 
 class Wall{
 public:
@@ -12,3 +20,5 @@ public:
     Wall(int, int);
     void render(SDL_Renderer*);
 };
+
+#endif // WALL_H_INCLUDED

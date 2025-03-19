@@ -4,24 +4,49 @@
 	<SDL.h>
 	"Game.h"
 
-1742323017 c:\users\admin\documents\dev\battlecitytutorial\game.h
+1742409152 c:\users\admin\documents\dev\battlecitytutorial\game.h
 	<iostream>
 	<SDL.h>
 	<vector>
+	"PlayerTank.h"
+	"EnemyTank.h"
+
+1742408901 source:c:\users\admin\documents\dev\battlecitytutorial\wall.cpp
 	"Wall.h"
 
-1742323048 source:c:\users\admin\documents\dev\battlecitytutorial\wall.cpp
-	<iostream>
-	<SDL.h>
-	"Wall.h"
-
-1742323017 c:\users\admin\documents\dev\battlecitytutorial\wall.h
+1742408901 c:\users\admin\documents\dev\battlecitytutorial\wall.h
 	<iostream>
 	<SDL.h>
 	<vector>
 
-1742322096 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
+1742409474 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
 	"Game.h"
+
+1742409128 c:\users\admin\documents\dev\battlecitytutorial\playertank.h
 	<iostream>
 	<SDL.h>
+	<vector>
+	<algorithm>
+	"Bullet.h"
+	"Wall.h"
+
+1742409089 source:c:\users\admin\documents\dev\battlecitytutorial\playertank.cpp
+	"PlayerTank.h"
+
+1742406161 source:c:\users\admin\documents\dev\battlecitytutorial\bullet.cpp
+	"Bullet.h"
+
+1742408901 c:\users\admin\documents\dev\battlecitytutorial\bullet.h
+	<iostream>
+	<SDL.h>
+
+1742409081 c:\users\admin\documents\dev\battlecitytutorial\enemytank.h
+	<iostream>
+	<vector>
+	<algorithm>
+	"Bullet.h"
+	"Wall.h"
+
+1742409738 source:c:\users\admin\documents\dev\battlecitytutorial\enemytank.cpp
+	"EnemyTank.h"
 

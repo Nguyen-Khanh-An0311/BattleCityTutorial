@@ -1,6 +1,4 @@
 #include "Game.h"
-#include <iostream>
-#include <SDL.h>
 using namespace std;
 
 Game::Game(){
@@ -29,7 +27,26 @@ Game::Game(){
                 running = false;
             }
             generateWalls();
+            player = PlayerTank(((MAP_WIDTH - 1) / 2) * TILE_SIZE, (MAP_HEIGHT - 2) * TILE_SIZE);
+            spawnEnemies();
         }
+
+void Game::handleEvents() {
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+        if (event.type == SDL_QUIT) {
+            running = false;
+        } else if (event.type == SDL_KEYDOWN) {
+            switch (event.key.keysym.sym) {
+                case SDLK_UP: player.move(0, -5, walls); break;
+                case SDLK_DOWN: player.move(0, 5, walls); break;
+                case SDLK_LEFT: player.move(-5, 0, walls); break;
+                case SDLK_RIGHT: player.move(5, 0, walls); break;
+                case SDLK_SPACE: player.shoot(); break;
+            }
+        }
+    }
+}
 void Game::render(){
             SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255); //chọn màu
             SDL_RenderClear(renderer); // tô toàn bộ màu vừa chọn
@@ -46,10 +63,18 @@ void Game::render(){
                 walls[i].render(renderer);
             }
 
+            player.render(renderer);
+
+            for (auto& enemy : enemies) {
+                enemy.render(renderer);
+            }
+
             SDL_RenderPresent(renderer); // hiển thị tất cả, phải có
         }
 void Game::run() {
             if(running){
+                handleEvents();
+                update();
                 render();
                 SDL_Delay(16);
             }
@@ -66,6 +91,88 @@ void Game::generateWalls(){
             Wall w = Wall(j * TILE_SIZE, i * TILE_SIZE);
             walls.push_back(w);
         }
+    }
+}
+
+void Game::update() {
+    player.updateBullets();
+
+    for (auto& enemy : enemies) {
+        enemy.move(walls);
+        enemy.updateBullets();
+        if (rand() % 100 < 2) {
+            enemy.shoot();
+        }
+    }
+
+    for (auto& enemy : enemies) {
+        for (auto& bullet : enemy.bullets) {
+            for (auto& wall : walls) {
+                if (wall.active && SDL_HasIntersection(&bullet.rect, &wall.rect)) {
+                    wall.active = false;
+                    bullet.active = false;
+                    break;
+                }
+            }
+        }
+    }
+
+    for (auto& bullet : player.bullets) {
+    for (auto& wall : walls) {
+        if (wall.active && SDL_HasIntersection(&bullet.rect, &wall.rect)) {
+            wall.active = false;
+            bullet.active = false;
+            break;
+        }
+    }
+}
+
+for (auto& bullet : player.bullets) {
+    for (auto& enemy : enemies) {
+        if (enemy.active && SDL_HasIntersection(&bullet.rect, &enemy.rect)) {
+            enemy.active = false;
+            bullet.active = false;
+        }
+    }
+}
+
+enemies.erase(std::remove_if(enemies.begin(), enemies.end(),
+    [](EnemyTank& e) { return !e.active; }), enemies.end());
+
+if (enemies.empty()) {
+    running = false;
+}
+
+for (auto& enemy : enemies) {
+    for (auto& bullet : enemy.bullets) {
+        // Update
+        if (SDL_HasIntersection(&bullet.rect, &player.rect)) {
+            running = false;
+            return;
+        }
+    }
+}
+
+
+}
+
+void Game::spawnEnemies() {
+    enemies.clear();
+    for (int i = 0; i < enemyNumber; ++i) {
+        int ex, ey;
+        bool validPosition = false;
+        while (!validPosition) {
+            ex = (rand() % (MAP_WIDTH - 2) + 1) * TILE_SIZE;
+            ey = (rand() % (MAP_HEIGHT - 2) + 1) * TILE_SIZE;
+            validPosition = true;
+            for (const auto& wall : walls) {
+                if (wall.active && wall.x == ex && wall.y == ey) {
+                    validPosition = false;
+                    break;
+                }
+            }
+        }
+        enemies.push_back(EnemyTank(ex, ey));
     }
 }
 

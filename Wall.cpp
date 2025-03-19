@@ -1,5 +1,3 @@
-#include <iostream>
-#include <SDL.h>
 #include "Wall.h"
 using namespace std;
 

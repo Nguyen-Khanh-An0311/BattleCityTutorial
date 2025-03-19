@@ -1,30 +1,22 @@
-#ifndef PLAYERTANK_H_INCLUDED
-#define PLAYERTANK_H_INCLUDED
-
-
 #include <iostream>
-#include <SDL.h>
 #include <vector>
 #include <algorithm>
 #include "Bullet.h"
 #include "Wall.h"
 using namespace std;
 
-class PlayerTank{
+class EnemyTank{
 public:
-    int x,y;
-    SDL_Rect rect;
+    int x, y;
     int dirX, dirY;
+    int moveDelay, shootDelay;
+    SDL_Rect rect;
+    bool active;
     vector<Bullet> bullets;
 
-    PlayerTank(int, int);
-    PlayerTank();
-
-    void move(int, int, const vector<Wall>&);
+    EnemyTank(int, int);
+    void move(const vector<Wall>&);
     void shoot();
     void updateBullets();
-
     void render(SDL_Renderer*);
 };
-
-#endif // TEMP_H_INCLUDED
