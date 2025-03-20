@@ -3,6 +3,7 @@
 #include <algorithm>
 #include "Bullet.h"
 #include "Wall.h"
+#include "Statistics.h"
 using namespace std;
 
 class EnemyTank{

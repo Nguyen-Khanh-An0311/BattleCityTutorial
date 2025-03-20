@@ -1,52 +1,60 @@
 # depslib dependency file v1.0
-1742321870 source:c:\users\admin\documents\dev\battlecitytutorial\main.cpp
+1742440092 source:c:\users\admin\documents\dev\battlecitytutorial\main.cpp
 	<iostream>
 	<SDL.h>
 	"Game.h"
+	"Statistics.h"
 
-1742409152 c:\users\admin\documents\dev\battlecitytutorial\game.h
+1742442832 c:\users\admin\documents\dev\battlecitytutorial\game.h
 	<iostream>
 	<SDL.h>
 	<vector>
 	"PlayerTank.h"
 	"EnemyTank.h"
+	"Statistics.h"
 
-1742408901 source:c:\users\admin\documents\dev\battlecitytutorial\wall.cpp
+1742440324 source:c:\users\admin\documents\dev\battlecitytutorial\wall.cpp
 	"Wall.h"
 
-1742408901 c:\users\admin\documents\dev\battlecitytutorial\wall.h
+1742440550 c:\users\admin\documents\dev\battlecitytutorial\wall.h
 	<iostream>
 	<SDL.h>
 	<vector>
+	"Statistics.h"
 
-1742409474 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
+1742442877 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
 	"Game.h"
 
-1742409128 c:\users\admin\documents\dev\battlecitytutorial\playertank.h
+1742440172 c:\users\admin\documents\dev\battlecitytutorial\playertank.h
 	<iostream>
 	<SDL.h>
 	<vector>
 	<algorithm>
 	"Bullet.h"
 	"Wall.h"
+	"Statistics.h"
 
-1742409089 source:c:\users\admin\documents\dev\battlecitytutorial\playertank.cpp
+1742440324 source:c:\users\admin\documents\dev\battlecitytutorial\playertank.cpp
 	"PlayerTank.h"
 
-1742406161 source:c:\users\admin\documents\dev\battlecitytutorial\bullet.cpp
+1742440324 source:c:\users\admin\documents\dev\battlecitytutorial\bullet.cpp
 	"Bullet.h"
 
-1742408901 c:\users\admin\documents\dev\battlecitytutorial\bullet.h
+1742440550 c:\users\admin\documents\dev\battlecitytutorial\bullet.h
 	<iostream>
 	<SDL.h>
+	"Statistics.h"
 
-1742409081 c:\users\admin\documents\dev\battlecitytutorial\enemytank.h
+1742440172 c:\users\admin\documents\dev\battlecitytutorial\enemytank.h
 	<iostream>
 	<vector>
 	<algorithm>
 	"Bullet.h"
 	"Wall.h"
+	"Statistics.h"
 
-1742409738 source:c:\users\admin\documents\dev\battlecitytutorial\enemytank.cpp
+1742443700 source:c:\users\admin\documents\dev\battlecitytutorial\enemytank.cpp
 	"EnemyTank.h"
+
+1742440092 c:\users\admin\documents\dev\battlecitytutorial\statistics.h
 

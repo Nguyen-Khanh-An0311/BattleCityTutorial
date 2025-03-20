@@ -2,11 +2,11 @@
 #define BULLET_H_INCLUDED
 
 
-
-
-
 #include <iostream>
 #include <SDL.h>
+#include "Statistics.h"
+
+
 using namespace std;
 
 class Bullet{

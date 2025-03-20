@@ -1,7 +1,6 @@
 #include "Wall.h"
 using namespace std;
 
-const int TILE_SIZE = 40;
 
 Wall::Wall(int startX, int startY){
     x = startX;

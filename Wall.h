@@ -2,11 +2,10 @@
 #define WALL_H_INCLUDED
 
 
-
-
 #include <iostream>
 #include <SDL.h>
 #include <vector>
+#include "Statistics.h"
 
 
 

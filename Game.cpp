@@ -31,10 +31,29 @@ Game::Game(){
             spawnEnemies();
         }
 
+
+void Game::run() {
+            if(running){
+                handleEvents();
+                update();
+                render();
+                SDL_Delay(16);
+            }
+        }
+
+void Game::reset() {
+    running = true;
+    state = PLAYING;
+    generateWalls();
+    player = PlayerTank(((MAP_WIDTH - 1) / 2) * TILE_SIZE, (MAP_HEIGHT - 2) * TILE_SIZE);
+    spawnEnemies();
+}
+
+
 void Game::handleEvents() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
-        if (event.type == SDL_QUIT) {
+        if (event.type == SDL_QUIT) {   // THOAT
             running = false;
         } else if (event.type == SDL_KEYDOWN) {
             switch (event.key.keysym.sym) {
@@ -43,6 +62,12 @@ void Game::handleEvents() {
                 case SDLK_LEFT: player.move(-5, 0, walls); break;
                 case SDLK_RIGHT: player.move(5, 0, walls); break;
                 case SDLK_SPACE: player.shoot(); break;
+            }
+        }
+
+        if (state == GAME_OVER && event.type == SDL_KEYDOWN){
+            if (event.key.keysym.sym == SDLK_RETURN){
+                reset();
             }
         }
     }
@@ -71,14 +96,11 @@ void Game::render(){
 
             SDL_RenderPresent(renderer); // hiển thị tất cả, phải có
         }
-void Game::run() {
-            if(running){
-                handleEvents();
-                update();
-                render();
-                SDL_Delay(16);
-            }
-        }
+
+
+
+
+
 Game::~Game(){
             SDL_DestroyRenderer(renderer);
             SDL_DestroyWindow(window);
@@ -140,14 +162,17 @@ enemies.erase(std::remove_if(enemies.begin(), enemies.end(),
     [](EnemyTank& e) { return !e.active; }), enemies.end());
 
 if (enemies.empty()) {
-    running = false;
+    state = GAME_OVER;
+    //drawText("GAME OVER - PRESS ENTER TO RESTART", 200, 300);
+    handleEvents();
 }
 
 for (auto& enemy : enemies) {
     for (auto& bullet : enemy.bullets) {
         // Update
         if (SDL_HasIntersection(&bullet.rect, &player.rect)) {
-            running = false;
+            state = GAME_OVER;
+            handleEvents();
             return;
         }
     }
