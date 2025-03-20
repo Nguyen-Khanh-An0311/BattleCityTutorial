@@ -3,13 +3,14 @@ using namespace std;
 
 
 PlayerTank::PlayerTank(int startX, int startY) {
+        RemainingLives = 3;
         x = startX;
         y = startY;
         rect = {x, y, TILE_SIZE, TILE_SIZE};
         dirX = 0;
         dirY = -1; // Default direction up
     }
-PlayerTank::PlayerTank() {}
+PlayerTank::PlayerTank(){};
 
 void PlayerTank::shoot() {
     bullets.push_back(Bullet(x + TILE_SIZE / 2 - 5, y + TILE_SIZE / 2 - 5,
@@ -24,7 +25,7 @@ void PlayerTank::updateBullets() {
         [](Bullet &b) { return !b.active; }), bullets.end());
 }
 
-void PlayerTank::move(int dx, int dy, const vector<Wall>& walls) {
+void PlayerTank::move(int dx, int dy, const vector<Wall>& walls, vector<Heart>& hearts) {
     int newX = x + dx;
     int newY = y + dy;
     this->dirX = dx;
@@ -43,6 +44,15 @@ void PlayerTank::move(int dx, int dy, const vector<Wall>& walls) {
         y = newY;
         rect.x = x;
         rect.y = y;
+    }
+
+    for(int i=0; i<hearts.size(); i++){
+        if (hearts[i].active && SDL_HasIntersection(&newRect, &hearts[i].rect) ){
+            hearts[i].active = false;
+            RemainingLives += 1;
+            hearts.erase(hearts.begin() + i);
+            break;
+        }
     }
 }
 

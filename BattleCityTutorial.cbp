@@ -37,6 +37,8 @@
 		<Unit filename="EnemyTank.h" />
 		<Unit filename="Game.cpp" />
 		<Unit filename="Game.h" />
+		<Unit filename="Heart.cpp" />
+		<Unit filename="Heart.h" />
 		<Unit filename="PlayerTank.cpp" />
 		<Unit filename="PlayerTank.h" />
 		<Unit filename="Statistics.h" />

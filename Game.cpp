@@ -8,6 +8,20 @@ Game::Game(){
                 running = false;
             }
 
+            if (SDL_Init(SDL_INIT_AUDIO) < 0) {
+                cout << "SDL_Init Error: " << SDL_GetError() << std::endl;
+                running = false;
+            }
+
+            bgm = Mix_LoadMUS("C:\\Users\\Admin\\Documents\\DEV\\BattleCityTutorial\\bin\\Debug\\mixkit-hip-hop-02-738.mp3");
+            if (!bgm) {
+                cout << "Failed to load music: " << Mix_GetError() << std::endl;
+                running = false;
+            }
+
+            Mix_PlayMusic(bgm, -1);
+            SDL_Delay(10000);  // Chờ 10 giây để nghe nhạc
+
             window = SDL_CreateWindow(
                 "Battle City",
                 SDL_WINDOWPOS_CENTERED,
@@ -29,6 +43,7 @@ Game::Game(){
             generateWalls();
             player = PlayerTank(((MAP_WIDTH - 1) / 2) * TILE_SIZE, (MAP_HEIGHT - 2) * TILE_SIZE);
             spawnEnemies();
+            spawnHearts();
         }
 
 
@@ -43,10 +58,12 @@ void Game::run() {
 
 void Game::reset() {
     running = true;
+    player.RemainingLives = 3;
     state = PLAYING;
     generateWalls();
     player = PlayerTank(((MAP_WIDTH - 1) / 2) * TILE_SIZE, (MAP_HEIGHT - 2) * TILE_SIZE);
     spawnEnemies();
+    spawnHearts();
 }
 
 
@@ -57,10 +74,10 @@ void Game::handleEvents() {
             running = false;
         } else if (event.type == SDL_KEYDOWN) {
             switch (event.key.keysym.sym) {
-                case SDLK_UP: player.move(0, -5, walls); break;
-                case SDLK_DOWN: player.move(0, 5, walls); break;
-                case SDLK_LEFT: player.move(-5, 0, walls); break;
-                case SDLK_RIGHT: player.move(5, 0, walls); break;
+                case SDLK_UP: player.move(0, -5, walls, hearts); break;
+                case SDLK_DOWN: player.move(0, 5, walls, hearts); break;
+                case SDLK_LEFT: player.move(-5, 0, walls, hearts); break;
+                case SDLK_RIGHT: player.move(5, 0, walls, hearts); break;
                 case SDLK_SPACE: player.shoot(); break;
             }
         }
@@ -94,6 +111,10 @@ void Game::render(){
                 enemy.render(renderer);
             }
 
+            for (int i=0; i < heartNumber; i++){
+                hearts[i].render(renderer);
+            }
+
             SDL_RenderPresent(renderer); // hiển thị tất cả, phải có
         }
 
@@ -108,12 +129,14 @@ Game::~Game(){
         }
 
 void Game::generateWalls(){
-    for (int i = 3; i < MAP_HEIGHT - 3; i += 2) {
+    /*for (int i = 3; i < MAP_HEIGHT - 3; i += 2) {
         for (int j = 3; j < MAP_WIDTH - 3; j += 2) {
             Wall w = Wall(j * TILE_SIZE, i * TILE_SIZE);
             walls.push_back(w);
         }
-    }
+    }*/
+    Wall w = Wall(2 * TILE_SIZE, 3 * TILE_SIZE);
+    walls.push_back(w);
 }
 
 void Game::update() {
@@ -171,12 +194,16 @@ for (auto& enemy : enemies) {
     for (auto& bullet : enemy.bullets) {
         // Update
         if (SDL_HasIntersection(&bullet.rect, &player.rect)) {
-            state = GAME_OVER;
-            handleEvents();
-            return;
+            bullet.active = false;
+            player.RemainingLives -= 1;
+            if(player.RemainingLives == 0){
+                reset();
+                return;
+            }
         }
     }
 }
+
 
 
 }
@@ -198,6 +225,32 @@ void Game::spawnEnemies() {
             }
         }
         enemies.push_back(EnemyTank(ex, ey));
+    }
+}
+
+void Game::spawnHearts(){
+    hearts.clear();
+    for (int i = 0; i < heartNumber; ++i) {
+        int hx, hy;
+        bool validPosition = false;
+        while (!validPosition) {
+            hx = (rand() % (MAP_WIDTH - 2) + 1) * TILE_SIZE;
+            hy = (rand() % (MAP_HEIGHT - 2) + 1) * TILE_SIZE;
+            validPosition = true;
+            if (player.x == hx && player.y == hy){
+                validPosition = false;
+            }
+            for (const auto& wall : walls) {
+                    for(const auto& enemy : enemies){
+                        if ( (wall.active && wall.x == hx && wall.y == hy) ||
+                            (enemy.active && enemy.x == hx && enemy.y == hy) ) {
+                            validPosition = false;
+                            break;
+                        }
+                    }
+            }
+            hearts.push_back(Heart(hx, hy));
+        }
     }
 }
 
