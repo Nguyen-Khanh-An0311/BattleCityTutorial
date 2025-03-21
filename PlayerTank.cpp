@@ -6,7 +6,9 @@ PlayerTank::PlayerTank(int startX, int startY) {
         RemainingLives = 3;
         x = startX;
         y = startY;
-        rect = {x, y, TILE_SIZE, TILE_SIZE};
+        SDL_Rect tankRect = {x, y, TILE_SIZE, TILE_SIZE}; // Vị trí và kích thước xe tăng
+        //tankTexture = IMG_LoadTexture(SDL_Renderer* renderer, "player.png")
+
         dirX = 0;
         dirY = -1; // Default direction up
     }
@@ -58,7 +60,8 @@ void PlayerTank::move(int dx, int dy, const vector<Wall>& walls, vector<Heart>& 
 
 void PlayerTank::render(SDL_Renderer* renderer){
     SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
-    SDL_RenderFillRect(renderer, &rect);
+    SDL_RenderFillRect(renderer, &tankRect);
+    //SDL_RenderCopy(renderer, tankTexture, nullptr, &tankRect);
     for (auto &bullet : bullets) {
         bullet.render(renderer);
     }

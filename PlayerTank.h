@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <SDL.h>
+#include <SDL_image.h>
 #include <vector>
 #include <algorithm>
 #include "Bullet.h"
@@ -15,7 +16,8 @@ using namespace std;
 class PlayerTank{
 public:
     int x,y;
-    SDL_Rect rect;
+    SDL_Rect* tankRect;
+    SDL_Texture* tankTexture;
     int dirX, dirY;
     int RemainingLives;
     vector<Bullet> bullets;

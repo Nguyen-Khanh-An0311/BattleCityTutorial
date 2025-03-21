@@ -13,14 +13,11 @@ Game::Game(){
                 running = false;
             }
 
-            bgm = Mix_LoadMUS("C:\\Users\\Admin\\Documents\\DEV\\BattleCityTutorial\\bin\\Debug\\mixkit-hip-hop-02-738.mp3");
-            if (!bgm) {
-                cout << "Failed to load music: " << Mix_GetError() << std::endl;
+            if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
+                cout << "SDL_image không thể khởi tạo! IMG_Error: " << IMG_GetError() << std::endl;
                 running = false;
             }
 
-            Mix_PlayMusic(bgm, -1);
-            SDL_Delay(10000);  // Chờ 10 giây để nghe nhạc
 
             window = SDL_CreateWindow(
                 "Battle City",
@@ -35,15 +32,37 @@ Game::Game(){
                 running = false;
             }
 
-            renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+            //renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
             if(!renderer){
                 cout << "Renderer could not be created! SDL_Erroe: " << SDL_GetError() << endl;
                 running = false;
             }
+
+            backgroundTexture = loadTexture("background.png",renderer);
+
             generateWalls();
             player = PlayerTank(((MAP_WIDTH - 1) / 2) * TILE_SIZE, (MAP_HEIGHT - 2) * TILE_SIZE);
             spawnEnemies();
             spawnHearts();
+        }
+
+
+SDL_Texture* Game::loadTexture(const string& path, SDL_Renderer* renderer) {
+            SDL_Texture* texture = nullptr;
+            SDL_Surface* loadedSurface = IMG_Load(path.c_str());
+            if (!loadedSurface) {
+                cout << "Không thể tải ảnh! IMG_Error: " << IMG_GetError() << endl;
+                return nullptr;
+            }
+
+            texture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
+            SDL_FreeSurface(loadedSurface);
+
+            if (!texture) {
+                cout << "Không thể tạo texture! SDL_Error: " << SDL_GetError() << endl;
+            }
+
+            return texture;
         }
 
 
@@ -90,7 +109,7 @@ void Game::handleEvents() {
     }
 }
 void Game::render(){
-            SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255); //chọn màu
+            /*SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255); //chọn màu
             SDL_RenderClear(renderer); // tô toàn bộ màu vừa chọn
 
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // chọn màu mới
@@ -99,7 +118,9 @@ void Game::render(){
                     SDL_Rect tile = {j*TILE_SIZE, i*TILE_SIZE, TILE_SIZE, TILE_SIZE}; // tạo hcn tên tile (x,y,cr,cd)
                     SDL_RenderFillRect(renderer, &tile);
                 }
-            }
+            }*/
+            SDL_RenderClear(renderer);
+            SDL_RenderCopy(renderer, backgroundTexture, nullptr, nullptr); // Hiển thị ảnh nền
 
             for(int i=0; i<walls.size(); i++){
                 walls[i].render(renderer);
@@ -123,6 +144,8 @@ void Game::render(){
 
 
 Game::~Game(){
+            SDL_DestroyTexture(backgroundTexture);
+            IMG_Quit();
             SDL_DestroyRenderer(renderer);
             SDL_DestroyWindow(window);
             SDL_Quit();
@@ -193,7 +216,7 @@ if (enemies.empty()) {
 for (auto& enemy : enemies) {
     for (auto& bullet : enemy.bullets) {
         // Update
-        if (SDL_HasIntersection(&bullet.rect, &player.rect)) {
+        if (SDL_HasIntersection(&bullet.rect, &player.tankRect)) {
             bullet.active = false;
             player.RemainingLives -= 1;
             if(player.RemainingLives == 0){
