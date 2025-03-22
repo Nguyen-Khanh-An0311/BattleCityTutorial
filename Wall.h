@@ -6,6 +6,7 @@
 #include <SDL.h>
 #include <vector>
 #include "Statistics.h"
+#include <SDL_image.h>
 
 
 
@@ -13,10 +14,11 @@ class Wall{
 public:
     int x,y;
     SDL_Rect rect;
+    SDL_Texture* wallTexture;
     bool active;
 
     Wall();
-    Wall(int, int);
+    Wall(int, int, SDL_Renderer*);
     void render(SDL_Renderer*);
 };
 

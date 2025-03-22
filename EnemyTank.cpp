@@ -1,35 +1,40 @@
 #include "EnemyTank.h"
 
-EnemyTank::EnemyTank(int startX, int startY) {
+EnemyTank::EnemyTank(int startX, int startY, SDL_Renderer* renderer) {
         moveDelay = 100; // Delay for movement
         shootDelay = 5; // Delay for shooting
         x = startX;
         y = startY;
         rect = {x, y, TILE_SIZE, TILE_SIZE};
+        tankTexture = IMG_LoadTexture(renderer, "enemy_up.png");
         dirX = 0;
         dirY = 1;
         active = true;
     }
 
-void EnemyTank::move(const vector<Wall>& walls) {
+void EnemyTank::move(const vector<Wall>& walls, SDL_Renderer* renderer) {
     if (--moveDelay > 0) return;
     moveDelay = 100;
     int r = rand() % 4;
     if (r == 0) { // Up
         this->dirX = 0;
         this->dirY = -20;
+        tankTexture = IMG_LoadTexture(renderer, "enemy_up.png");
     }
     else if (r == 1) { // Down
         this->dirX = 0;
         this->dirY = 20;
+        tankTexture = IMG_LoadTexture(renderer, "enemy_down.png");
     }
     else if (r == 2) { // Left
         this->dirY = 0;
         this->dirX = -20;
+        tankTexture = IMG_LoadTexture(renderer, "enemy_left.png");
     }
     else if (r == 3) { // Right
         this->dirY = 0;
         this->dirX = 20;
+        tankTexture = IMG_LoadTexture(renderer, "enemy_right.png");
     }
 
     int newX = x + dirX;
@@ -44,8 +49,8 @@ void EnemyTank::move(const vector<Wall>& walls) {
         }
     }
 
-    if (newX >= TILE_SIZE && newX <= SCREEN_WIDTH - TILE_SIZE * 2 &&
-        newY >= TILE_SIZE && newY <= SCREEN_HEIGHT - TILE_SIZE * 2) {
+    if (newX >= TILE_SIZE && newX <= SCREEN_WIDTH  &&
+        newY >= TILE_SIZE && newY <= SCREEN_HEIGHT ) {
         x = newX;
         y = newY;
         rect.x = x;
@@ -69,8 +74,9 @@ void EnemyTank::updateBullets() {
 }
 
 void EnemyTank::render(SDL_Renderer* renderer) {
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-    SDL_RenderFillRect(renderer, &rect);
+    //SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+    //SDL_RenderFillRect(renderer, &rect);
+    SDL_RenderCopy(renderer, tankTexture, nullptr, &rect);
     for (auto &bullet : bullets) {
         bullet.render(renderer);
     }

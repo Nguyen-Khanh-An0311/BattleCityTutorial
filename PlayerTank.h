@@ -11,21 +11,23 @@
 #include "Wall.h"
 #include "Statistics.h"
 #include "Heart.h"
+#include "EnemyTank.h"
 using namespace std;
 
 class PlayerTank{
 public:
     int x,y;
-    SDL_Rect* tankRect;
+    SDL_Rect rect;
     SDL_Texture* tankTexture;
+
     int dirX, dirY;
     int RemainingLives;
     vector<Bullet> bullets;
 
-    PlayerTank(int, int);
+    PlayerTank(int, int, SDL_Renderer*);
     PlayerTank();
 
-    void move(int, int, const vector<Wall>&, vector<Heart>&);
+    void move(int, int, const vector<Wall>&, vector<Heart>&, vector<EnemyTank>&);
     void shoot();
     void updateBullets();
 

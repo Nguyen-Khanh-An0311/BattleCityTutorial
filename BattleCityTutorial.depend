@@ -1,11 +1,11 @@
 # depslib dependency file v1.0
-1742488989 source:c:\users\admin\documents\dev\battlecitytutorial\main.cpp
+1742664078 source:c:\users\admin\documents\dev\battlecitytutorial\main.cpp
 	<iostream>
 	<SDL.h>
 	"Game.h"
 	"Statistics.h"
 
-1742578815 c:\users\admin\documents\dev\battlecitytutorial\game.h
+1742664078 c:\users\admin\documents\dev\battlecitytutorial\game.h
 	<iostream>
 	<SDL.h>
 	<SDL_mixer.h>
@@ -15,21 +15,21 @@
 	"EnemyTank.h"
 	"Statistics.h"
 	"Heart.h"
-	"Renderer.h"
 
-1742440324 source:c:\users\admin\documents\dev\battlecitytutorial\wall.cpp
+1742665945 source:c:\users\admin\documents\dev\battlecitytutorial\wall.cpp
 	"Wall.h"
 
-1742440550 c:\users\admin\documents\dev\battlecitytutorial\wall.h
+1742664008 c:\users\admin\documents\dev\battlecitytutorial\wall.h
 	<iostream>
 	<SDL.h>
 	<vector>
 	"Statistics.h"
+	<SDL_image.h>
 
-1742575999 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
+1742666057 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
 	"Game.h"
 
-1742577175 c:\users\admin\documents\dev\battlecitytutorial\playertank.h
+1742662916 c:\users\admin\documents\dev\battlecitytutorial\playertank.h
 	<iostream>
 	<SDL.h>
 	<SDL_image.h>
@@ -39,11 +39,12 @@
 	"Wall.h"
 	"Statistics.h"
 	"Heart.h"
+	"EnemyTank.h"
 
-1742487700 source:c:\users\admin\documents\dev\battlecitytutorial\playertank.cpp
+1742665405 source:c:\users\admin\documents\dev\battlecitytutorial\playertank.cpp
 	"PlayerTank.h"
 
-1742440324 source:c:\users\admin\documents\dev\battlecitytutorial\bullet.cpp
+1742662249 source:c:\users\admin\documents\dev\battlecitytutorial\bullet.cpp
 	"Bullet.h"
 
 1742440550 c:\users\admin\documents\dev\battlecitytutorial\bullet.h
@@ -51,26 +52,29 @@
 	<SDL.h>
 	"Statistics.h"
 
-1742440172 c:\users\admin\documents\dev\battlecitytutorial\enemytank.h
+1742665648 c:\users\admin\documents\dev\battlecitytutorial\enemytank.h
 	<iostream>
+	<SDL_image.h>
 	<vector>
 	<algorithm>
 	"Bullet.h"
 	"Wall.h"
 	"Statistics.h"
 
-1742482152 source:c:\users\admin\documents\dev\battlecitytutorial\enemytank.cpp
+1742665769 source:c:\users\admin\documents\dev\battlecitytutorial\enemytank.cpp
 	"EnemyTank.h"
 
 1742440092 c:\users\admin\documents\dev\battlecitytutorial\statistics.h
 
-1742486070 source:c:\users\admin\documents\dev\battlecitytutorial\heart.cpp
+1742664363 source:c:\users\admin\documents\dev\battlecitytutorial\heart.cpp
 	"Heart.h"
 
-1742486070 c:\users\admin\documents\dev\battlecitytutorial\heart.h
+1742664321 c:\users\admin\documents\dev\battlecitytutorial\heart.h
 	<iostream>
 	"SDL.h"
+	<SDL_image.h>
 
-1742578837 c:\users\admin\documents\dev\battlecitytutorial\renderer.h
+1742615329 c:\users\admin\documents\dev\battlecitytutorial\renderer.h
+	<iostream>
 	<SDL.h>
 

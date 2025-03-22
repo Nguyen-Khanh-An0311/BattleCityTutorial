@@ -7,7 +7,6 @@
 #include "EnemyTank.h"
 #include "Statistics.h"
 #include "Heart.h"
-#include "Renderer.h"
 using namespace std;
 
 
@@ -16,7 +15,7 @@ enum GameState { PLAYING, GAME_OVER };
 class Game{
 public:
     SDL_Window* window;
-    //SDL_Renderer* renderer;
+    SDL_Renderer* renderer;
     SDL_Texture* backgroundTexture;
 
     SDL_Texture* loadTexture(const string& , SDL_Renderer*);
@@ -26,7 +25,7 @@ public:
 
     vector<Wall> walls;
     PlayerTank player;
-    int enemyNumber = 30;
+    int enemyNumber = 7;
     vector<EnemyTank> enemies;
     int heartNumber = 5;
     vector<Heart> hearts;

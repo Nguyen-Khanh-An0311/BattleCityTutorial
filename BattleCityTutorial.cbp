@@ -41,7 +41,6 @@
 		<Unit filename="Heart.h" />
 		<Unit filename="PlayerTank.cpp" />
 		<Unit filename="PlayerTank.h" />
-		<Unit filename="Renderer.cpp" />
 		<Unit filename="Renderer.h" />
 		<Unit filename="Statistics.h" />
 		<Unit filename="Wall.cpp" />
