@@ -46,8 +46,8 @@ void PlayerTank::move(int dx, int dy, const vector<Wall>& walls, vector<Heart>& 
         }
     }
 
-    if (newX >= TILE_SIZE && newX <= SCREEN_WIDTH  &&
-        newY >= TILE_SIZE && newY <= SCREEN_HEIGHT ) {
+    if (newX >= 0 && newX <= SCREEN_WIDTH - TILE_SIZE  &&
+        newY >= 0 && newY <= SCREEN_HEIGHT - TILE_SIZE ) {
         x = newX;
         y = newY;
         rect.x = x;
@@ -58,7 +58,7 @@ void PlayerTank::move(int dx, int dy, const vector<Wall>& walls, vector<Heart>& 
         if (hearts[i].active && SDL_HasIntersection(&newRect, &hearts[i].rect) ){
             hearts[i].active = false;
             RemainingLives += 1;
-            hearts.erase(hearts.begin() + i);
+            //hearts.erase(hearts.begin() + i);
             break;
         }
     }

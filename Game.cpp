@@ -39,11 +39,13 @@ Game::Game(){
             }
 
             backgroundTexture = loadTexture("background.png",renderer);
-            spawnHearts();
-            generateWalls();
 
             player1 = PlayerTank( TILE_SIZE, (MAP_HEIGHT - 2) * TILE_SIZE, renderer);
             player2 = PlayerTank( (MAP_WIDTH - 2) * TILE_SIZE, TILE_SIZE, renderer);
+
+            spawnHearts();
+            generateWalls();
+
 
             spawnEnemies();
         }
@@ -80,9 +82,11 @@ void Game::run() {
 void Game::reset() {
     running = true;
     player1.RemainingLives = 3;
+    player2.RemainingLives = 3;
     state = PLAYING;
     generateWalls();
-    player1 = PlayerTank(((MAP_WIDTH - 1) / 2) * TILE_SIZE, (MAP_HEIGHT - 2) * TILE_SIZE, renderer);
+    player1 = PlayerTank( TILE_SIZE, (MAP_HEIGHT - 2) * TILE_SIZE, renderer);
+    player2 = PlayerTank( (MAP_WIDTH - 2) * TILE_SIZE, TILE_SIZE, renderer);
     spawnEnemies();
     spawnHearts();
 }
@@ -151,49 +155,49 @@ void Game::handleEvents() {
         }
 
             // Điều khiển Player 1 (Phím mũi tên)
-            if (keystate[SDL_SCANCODE_UP]) {
+            if (keystate[SDL_SCANCODE_W]) {
                 player1.move(0, -5, walls, hearts, enemies);
                 player1.tankTexture = IMG_LoadTexture(renderer, "player_up.png");
             }
-            if (keystate[SDL_SCANCODE_DOWN]) {
+            if (keystate[SDL_SCANCODE_S]) {
                 player1.move(0, 5, walls, hearts, enemies);
                 player1.tankTexture = IMG_LoadTexture(renderer, "player_down.png");
             }
-            if (keystate[SDL_SCANCODE_LEFT]) {
+            if (keystate[SDL_SCANCODE_A]) {
                 player1.move(-5, 0, walls, hearts, enemies);
                 player1.tankTexture = IMG_LoadTexture(renderer, "player_left.png");
             }
-            if (keystate[SDL_SCANCODE_RIGHT]) {
+            if (keystate[SDL_SCANCODE_D]) {
                 player1.move(5, 0, walls, hearts, enemies);
                 player1.tankTexture = IMG_LoadTexture(renderer, "player_right.png");
             }
-            if (keystate[SDL_SCANCODE_SPACE]) {
+            if (keystate[SDL_SCANCODE_LCTRL]) {
                 player1.shoot();
             }
 
             // Điều khiển Player 2 (Phím WASD)
-            if (keystate[SDL_SCANCODE_W]) {
+            if (keystate[SDL_SCANCODE_UP]) {
                 player2.move(0, -5, walls, hearts, enemies);
                 player2.tankTexture = IMG_LoadTexture(renderer, "player_up.png");
             }
-            if (keystate[SDL_SCANCODE_S]) {
+            if (keystate[SDL_SCANCODE_DOWN]) {
                 player2.move(0, 5, walls, hearts, enemies);
                 player2.tankTexture = IMG_LoadTexture(renderer, "player_down.png");
             }
-            if (keystate[SDL_SCANCODE_A]) {
+            if (keystate[SDL_SCANCODE_LEFT]) {
                 player2.move(-5, 0, walls, hearts, enemies);
                 player2.tankTexture = IMG_LoadTexture(renderer, "player_left.png");
             }
-            if (keystate[SDL_SCANCODE_D]) {
+            if (keystate[SDL_SCANCODE_RIGHT]) {
                 player2.move(5, 0, walls, hearts, enemies);
                 player2.tankTexture = IMG_LoadTexture(renderer, "player_right.png");
             }
-            if (keystate[SDL_SCANCODE_LCTRL]) { // Player 2 bắn đạn bằng phím Ctrl trái
+            if (keystate[SDL_SCANCODE_SPACE]) { // Player 2 bắn đạn bằng phím Ctrl trái
                 player2.shoot();
             }
 
 
-        if (state == GAME_OVER && event.type == SDL_KEYDOWN){
+        if (event.type == SDL_KEYDOWN){
             if (event.key.keysym.sym == SDLK_RETURN){
                 reset();
             }
@@ -297,8 +301,9 @@ void Game::generateWalls(){
 
 void Game::update() {
     player1.updateBullets();
+    player2.updateBullets();
 
-    for (auto& enemy : enemies) {
+    for (auto& enemy : enemies) { // cap nhat dan của dich
         enemy.move(walls, renderer);
         enemy.updateBullets();
         if (rand() % 100 < 2) {
@@ -306,7 +311,7 @@ void Game::update() {
         }
     }
 
-    for (auto& enemy : enemies) {
+    for (auto& enemy : enemies) { // dan dich ban tuong
         for (auto& bullet : enemy.bullets) {
             for (auto& wall : walls) {
                 if (wall.active && SDL_HasIntersection(&bullet.rect, &wall.rect)) {
@@ -318,7 +323,7 @@ void Game::update() {
         }
     }
 
-    for (auto& bullet : player1.bullets) {
+    for (auto& bullet : player1.bullets) { // dan nguoi choi 1 ban tuong
     for (auto& wall : walls) {
         if (wall.active && SDL_HasIntersection(&bullet.rect, &wall.rect)) {
             wall.active = false;
@@ -327,41 +332,70 @@ void Game::update() {
         }
     }
 }
-
-for (auto& bullet : player1.bullets) {
-    for (auto& enemy : enemies) {
-        if (enemy.active && SDL_HasIntersection(&bullet.rect, &enemy.rect)) {
-            enemy.active = false;
-            bullet.active = false;
+    for (auto& bullet : player2.bullets) { // dan nguoi choi 2 ban tuong
+        for (auto& wall : walls) {
+            if (wall.active && SDL_HasIntersection(&bullet.rect, &wall.rect)) {
+                wall.active = false;
+                bullet.active = false;
+                break;
+            }
         }
     }
-}
+
+    for (auto& bullet : player1.bullets) { // dan nguoi choi 1 ban dich
+        for (auto& enemy : enemies) {
+            if (enemy.active && SDL_HasIntersection(&bullet.rect, &enemy.rect)) {
+                enemy.active = false;
+                bullet.active = false;
+            }
+        }
+    }
+        for (auto& bullet : player2.bullets) { // dan nguoi choi 2 ban dich
+        for (auto& enemy : enemies) {
+            if (enemy.active && SDL_HasIntersection(&bullet.rect, &enemy.rect)) {
+                enemy.active = false;
+                bullet.active = false;
+            }
+        }
+    }
 
 enemies.erase(std::remove_if(enemies.begin(), enemies.end(),
     [](EnemyTank& e) { return !e.active; }), enemies.end());
 
 if (enemies.empty()) {
     state = GAME_OVER;
-    //drawText("GAME OVER - PRESS ENTER TO RESTART", 200, 300);
     handleEvents();
 }
 
-for (auto& enemy : enemies) {
+for (auto& enemy : enemies) { // dan dich ban nguoi choi 1, 2
     for (auto& bullet : enemy.bullets) {
         // Update
-        if (SDL_HasIntersection(&bullet.rect, &player1.rect)) {
-            bullet.active = false;
-            player1.RemainingLives -= 1;
-            if(player1.RemainingLives == 0){
+            if (SDL_HasIntersection(&bullet.rect, &player1.rect)) {
+                bullet.active = false;
+                player1.RemainingLives -= 1;
+            }
+            if (SDL_HasIntersection(&bullet.rect, &player2.rect)) {
+                bullet.active = false;
+                player2.RemainingLives -= 1;
+            }
+            if(player1.RemainingLives == 0 || player2.RemainingLives == 0){
                 reset();
                 return;
             }
         }
-    }
 }
 
+    for (auto& bullet : player1.bullets) { // dan nguoi choi 1 ban nguoi choi 2
+        if (SDL_HasIntersection(&bullet.rect, &player2.rect)) {
+            reset();
+        }
+    }
 
-
+    for (auto& bullet : player2.bullets) { // dan nguoi choi 2 ban nguoi choi 1
+        if (SDL_HasIntersection(&bullet.rect, &player1.rect)) {
+            reset();
+        }
+    }
 }
 
 void Game::spawnEnemies() {
