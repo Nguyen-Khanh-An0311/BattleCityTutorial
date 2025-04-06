@@ -42,10 +42,10 @@ Game::Game(){
             spawnHearts();
             generateWalls();
 
-            player = PlayerTank(((MAP_WIDTH - 1) / 2) * TILE_SIZE, (MAP_HEIGHT - 2) * TILE_SIZE, renderer);
+            player1 = PlayerTank( TILE_SIZE, (MAP_HEIGHT - 2) * TILE_SIZE, renderer);
+            player2 = PlayerTank( (MAP_WIDTH - 2) * TILE_SIZE, TILE_SIZE, renderer);
 
             spawnEnemies();
-            //spawnHearts();
         }
 
 
@@ -79,41 +79,119 @@ void Game::run() {
 
 void Game::reset() {
     running = true;
-    player.RemainingLives = 3;
+    player1.RemainingLives = 3;
     state = PLAYING;
     generateWalls();
-    player = PlayerTank(((MAP_WIDTH - 1) / 2) * TILE_SIZE, (MAP_HEIGHT - 2) * TILE_SIZE, renderer);
+    player1 = PlayerTank(((MAP_WIDTH - 1) / 2) * TILE_SIZE, (MAP_HEIGHT - 2) * TILE_SIZE, renderer);
     spawnEnemies();
     spawnHearts();
 }
 
 
 void Game::handleEvents() {
-    SDL_Event event;
+    /*SDL_Event event;
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {   // THOAT
             running = false;
         } else if (event.type == SDL_KEYDOWN) {
             switch (event.key.keysym.sym) {
                 case SDLK_UP:
-                    player.move(0, -5, walls, hearts, enemies);
-                    player.tankTexture = IMG_LoadTexture(renderer, "player_up.png");
+                    player1.move(0, -5, walls, hearts, enemies);
+                    player1.tankTexture = IMG_LoadTexture(renderer, "player_up.png");
                     break;
+                case SDLK_w:
+                    player2.move(0, -5, walls, hearts, enemies);
+                    player2.tankTexture = IMG_LoadTexture(renderer, "player_up.png");
+                    break;
+
                 case SDLK_DOWN:
-                    player.move(0, 5, walls, hearts, enemies);
-                    player.tankTexture = IMG_LoadTexture(renderer, "player_down.png");
+                    player1.move(0, 5, walls, hearts, enemies);
+                    player1.tankTexture = IMG_LoadTexture(renderer, "player_down.png");
                     break;
+                case SDLK_s:
+                    player2.move(0, 5, walls, hearts, enemies);
+                    player2.tankTexture = IMG_LoadTexture(renderer, "player_down.png");
+                    break;
+
                 case SDLK_LEFT:
-                    player.move(-5, 0, walls, hearts, enemies);
-                    player.tankTexture = IMG_LoadTexture(renderer, "player_left.png");
+                    player1.move(-5, 0, walls, hearts, enemies);
+                    player1.tankTexture = IMG_LoadTexture(renderer, "player_left.png");
                     break;
+                case SDLK_a:
+                    player2.move(-5, 0, walls, hearts, enemies);
+                    player2.tankTexture = IMG_LoadTexture(renderer, "player_left.png");
+                    break;
+
                 case SDLK_RIGHT:
-                    player.move(5, 0, walls, hearts, enemies);
-                    player.tankTexture = IMG_LoadTexture(renderer, "player_right.png");
+                    player1.move(5, 0, walls, hearts, enemies);
+                    player1.tankTexture = IMG_LoadTexture(renderer, "player_right.png");
                     break;
-                case SDLK_SPACE: player.shoot(); break;
+                case SDLK_d:
+                    player2.move(5, 0, walls, hearts, enemies);
+                    player2.tankTexture = IMG_LoadTexture(renderer, "player_right.png");
+                    break;
+
+                case SDLK_SPACE: player1.shoot(); break;
+                case SDLK_LCTRL:  // Player 2 bắn đạn bằng phím Ctrl trái
+                    player2.shoot();
+                    break;
+
+
+
+
+            }
+        }*/
+        SDL_Event event;
+        const Uint8* keystate = SDL_GetKeyboardState(NULL); // Lấy trạng thái bàn phím
+
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                running = false;
             }
         }
+
+            // Điều khiển Player 1 (Phím mũi tên)
+            if (keystate[SDL_SCANCODE_UP]) {
+                player1.move(0, -5, walls, hearts, enemies);
+                player1.tankTexture = IMG_LoadTexture(renderer, "player_up.png");
+            }
+            if (keystate[SDL_SCANCODE_DOWN]) {
+                player1.move(0, 5, walls, hearts, enemies);
+                player1.tankTexture = IMG_LoadTexture(renderer, "player_down.png");
+            }
+            if (keystate[SDL_SCANCODE_LEFT]) {
+                player1.move(-5, 0, walls, hearts, enemies);
+                player1.tankTexture = IMG_LoadTexture(renderer, "player_left.png");
+            }
+            if (keystate[SDL_SCANCODE_RIGHT]) {
+                player1.move(5, 0, walls, hearts, enemies);
+                player1.tankTexture = IMG_LoadTexture(renderer, "player_right.png");
+            }
+            if (keystate[SDL_SCANCODE_SPACE]) {
+                player1.shoot();
+            }
+
+            // Điều khiển Player 2 (Phím WASD)
+            if (keystate[SDL_SCANCODE_W]) {
+                player2.move(0, -5, walls, hearts, enemies);
+                player2.tankTexture = IMG_LoadTexture(renderer, "player_up.png");
+            }
+            if (keystate[SDL_SCANCODE_S]) {
+                player2.move(0, 5, walls, hearts, enemies);
+                player2.tankTexture = IMG_LoadTexture(renderer, "player_down.png");
+            }
+            if (keystate[SDL_SCANCODE_A]) {
+                player2.move(-5, 0, walls, hearts, enemies);
+                player2.tankTexture = IMG_LoadTexture(renderer, "player_left.png");
+            }
+            if (keystate[SDL_SCANCODE_D]) {
+                player2.move(5, 0, walls, hearts, enemies);
+                player2.tankTexture = IMG_LoadTexture(renderer, "player_right.png");
+            }
+            if (keystate[SDL_SCANCODE_LCTRL]) { // Player 2 bắn đạn bằng phím Ctrl trái
+                player2.shoot();
+            }
+
 
         if (state == GAME_OVER && event.type == SDL_KEYDOWN){
             if (event.key.keysym.sym == SDLK_RETURN){
@@ -121,7 +199,6 @@ void Game::handleEvents() {
             }
         }
     }
-}
 void Game::render(){
             /*SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255); //chọn màu
             SDL_RenderClear(renderer); // tô toàn bộ màu vừa chọn
@@ -136,6 +213,9 @@ void Game::render(){
             SDL_RenderClear(renderer);
             SDL_RenderCopy(renderer, backgroundTexture, nullptr, nullptr); // Hiển thị ảnh nền
 
+            player1.render(renderer);
+            player2.render(renderer);
+
 
             for (int i=0; i < heartNumber; i++){
                 hearts[i].render(renderer);
@@ -145,7 +225,7 @@ void Game::render(){
                 walls[i].render(renderer);
             }
 
-            player.render(renderer);
+
 
             for (auto& enemy : enemies) {
                 enemy.render(renderer);
@@ -190,7 +270,7 @@ void Game::generateWalls(){
             validPosition = true;
 
 
-            if (wx == player.x && wy == player.y) {
+            if (wx == player1.x && wy == player1.y) {
                 validPosition = false;
             }
             break;
@@ -216,7 +296,7 @@ void Game::generateWalls(){
 }
 
 void Game::update() {
-    player.updateBullets();
+    player1.updateBullets();
 
     for (auto& enemy : enemies) {
         enemy.move(walls, renderer);
@@ -238,7 +318,7 @@ void Game::update() {
         }
     }
 
-    for (auto& bullet : player.bullets) {
+    for (auto& bullet : player1.bullets) {
     for (auto& wall : walls) {
         if (wall.active && SDL_HasIntersection(&bullet.rect, &wall.rect)) {
             wall.active = false;
@@ -248,7 +328,7 @@ void Game::update() {
     }
 }
 
-for (auto& bullet : player.bullets) {
+for (auto& bullet : player1.bullets) {
     for (auto& enemy : enemies) {
         if (enemy.active && SDL_HasIntersection(&bullet.rect, &enemy.rect)) {
             enemy.active = false;
@@ -269,10 +349,10 @@ if (enemies.empty()) {
 for (auto& enemy : enemies) {
     for (auto& bullet : enemy.bullets) {
         // Update
-        if (SDL_HasIntersection(&bullet.rect, &player.rect)) {
+        if (SDL_HasIntersection(&bullet.rect, &player1.rect)) {
             bullet.active = false;
-            player.RemainingLives -= 1;
-            if(player.RemainingLives == 0){
+            player1.RemainingLives -= 1;
+            if(player1.RemainingLives == 0){
                 reset();
                 return;
             }
@@ -313,7 +393,7 @@ void Game::spawnHearts(){
             hx = (rand() % (MAP_WIDTH - 2) + 1) * TILE_SIZE;
             hy = (rand() % (MAP_HEIGHT - 2) + 1) * TILE_SIZE;
             validPosition = true;
-            if (player.x == hx && player.y == hy){
+            if (player1.x == hx && player1.y == hy){
                 validPosition = false;
             }
             for (const auto& wall : walls) {

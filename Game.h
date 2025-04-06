@@ -23,12 +23,14 @@ public:
     bool running;
     GameState state;
 
-    vector<Wall> walls;
-    PlayerTank player;
+    PlayerTank player1;
+    PlayerTank player2;
+
     int enemyNumber = 7;
     vector<EnemyTank> enemies;
     int heartNumber = 5;
     vector<Heart> hearts;
+    vector<Wall> walls;
 
     Game();
     void run();
