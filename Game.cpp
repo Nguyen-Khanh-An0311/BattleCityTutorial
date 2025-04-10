@@ -37,17 +37,23 @@ Game::Game(){
                 cout << "Renderer could not be created! SDL_Erroe: " << SDL_GetError() << endl;
                 running = false;
             }
-
             backgroundTexture = loadTexture("background.png",renderer);
 
             player1 = PlayerTank( TILE_SIZE, (MAP_HEIGHT - 2) * TILE_SIZE, renderer);
             player2 = PlayerTank( (MAP_WIDTH - 2) * TILE_SIZE, TILE_SIZE, renderer);
-
             spawnHearts();
-            generateWalls();
 
+            if(mode == GameMode::PVP){
+                gameMap.loadFromFile("gameMaps//map1.txt", renderer);
+                walls = gameMap.walls;
+                spawnEnemies();
+            }
+            else if(mode == GameMode::COOP_BOSS) {
+                gameMap.loadFromFile("gameMaps//map2.txt", renderer);
+                walls = gameMap.walls;
+                boss = Boss( ((MAP_WIDTH)/2)*TILE_SIZE, ((MAP_HEIGHT)/2)*TILE_SIZE, renderer);
+            }
 
-            spawnEnemies();
         }
 
 
@@ -84,7 +90,8 @@ void Game::reset() {
     player1.RemainingLives = 3;
     player2.RemainingLives = 3;
     state = PLAYING;
-    generateWalls();
+    //generateWalls();
+    gameMap.loadFromFile("map1.txt", renderer);
     player1 = PlayerTank( TILE_SIZE, (MAP_HEIGHT - 2) * TILE_SIZE, renderer);
     player2 = PlayerTank( (MAP_WIDTH - 2) * TILE_SIZE, TILE_SIZE, renderer);
     spawnEnemies();
@@ -152,54 +159,52 @@ void Game::handleEvents() {
             if (event.type == SDL_QUIT) {
                 running = false;
             }
-        }
-
-            // Điều khiển Player 1 (Phím mũi tên)
-            if (keystate[SDL_SCANCODE_W]) {
-                player1.move(0, -5, walls, hearts, enemies);
-                player1.tankTexture = IMG_LoadTexture(renderer, "player_up.png");
-            }
-            if (keystate[SDL_SCANCODE_S]) {
-                player1.move(0, 5, walls, hearts, enemies);
-                player1.tankTexture = IMG_LoadTexture(renderer, "player_down.png");
-            }
-            if (keystate[SDL_SCANCODE_A]) {
-                player1.move(-5, 0, walls, hearts, enemies);
-                player1.tankTexture = IMG_LoadTexture(renderer, "player_left.png");
-            }
-            if (keystate[SDL_SCANCODE_D]) {
-                player1.move(5, 0, walls, hearts, enemies);
-                player1.tankTexture = IMG_LoadTexture(renderer, "player_right.png");
-            }
-            if (keystate[SDL_SCANCODE_LCTRL]) {
-                player1.shoot();
-            }
-
-            // Điều khiển Player 2 (Phím WASD)
-            if (keystate[SDL_SCANCODE_UP]) {
-                player2.move(0, -5, walls, hearts, enemies);
-                player2.tankTexture = IMG_LoadTexture(renderer, "player_up.png");
-            }
-            if (keystate[SDL_SCANCODE_DOWN]) {
-                player2.move(0, 5, walls, hearts, enemies);
-                player2.tankTexture = IMG_LoadTexture(renderer, "player_down.png");
-            }
-            if (keystate[SDL_SCANCODE_LEFT]) {
-                player2.move(-5, 0, walls, hearts, enemies);
-                player2.tankTexture = IMG_LoadTexture(renderer, "player_left.png");
-            }
-            if (keystate[SDL_SCANCODE_RIGHT]) {
-                player2.move(5, 0, walls, hearts, enemies);
-                player2.tankTexture = IMG_LoadTexture(renderer, "player_right.png");
-            }
-            if (keystate[SDL_SCANCODE_SPACE]) { // Player 2 bắn đạn bằng phím Ctrl trái
-                player2.shoot();
-            }
-
-
-        if (event.type == SDL_KEYDOWN){
-            if (event.key.keysym.sym == SDLK_RETURN){
+            else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN) {
+                state = GAME_OVER;
                 reset();
+            }
+            else if(event.type == SDL_KEYDOWN){
+                // Điều khiển Player 1 (Phím WASD)
+                if (keystate[SDL_SCANCODE_W]) {
+                    player1.move(0, -5, walls, hearts, enemies);
+                    player1.tankTexture = IMG_LoadTexture(renderer, "player_up.png");
+                }
+                if (keystate[SDL_SCANCODE_S]) {
+                    player1.move(0, 5, walls, hearts, enemies);
+                    player1.tankTexture = IMG_LoadTexture(renderer, "player_down.png");
+                }
+                if (keystate[SDL_SCANCODE_A]) {
+                    player1.move(-5, 0, walls, hearts, enemies);
+                    player1.tankTexture = IMG_LoadTexture(renderer, "player_left.png");
+                }
+                if (keystate[SDL_SCANCODE_D]) {
+                    player1.move(5, 0, walls, hearts, enemies);
+                    player1.tankTexture = IMG_LoadTexture(renderer, "player_right.png");
+                }
+                if (keystate[SDL_SCANCODE_LCTRL]) {
+                    player1.shoot();
+                }
+
+                // Điều khiển Player 2
+                if (keystate[SDL_SCANCODE_UP]) {
+                    player2.move(0, -5, walls, hearts, enemies);
+                    player2.tankTexture = IMG_LoadTexture(renderer, "player_up.png");
+                }
+                if (keystate[SDL_SCANCODE_DOWN]) {
+                    player2.move(0, 5, walls, hearts, enemies);
+                    player2.tankTexture = IMG_LoadTexture(renderer, "player_down.png");
+                }
+                if (keystate[SDL_SCANCODE_LEFT]) {
+                    player2.move(-5, 0, walls, hearts, enemies);
+                    player2.tankTexture = IMG_LoadTexture(renderer, "player_left.png");
+                }
+                if (keystate[SDL_SCANCODE_RIGHT]) {
+                    player2.move(5, 0, walls, hearts, enemies);
+                    player2.tankTexture = IMG_LoadTexture(renderer, "player_right.png");
+                }
+                if (keystate[SDL_SCANCODE_SPACE]) { // Player 2 bắn đạn bằng phím Ctrl trái
+                    player2.shoot();
+                }
             }
         }
     }
@@ -214,6 +219,7 @@ void Game::render(){
                     SDL_RenderFillRect(renderer, &tile);
                 }
             }*/
+
             SDL_RenderClear(renderer);
             SDL_RenderCopy(renderer, backgroundTexture, nullptr, nullptr); // Hiển thị ảnh nền
 
@@ -243,9 +249,6 @@ void Game::render(){
         }
 
 
-
-
-
 Game::~Game(){
             SDL_DestroyTexture(backgroundTexture);
             IMG_Quit();
@@ -254,50 +257,7 @@ Game::~Game(){
             SDL_Quit();
         }
 
-void Game::generateWalls(){
-    /*for (int i = 3; i < MAP_HEIGHT - 3; i += 2) {
-        for (int j = 3; j < MAP_WIDTH - 3; j += 2) {
-            Wall w = Wall(j * TILE_SIZE, i * TILE_SIZE);
-            walls.push_back(w);
-        }
-    }*/
-    /*Wall w = Wall(2 * TILE_SIZE, 3 * TILE_SIZE);
-    walls.push_back(w);*/
 
-    walls.clear();
-    for (int i = 0; i < 30; ++i) {
-        int wx, wy;
-        bool validPosition = false;
-        while (!validPosition) {
-            wx = (rand() % (MAP_WIDTH - 2) + 1) * TILE_SIZE;
-            wy = (rand() % (MAP_HEIGHT - 2) + 1) * TILE_SIZE;
-            validPosition = true;
-
-
-            if (wx == player1.x && wy == player1.y) {
-                validPosition = false;
-            }
-            break;
-
-            for (const auto& enemy : enemies) {
-                if (enemy.active && enemy.x == wx && enemy.y == wy) {
-                    validPosition = false;
-                    break;
-                }
-            }
-            break;
-
-            for (const auto& heart : hearts) {  // Di chuyển vào vòng while
-                if (heart.active && heart.x == wx && heart.y == wy) {
-                    validPosition = false;
-                    break;
-                }
-            }
-            break;
-        }
-        walls.push_back(Wall(wx, wy, renderer));
-    }
-}
 
 void Game::update() {
     player1.updateBullets();
@@ -324,14 +284,24 @@ void Game::update() {
     }
 
     for (auto& bullet : player1.bullets) { // dan nguoi choi 1 ban tuong
-    for (auto& wall : walls) {
-        if (wall.active && SDL_HasIntersection(&bullet.rect, &wall.rect)) {
-            wall.active = false;
-            bullet.active = false;
-            break;
+        for (auto& wall : walls) {
+            if (wall.active && SDL_HasIntersection(&bullet.rect, &wall.rect)) {
+                wall.active = false;
+                bullet.active = false;
+                break;
+            }
         }
     }
-}
+
+    for (auto& bullet : player2.bullets) { // dan nguoi choi 1 ban tuong
+        for (auto& wall : walls) {
+            if (wall.active && SDL_HasIntersection(&bullet.rect, &wall.rect)) {
+                wall.active = false;
+                bullet.active = false;
+                break;
+            }
+        }
+    }
     for (auto& bullet : player2.bullets) { // dan nguoi choi 2 ban tuong
         for (auto& wall : walls) {
             if (wall.active && SDL_HasIntersection(&bullet.rect, &wall.rect)) {
@@ -379,6 +349,7 @@ for (auto& enemy : enemies) { // dan dich ban nguoi choi 1, 2
                 player2.RemainingLives -= 1;
             }
             if(player1.RemainingLives == 0 || player2.RemainingLives == 0){
+                state = GAME_OVER;
                 reset();
                 return;
             }
@@ -387,16 +358,64 @@ for (auto& enemy : enemies) { // dan dich ban nguoi choi 1, 2
 
     for (auto& bullet : player1.bullets) { // dan nguoi choi 1 ban nguoi choi 2
         if (SDL_HasIntersection(&bullet.rect, &player2.rect)) {
+            state = GAME_OVER;
             reset();
         }
     }
 
     for (auto& bullet : player2.bullets) { // dan nguoi choi 2 ban nguoi choi 1
         if (SDL_HasIntersection(&bullet.rect, &player1.rect)) {
+            state = GAME_OVER;
             reset();
         }
     }
 }
+
+/*void Game::generateWalls(){
+    /*for (int i = 3; i < MAP_HEIGHT - 3; i += 2) {
+        for (int j = 3; j < MAP_WIDTH - 3; j += 2) {
+            Wall w = Wall(j * TILE_SIZE, i * TILE_SIZE);
+            walls.push_back(w);
+        }
+    }*/
+    /*Wall w = Wall(2 * TILE_SIZE, 3 * TILE_SIZE);
+    walls.push_back(w);*/
+
+    /*walls.clear();
+    for (int i = 0; i < 30; ++i) {
+        int wx, wy;
+        bool validPosition = false;
+        while (!validPosition) {
+            wx = (rand() % (MAP_WIDTH - 2) + 1) * TILE_SIZE;
+            wy = (rand() % (MAP_HEIGHT - 2) + 1) * TILE_SIZE;
+            validPosition = true;
+
+
+            if (wx == player1.x|| wx == player2.x) {
+                validPosition = false;
+                //break;
+            }
+
+
+            for (const auto& enemy : enemies) {
+                if (enemy.active && enemy.x == wx && enemy.y == wy) {
+                    validPosition = false;
+                    //break;
+                }
+            }
+            //break;
+
+            for (const auto& heart : hearts) {  // Di chuyển vào vòng while
+                if (heart.active && heart.x == wx && heart.y == wy) {
+                    validPosition = false;
+                    //break;
+                }
+            }
+            //break;
+        }
+        if(validPosition) walls.push_back(Wall(wx, wy, renderer));
+    }
+}*/
 
 void Game::spawnEnemies() {
     enemies.clear();
@@ -407,10 +426,13 @@ void Game::spawnEnemies() {
             ex = (rand() % (MAP_WIDTH - 2) + 1) * TILE_SIZE;
             ey = (rand() % (MAP_HEIGHT - 2) + 1) * TILE_SIZE;
             validPosition = true;
+            if((player1.x == ex && player1.y == ey) || (player2.x == ex && player2.y == ey)){
+                validPosition = false;
+            }
             for (const auto& wall : walls) {
                 if (wall.active && wall.x == ex && wall.y == ey) {
                     validPosition = false;
-                    break;
+                    //break;
                 }
             }
         }
@@ -427,7 +449,7 @@ void Game::spawnHearts(){
             hx = (rand() % (MAP_WIDTH - 2) + 1) * TILE_SIZE;
             hy = (rand() % (MAP_HEIGHT - 2) + 1) * TILE_SIZE;
             validPosition = true;
-            if (player1.x == hx && player1.y == hy){
+            if ((player1.x == hx && player1.y == hy) || (player2.x == hx && player2.y == hy)){
                 validPosition = false;
             }
             for (const auto& wall : walls) {

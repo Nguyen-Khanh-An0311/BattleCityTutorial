@@ -1,39 +1,41 @@
-#include "EnemyTank.h"
+#include "Boss.h"
 
-EnemyTank::EnemyTank(int startX, int startY, SDL_Renderer* renderer) {
+Boss::Boss(){}
+
+Boss::Boss(int startX, int startY, SDL_Renderer* renderer) {
         moveDelay = 100; // Delay for movement
         shootDelay = 5; // Delay for shooting
         x = startX;
         y = startY;
-        rect = {x, y, TILE_SIZE, TILE_SIZE};
+        rect = {x, y, TILE_SIZE*3, TILE_SIZE*3};
         tankTexture = IMG_LoadTexture(renderer, "enemy_up.png");
         dirX = 0;
         dirY = 1;
         active = true;
     }
 
-void EnemyTank::move(const vector<Wall>& walls, SDL_Renderer* renderer) {
+void Boss::move(const vector<Wall>& walls, SDL_Renderer* renderer) {
     if (--moveDelay > 0) return;
     moveDelay = 100;
     int r = rand() % 4;
     if (r == 0) { // Up
         this->dirX = 0;
-        this->dirY = -100;
+        this->dirY = -20;
         tankTexture = IMG_LoadTexture(renderer, "enemy_up.png");
     }
     else if (r == 1) { // Down
         this->dirX = 0;
-        this->dirY = 100;
+        this->dirY = 20;
         tankTexture = IMG_LoadTexture(renderer, "enemy_down.png");
     }
     else if (r == 2) { // Left
         this->dirY = 0;
-        this->dirX = -100;
+        this->dirX = -20;
         tankTexture = IMG_LoadTexture(renderer, "enemy_left.png");
     }
     else if (r == 3) { // Right
         this->dirY = 0;
-        this->dirX = 100;
+        this->dirX = 20;
         tankTexture = IMG_LoadTexture(renderer, "enemy_right.png");
     }
 
@@ -60,14 +62,14 @@ void EnemyTank::move(const vector<Wall>& walls, SDL_Renderer* renderer) {
 
 }
 
-void EnemyTank::shoot() {
+void Boss::shoot() {
     if (--shootDelay > 0) return;
     shootDelay = 5;
     bullets.push_back(Bullet(x + TILE_SIZE / 2 - 5, y + TILE_SIZE / 2 - 5,
                              this->dirX, this->dirY));
 }
 
-void EnemyTank::updateBullets() {
+void Boss::updateBullets() {
     for (auto &bullet : bullets) {
         bullet.move();
     }
@@ -75,7 +77,7 @@ void EnemyTank::updateBullets() {
                  [](Bullet &b) { return !b.active; }), bullets.end());
 }
 
-void EnemyTank::render(SDL_Renderer* renderer) {
+void Boss::render(SDL_Renderer* renderer) {
     //SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
     //SDL_RenderFillRect(renderer, &rect);
     SDL_RenderCopy(renderer, tankTexture, nullptr, &rect);

@@ -1,11 +1,11 @@
 # depslib dependency file v1.0
-1742664078 source:c:\users\admin\documents\dev\battlecitytutorial\main.cpp
+1744281054 source:c:\users\admin\documents\dev\battlecitytutorial\main.cpp
 	<iostream>
 	<SDL.h>
 	"Game.h"
 	"Statistics.h"
 
-1743953739 c:\users\admin\documents\dev\battlecitytutorial\game.h
+1744279585 c:\users\admin\documents\dev\battlecitytutorial\game.h
 	<iostream>
 	<SDL.h>
 	<SDL_mixer.h>
@@ -15,6 +15,8 @@
 	"EnemyTank.h"
 	"Statistics.h"
 	"Heart.h"
+	"Map.h"
+	"Boss.h"
 
 1742665945 source:c:\users\admin\documents\dev\battlecitytutorial\wall.cpp
 	"Wall.h"
@@ -26,7 +28,7 @@
 	"Statistics.h"
 	<SDL_image.h>
 
-1742700630 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
+1744281102 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
 	"Game.h"
 
 1742662916 c:\users\admin\documents\dev\battlecitytutorial\playertank.h
@@ -44,7 +46,7 @@
 1743952057 source:c:\users\admin\documents\dev\battlecitytutorial\playertank.cpp
 	"PlayerTank.h"
 
-1742662249 source:c:\users\admin\documents\dev\battlecitytutorial\bullet.cpp
+1744167088 source:c:\users\admin\documents\dev\battlecitytutorial\bullet.cpp
 	"Bullet.h"
 
 1742440550 c:\users\admin\documents\dev\battlecitytutorial\bullet.h
@@ -52,7 +54,7 @@
 	<SDL.h>
 	"Statistics.h"
 
-1742665648 c:\users\admin\documents\dev\battlecitytutorial\enemytank.h
+1744277948 c:\users\admin\documents\dev\battlecitytutorial\enemytank.h
 	<iostream>
 	<SDL_image.h>
 	<vector>
@@ -61,7 +63,7 @@
 	"Wall.h"
 	"Statistics.h"
 
-1742665769 source:c:\users\admin\documents\dev\battlecitytutorial\enemytank.cpp
+1744277898 source:c:\users\admin\documents\dev\battlecitytutorial\enemytank.cpp
 	"EnemyTank.h"
 
 1742440092 c:\users\admin\documents\dev\battlecitytutorial\statistics.h
@@ -77,4 +79,29 @@
 1742615329 c:\users\admin\documents\dev\battlecitytutorial\renderer.h
 	<iostream>
 	<SDL.h>
+
+1744204168 c:\users\admin\documents\dev\battlecitytutorial\map.h
+	<iostream>
+	<vector>
+	<string>
+	<fstream>
+	<ctime>
+	"Wall.h"
+	<SDL.h>
+	"Statistics.h"
+
+1744204149 source:c:\users\admin\documents\dev\battlecitytutorial\map.cpp
+	"Map.h"
+
+1744279752 source:c:\users\admin\documents\dev\battlecitytutorial\boss.cpp
+	"Boss.h"
+
+1744279762 c:\users\admin\documents\dev\battlecitytutorial\boss.h
+	<iostream>
+	<SDL_image.h>
+	<vector>
+	<algorithm>
+	"Bullet.h"
+	"Wall.h"
+	"Statistics.h"
 

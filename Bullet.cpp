@@ -13,8 +13,7 @@ Bullet::Bullet(int startX, int startY, int dirX, int dirY) {
 void Bullet::move() {
     x += dx;
     y += dy;
-    rect.x = x;
-    rect.y = y;
+    rect = {x,y,10,10};
 
     /*if (x < TILE_SIZE || x > SCREEN_WIDTH - TILE_SIZE ||
         y < TILE_SIZE || y > SCREEN_HEIGHT - TILE_SIZE) {

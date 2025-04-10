@@ -7,10 +7,17 @@
 #include "EnemyTank.h"
 #include "Statistics.h"
 #include "Heart.h"
+#include "Map.h"
+#include "Boss.h"
 using namespace std;
 
 
 enum GameState { PLAYING, GAME_OVER };
+enum class GameMode {
+    PVP,        // 2 người chơi đấu nhau
+    COOP_BOSS   // 2 người chơi đánh boss
+};
+
 
 class Game{
 public:
@@ -22,14 +29,18 @@ public:
 
     bool running;
     GameState state;
+    GameMode mode;
 
     PlayerTank player1;
     PlayerTank player2;
+
+    Boss boss;
 
     int enemyNumber = 7;
     vector<EnemyTank> enemies;
     int heartNumber = 5;
     vector<Heart> hearts;
+    Map gameMap;
     vector<Wall> walls;
 
     Game();

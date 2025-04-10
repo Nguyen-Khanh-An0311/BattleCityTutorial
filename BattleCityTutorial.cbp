@@ -31,6 +31,8 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="Boss.cpp" />
+		<Unit filename="Boss.h" />
 		<Unit filename="Bullet.cpp" />
 		<Unit filename="Bullet.h" />
 		<Unit filename="EnemyTank.cpp" />
@@ -39,6 +41,8 @@
 		<Unit filename="Game.h" />
 		<Unit filename="Heart.cpp" />
 		<Unit filename="Heart.h" />
+		<Unit filename="Map.cpp" />
+		<Unit filename="Map.h" />
 		<Unit filename="PlayerTank.cpp" />
 		<Unit filename="PlayerTank.h" />
 		<Unit filename="Renderer.h" />
@@ -46,7 +50,6 @@
 		<Unit filename="Wall.cpp" />
 		<Unit filename="Wall.h" />
 		<Unit filename="main.cpp" />
-		<Unit filename="temp.h" />
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>
