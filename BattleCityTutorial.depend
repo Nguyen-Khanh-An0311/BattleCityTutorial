@@ -5,7 +5,7 @@
 	"Game.h"
 	"Statistics.h"
 
-1744340610 c:\users\admin\documents\dev\battlecitytutorial\game.h
+1744375192 c:\users\admin\documents\dev\battlecitytutorial\game.h
 	<iostream>
 	<SDL.h>
 	<SDL_mixer.h>
@@ -28,7 +28,7 @@
 	"Statistics.h"
 	<SDL_image.h>
 
-1744341114 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
+1744376155 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
 	"Game.h"
 
 1742662916 c:\users\admin\documents\dev\battlecitytutorial\playertank.h
@@ -93,10 +93,10 @@
 1744204149 source:c:\users\admin\documents\dev\battlecitytutorial\map.cpp
 	"Map.h"
 
-1744279752 source:c:\users\admin\documents\dev\battlecitytutorial\boss.cpp
+1744376155 source:c:\users\admin\documents\dev\battlecitytutorial\boss.cpp
 	"Boss.h"
 
-1744279762 c:\users\admin\documents\dev\battlecitytutorial\boss.h
+1744375915 c:\users\admin\documents\dev\battlecitytutorial\boss.h
 	<iostream>
 	<SDL_image.h>
 	<vector>

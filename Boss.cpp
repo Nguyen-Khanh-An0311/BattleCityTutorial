@@ -78,8 +78,6 @@ void Boss::updateBullets() {
 }
 
 void Boss::render(SDL_Renderer* renderer) {
-    //SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-    //SDL_RenderFillRect(renderer, &rect);
     SDL_RenderCopy(renderer, tankTexture, nullptr, &rect);
     for (auto &bullet : bullets) {
         bullet.render(renderer);

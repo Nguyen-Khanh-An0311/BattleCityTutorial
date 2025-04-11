@@ -43,12 +43,14 @@ Game::Game(){
             player2 = PlayerTank( (MAP_WIDTH - 2) * TILE_SIZE, TILE_SIZE, renderer);
             spawnHearts();
 
+
             gameMap.loadFromFile("gameMaps//map1.txt", renderer);
             walls = gameMap.walls;
             spawnEnemies();
 
-
         }
+
+
 
 
 SDL_Texture* Game::loadTexture(const string& path, SDL_Renderer* renderer) {
@@ -79,16 +81,34 @@ void Game::run() {
             }
         }
 
+void Game::initMode(){
+    if(state != MENU) return;
+
+    player1 = PlayerTank( TILE_SIZE, (MAP_HEIGHT - 2) * TILE_SIZE, renderer);
+    player2 = PlayerTank( (MAP_WIDTH - 2) * TILE_SIZE, TILE_SIZE, renderer);
+    if(mode == GameMode::PVP){
+        spawnHearts();
+        gameMap.loadFromFile("gameMaps//map1.txt", renderer);
+        walls = gameMap.walls;
+        spawnEnemies();
+    }
+    else{
+        gameMap.loadFromFile("gameMaps//map2.txt", renderer);
+        walls = gameMap.walls;
+
+    }
+}
+
 void Game::reset() {
     running = true;
     player1.RemainingLives = 3;
     player2.RemainingLives = 3;
     state = MENU;
-    gameMap.loadFromFile("map1.txt", renderer);
+    /*gameMap.loadFromFile("map1.txt", renderer);
     player1 = PlayerTank( TILE_SIZE, (MAP_HEIGHT - 2) * TILE_SIZE, renderer);
     player2 = PlayerTank( (MAP_WIDTH - 2) * TILE_SIZE, TILE_SIZE, renderer);
     spawnEnemies();
-    spawnHearts();
+    spawnHearts();*/
 }
 
 
@@ -105,15 +125,16 @@ void Game::handleEvents() {
                     switch (event.key.keysym.sym) {
                         case SDLK_1:
                             mode = GameMode::PVP;
+                            initMode();
                             state = PLAYING;
                             break;
                         case SDLK_2:
                             mode = GameMode::COOP_BOSS;
+                            initMode();
                             state = PLAYING;
                             break;
                         default:
-                            running = false;
-                            break;
+                            return;
                         /*case SDLK_ESCAPE:
                             running = false;
                             break;*/
@@ -189,9 +210,10 @@ void Game::render(){
                 SDL_RenderClear(renderer); // 👈 vẽ menu
             }
 
-            else{
+            else {
                 player1.render(renderer);
                 player2.render(renderer);
+                boss.render(renderer);
 
 
                 for (int i=0; i < heartNumber; i++){
@@ -202,14 +224,12 @@ void Game::render(){
                     walls[i].render(renderer);
                 }
 
-
-
                 for (auto& enemy : enemies) {
                     enemy.render(renderer);
                 }
             }
             SDL_RenderPresent(renderer); // hiển thị tất cả, phải có
-        }
+    }
 
 
 Game::~Game(){
@@ -223,19 +243,30 @@ Game::~Game(){
 
 
 void Game::update() {
-    player1.updateBullets();
-    player2.updateBullets();
+        player1.updateBullets();
+        player2.updateBullets();
 
-    for (auto& enemy : enemies) { // cap nhat dan của dich
-        enemy.move(walls, renderer);
-        enemy.updateBullets();
-        if (rand() % 100 < 2) {
-            enemy.shoot();
+        for (auto& enemy : enemies) { // cap nhat dan của dich
+            enemy.move(walls, renderer);
+            enemy.updateBullets();
+            if (rand() % 100 < 2) {
+                enemy.shoot();
+            }
         }
-    }
 
-    for (auto& enemy : enemies) { // dan dich ban tuong
-        for (auto& bullet : enemy.bullets) {
+        for (auto& enemy : enemies) { // dan dich ban tuong
+            for (auto& bullet : enemy.bullets) {
+                for (auto& wall : walls) {
+                    if (wall.active && SDL_HasIntersection(&bullet.rect, &wall.rect)) {
+                        wall.active = false;
+                        bullet.active = false;
+                        break;
+                    }
+                }
+            }
+        }
+
+        for (auto& bullet : player1.bullets) { // dan nguoi choi 1 ban tuong
             for (auto& wall : walls) {
                 if (wall.active && SDL_HasIntersection(&bullet.rect, &wall.rect)) {
                     wall.active = false;
@@ -244,94 +275,83 @@ void Game::update() {
                 }
             }
         }
-    }
 
-    for (auto& bullet : player1.bullets) { // dan nguoi choi 1 ban tuong
-        for (auto& wall : walls) {
-            if (wall.active && SDL_HasIntersection(&bullet.rect, &wall.rect)) {
-                wall.active = false;
-                bullet.active = false;
-                break;
+        for (auto& bullet : player2.bullets) { // dan nguoi choi 1 ban tuong
+            for (auto& wall : walls) {
+                if (wall.active && SDL_HasIntersection(&bullet.rect, &wall.rect)) {
+                    wall.active = false;
+                    bullet.active = false;
+                    break;
+                }
             }
         }
-    }
-
-    for (auto& bullet : player2.bullets) { // dan nguoi choi 1 ban tuong
-        for (auto& wall : walls) {
-            if (wall.active && SDL_HasIntersection(&bullet.rect, &wall.rect)) {
-                wall.active = false;
-                bullet.active = false;
-                break;
+        for (auto& bullet : player2.bullets) { // dan nguoi choi 2 ban tuong
+            for (auto& wall : walls) {
+                if (wall.active && SDL_HasIntersection(&bullet.rect, &wall.rect)) {
+                    wall.active = false;
+                    bullet.active = false;
+                    break;
+                }
             }
         }
-    }
-    for (auto& bullet : player2.bullets) { // dan nguoi choi 2 ban tuong
-        for (auto& wall : walls) {
-            if (wall.active && SDL_HasIntersection(&bullet.rect, &wall.rect)) {
-                wall.active = false;
-                bullet.active = false;
-                break;
+
+        for (auto& bullet : player1.bullets) { // dan nguoi choi 1 ban dich
+            for (auto& enemy : enemies) {
+                if (enemy.active && SDL_HasIntersection(&bullet.rect, &enemy.rect)) {
+                    enemy.active = false;
+                    bullet.active = false;
+                }
             }
         }
-    }
-
-    for (auto& bullet : player1.bullets) { // dan nguoi choi 1 ban dich
-        for (auto& enemy : enemies) {
-            if (enemy.active && SDL_HasIntersection(&bullet.rect, &enemy.rect)) {
-                enemy.active = false;
-                bullet.active = false;
+            for (auto& bullet : player2.bullets) { // dan nguoi choi 2 ban dich
+            for (auto& enemy : enemies) {
+                if (enemy.active && SDL_HasIntersection(&bullet.rect, &enemy.rect)) {
+                    enemy.active = false;
+                    bullet.active = false;
+                }
             }
         }
+
+    enemies.erase(std::remove_if(enemies.begin(), enemies.end(),
+        [](EnemyTank& e) { return !e.active; }), enemies.end());
+
+    if (enemies.empty()) {
+        state = GAME_OVER;
+        handleEvents();
     }
-        for (auto& bullet : player2.bullets) { // dan nguoi choi 2 ban dich
-        for (auto& enemy : enemies) {
-            if (enemy.active && SDL_HasIntersection(&bullet.rect, &enemy.rect)) {
-                enemy.active = false;
-                bullet.active = false;
+
+    for (auto& enemy : enemies) { // dan dich ban nguoi choi 1, 2
+        for (auto& bullet : enemy.bullets) {
+            // Update
+                if (SDL_HasIntersection(&bullet.rect, &player1.rect)) {
+                    bullet.active = false;
+                    player1.RemainingLives -= 1;
+                }
+                if (SDL_HasIntersection(&bullet.rect, &player2.rect)) {
+                    bullet.active = false;
+                    player2.RemainingLives -= 1;
+                }
+                if(player1.RemainingLives == 0 || player2.RemainingLives == 0){
+                    state = GAME_OVER;
+                    reset();
+                    return;
+                }
             }
-        }
     }
 
-enemies.erase(std::remove_if(enemies.begin(), enemies.end(),
-    [](EnemyTank& e) { return !e.active; }), enemies.end());
-
-if (enemies.empty()) {
-    state = GAME_OVER;
-    handleEvents();
-}
-
-for (auto& enemy : enemies) { // dan dich ban nguoi choi 1, 2
-    for (auto& bullet : enemy.bullets) {
-        // Update
-            if (SDL_HasIntersection(&bullet.rect, &player1.rect)) {
-                bullet.active = false;
-                player1.RemainingLives -= 1;
-            }
+        for (auto& bullet : player1.bullets) { // dan nguoi choi 1 ban nguoi choi 2
             if (SDL_HasIntersection(&bullet.rect, &player2.rect)) {
-                bullet.active = false;
-                player2.RemainingLives -= 1;
-            }
-            if(player1.RemainingLives == 0 || player2.RemainingLives == 0){
                 state = GAME_OVER;
                 reset();
-                return;
             }
         }
-}
 
-    for (auto& bullet : player1.bullets) { // dan nguoi choi 1 ban nguoi choi 2
-        if (SDL_HasIntersection(&bullet.rect, &player2.rect)) {
-            state = GAME_OVER;
-            reset();
+        for (auto& bullet : player2.bullets) { // dan nguoi choi 2 ban nguoi choi 1
+            if (SDL_HasIntersection(&bullet.rect, &player1.rect)) {
+                state = GAME_OVER;
+                reset();
+            }
         }
-    }
-
-    for (auto& bullet : player2.bullets) { // dan nguoi choi 2 ban nguoi choi 1
-        if (SDL_HasIntersection(&bullet.rect, &player1.rect)) {
-            state = GAME_OVER;
-            reset();
-        }
-    }
 }
 
 /*void Game::generateWalls(){

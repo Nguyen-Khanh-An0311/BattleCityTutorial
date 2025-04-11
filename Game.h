@@ -30,11 +30,12 @@ public:
     bool running;
     GameState state = MENU;
     GameMode mode;
+    void initMode();
 
     PlayerTank player1;
     PlayerTank player2;
 
-    //Boss boss;
+    Boss boss;
 
     int enemyNumber = 7;
     vector<EnemyTank> enemies;
@@ -51,8 +52,7 @@ public:
     void update();
     void render();
 
-
-
+    //void modeGame(mode);
     void generateWalls();
     void spawnEnemies();
     void spawnHearts();
