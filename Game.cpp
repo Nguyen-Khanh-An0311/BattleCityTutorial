@@ -43,16 +43,10 @@ Game::Game(){
             player2 = PlayerTank( (MAP_WIDTH - 2) * TILE_SIZE, TILE_SIZE, renderer);
             spawnHearts();
 
-            if(mode == GameMode::PVP){
-                gameMap.loadFromFile("gameMaps//map1.txt", renderer);
-                walls = gameMap.walls;
-                spawnEnemies();
-            }
-            else if(mode == GameMode::COOP_BOSS) {
-                gameMap.loadFromFile("gameMaps//map2.txt", renderer);
-                walls = gameMap.walls;
-                boss = Boss( ((MAP_WIDTH)/2)*TILE_SIZE, ((MAP_HEIGHT)/2)*TILE_SIZE, renderer);
-            }
+            gameMap.loadFromFile("gameMaps//map1.txt", renderer);
+            walls = gameMap.walls;
+            spawnEnemies();
+
 
         }
 
@@ -89,8 +83,7 @@ void Game::reset() {
     running = true;
     player1.RemainingLives = 3;
     player2.RemainingLives = 3;
-    state = PLAYING;
-    //generateWalls();
+    state = MENU;
     gameMap.loadFromFile("map1.txt", renderer);
     player1 = PlayerTank( TILE_SIZE, (MAP_HEIGHT - 2) * TILE_SIZE, renderer);
     player2 = PlayerTank( (MAP_WIDTH - 2) * TILE_SIZE, TILE_SIZE, renderer);
@@ -100,64 +93,32 @@ void Game::reset() {
 
 
 void Game::handleEvents() {
-    /*SDL_Event event;
-    while (SDL_PollEvent(&event)) {
-        if (event.type == SDL_QUIT) {   // THOAT
-            running = false;
-        } else if (event.type == SDL_KEYDOWN) {
-            switch (event.key.keysym.sym) {
-                case SDLK_UP:
-                    player1.move(0, -5, walls, hearts, enemies);
-                    player1.tankTexture = IMG_LoadTexture(renderer, "player_up.png");
-                    break;
-                case SDLK_w:
-                    player2.move(0, -5, walls, hearts, enemies);
-                    player2.tankTexture = IMG_LoadTexture(renderer, "player_up.png");
-                    break;
-
-                case SDLK_DOWN:
-                    player1.move(0, 5, walls, hearts, enemies);
-                    player1.tankTexture = IMG_LoadTexture(renderer, "player_down.png");
-                    break;
-                case SDLK_s:
-                    player2.move(0, 5, walls, hearts, enemies);
-                    player2.tankTexture = IMG_LoadTexture(renderer, "player_down.png");
-                    break;
-
-                case SDLK_LEFT:
-                    player1.move(-5, 0, walls, hearts, enemies);
-                    player1.tankTexture = IMG_LoadTexture(renderer, "player_left.png");
-                    break;
-                case SDLK_a:
-                    player2.move(-5, 0, walls, hearts, enemies);
-                    player2.tankTexture = IMG_LoadTexture(renderer, "player_left.png");
-                    break;
-
-                case SDLK_RIGHT:
-                    player1.move(5, 0, walls, hearts, enemies);
-                    player1.tankTexture = IMG_LoadTexture(renderer, "player_right.png");
-                    break;
-                case SDLK_d:
-                    player2.move(5, 0, walls, hearts, enemies);
-                    player2.tankTexture = IMG_LoadTexture(renderer, "player_right.png");
-                    break;
-
-                case SDLK_SPACE: player1.shoot(); break;
-                case SDLK_LCTRL:  // Player 2 bắn đạn bằng phím Ctrl trái
-                    player2.shoot();
-                    break;
-
-
-
-
-            }
-        }*/
         SDL_Event event;
         const Uint8* keystate = SDL_GetKeyboardState(NULL); // Lấy trạng thái bàn phím
 
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
                 running = false;
+            }
+            else if (state == MENU) {
+                if (event.type == SDL_KEYDOWN) {
+                    switch (event.key.keysym.sym) {
+                        case SDLK_1:
+                            mode = GameMode::PVP;
+                            state = PLAYING;
+                            break;
+                        case SDLK_2:
+                            mode = GameMode::COOP_BOSS;
+                            state = PLAYING;
+                            break;
+                        default:
+                            running = false;
+                            break;
+                        /*case SDLK_ESCAPE:
+                            running = false;
+                            break;*/
+                    }
+                }  // 👈 xử lý menu ở đây
             }
             else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN) {
                 state = GAME_OVER;
@@ -223,28 +184,30 @@ void Game::render(){
             SDL_RenderClear(renderer);
             SDL_RenderCopy(renderer, backgroundTexture, nullptr, nullptr); // Hiển thị ảnh nền
 
-            player1.render(renderer);
-            player2.render(renderer);
-
-
-            for (int i=0; i < heartNumber; i++){
-                hearts[i].render(renderer);
+            if (state == MENU) {
+                SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); //chọn màu
+                SDL_RenderClear(renderer); // 👈 vẽ menu
             }
 
-            for(int i=0; i<walls.size(); i++){
-                walls[i].render(renderer);
+            else{
+                player1.render(renderer);
+                player2.render(renderer);
+
+
+                for (int i=0; i < heartNumber; i++){
+                    hearts[i].render(renderer);
+                }
+
+                for(int i=0; i<walls.size(); i++){
+                    walls[i].render(renderer);
+                }
+
+
+
+                for (auto& enemy : enemies) {
+                    enemy.render(renderer);
+                }
             }
-
-
-
-            for (auto& enemy : enemies) {
-                enemy.render(renderer);
-            }
-
-            /*for (int i=0; i < heartNumber; i++){
-                hearts[i].render(renderer);
-            }*/
-
             SDL_RenderPresent(renderer); // hiển thị tất cả, phải có
         }
 

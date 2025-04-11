@@ -12,7 +12,7 @@
 using namespace std;
 
 
-enum GameState { PLAYING, GAME_OVER };
+enum GameState { PLAYING, GAME_OVER, MENU };
 enum class GameMode {
     PVP,        // 2 người chơi đấu nhau
     COOP_BOSS   // 2 người chơi đánh boss
@@ -28,13 +28,13 @@ public:
     SDL_Texture* loadTexture(const string& , SDL_Renderer*);
 
     bool running;
-    GameState state;
+    GameState state = MENU;
     GameMode mode;
 
     PlayerTank player1;
     PlayerTank player2;
 
-    Boss boss;
+    //Boss boss;
 
     int enemyNumber = 7;
     vector<EnemyTank> enemies;
