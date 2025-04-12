@@ -28,9 +28,9 @@ public:
     SDL_Texture* loadTexture(const string& , SDL_Renderer*);
 
     bool running;
-    GameState state = MENU;
+    GameState state;
     GameMode mode;
-    void initMode();
+    void initMode(GameMode);
 
     PlayerTank player1;
     PlayerTank player2;
@@ -51,6 +51,7 @@ public:
     void handleEvents();
     void update();
     void render();
+    void renderMenu();
 
     //void modeGame(mode);
     void generateWalls();

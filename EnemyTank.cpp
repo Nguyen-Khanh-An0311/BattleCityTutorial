@@ -18,22 +18,22 @@ void EnemyTank::move(const vector<Wall>& walls, SDL_Renderer* renderer) {
     int r = rand() % 4;
     if (r == 0) { // Up
         this->dirX = 0;
-        this->dirY = -100;
+        this->dirY = -40;
         tankTexture = IMG_LoadTexture(renderer, "enemy_up.png");
     }
     else if (r == 1) { // Down
         this->dirX = 0;
-        this->dirY = 100;
+        this->dirY = 40;
         tankTexture = IMG_LoadTexture(renderer, "enemy_down.png");
     }
     else if (r == 2) { // Left
         this->dirY = 0;
-        this->dirX = -100;
+        this->dirX = -40;
         tankTexture = IMG_LoadTexture(renderer, "enemy_left.png");
     }
     else if (r == 3) { // Right
         this->dirY = 0;
-        this->dirX = 100;
+        this->dirX = 40;
         tankTexture = IMG_LoadTexture(renderer, "enemy_right.png");
     }
 

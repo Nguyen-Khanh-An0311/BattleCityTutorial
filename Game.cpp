@@ -3,6 +3,7 @@ using namespace std;
 
 Game::Game(){
             running = true;
+            state = MENU;
             if(SDL_Init(SDL_INIT_EVERYTHING) < 0){
                 cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << endl;
                 running = false;
@@ -39,14 +40,16 @@ Game::Game(){
             }
             backgroundTexture = loadTexture("background.png",renderer);
 
-            player1 = PlayerTank( TILE_SIZE, (MAP_HEIGHT - 2) * TILE_SIZE, renderer);
+            /*player1 = PlayerTank( TILE_SIZE, (MAP_HEIGHT - 2) * TILE_SIZE, renderer);
             player2 = PlayerTank( (MAP_WIDTH - 2) * TILE_SIZE, TILE_SIZE, renderer);
             spawnHearts();
 
 
-            gameMap.loadFromFile("gameMaps//map1.txt", renderer);
-            walls = gameMap.walls;
+
+
             spawnEnemies();
+            gameMap.loadFromFile("gameMaps//map1.txt", renderer);
+            walls = gameMap.walls;*/
 
         }
 
@@ -75,17 +78,23 @@ SDL_Texture* Game::loadTexture(const string& path, SDL_Renderer* renderer) {
 void Game::run() {
             if(running){
                 handleEvents();
-                update();
-                render();
-                SDL_Delay(16);
+                if(state == PLAYING){
+                    update();
+                    render();
+                    SDL_Delay(16);
+                }
+                else if(state == MENU){
+                    renderMenu();
+                }
             }
         }
 
-void Game::initMode(){
+void Game::initMode(GameMode mode){
     if(state != MENU) return;
 
     player1 = PlayerTank( TILE_SIZE, (MAP_HEIGHT - 2) * TILE_SIZE, renderer);
     player2 = PlayerTank( (MAP_WIDTH - 2) * TILE_SIZE, TILE_SIZE, renderer);
+
     if(mode == GameMode::PVP){
         spawnHearts();
         gameMap.loadFromFile("gameMaps//map1.txt", renderer);
@@ -95,14 +104,28 @@ void Game::initMode(){
     else{
         gameMap.loadFromFile("gameMaps//map2.txt", renderer);
         walls = gameMap.walls;
-
+        spawnHearts();
+        spawnEnemies();
+        boss = Boss((MAP_WIDTH/2)*TILE_SIZE, (MAP_HEIGHT/2)*TILE_SIZE, renderer);
     }
 }
 
 void Game::reset() {
     running = true;
-    player1.RemainingLives = 3;
-    player2.RemainingLives = 3;
+
+    // Dọn enemy
+    enemies.clear();
+
+    // Dọn heart
+    hearts.clear();
+
+    // Dọn walls
+    walls.clear(); // nếu là object không new/delete thì chỉ clear
+
+    boss =  Boss();
+
+    /*player1.RemainingLives = 3;
+    player2.RemainingLives = 3;*/
     state = MENU;
     /*gameMap.loadFromFile("map1.txt", renderer);
     player1 = PlayerTank( TILE_SIZE, (MAP_HEIGHT - 2) * TILE_SIZE, renderer);
@@ -125,12 +148,12 @@ void Game::handleEvents() {
                     switch (event.key.keysym.sym) {
                         case SDLK_1:
                             mode = GameMode::PVP;
-                            initMode();
+                            initMode(mode);
                             state = PLAYING;
                             break;
                         case SDLK_2:
                             mode = GameMode::COOP_BOSS;
-                            initMode();
+                            initMode(mode);
                             state = PLAYING;
                             break;
                         default:
@@ -205,12 +228,12 @@ void Game::render(){
             SDL_RenderClear(renderer);
             SDL_RenderCopy(renderer, backgroundTexture, nullptr, nullptr); // Hiển thị ảnh nền
 
-            if (state == MENU) {
+            /*if (state == MENU) {
                 SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); //chọn màu
                 SDL_RenderClear(renderer); // 👈 vẽ menu
-            }
+            }*/
 
-            else {
+            //else {
                 player1.render(renderer);
                 player2.render(renderer);
                 boss.render(renderer);
@@ -227,9 +250,15 @@ void Game::render(){
                 for (auto& enemy : enemies) {
                     enemy.render(renderer);
                 }
-            }
+            //}
             SDL_RenderPresent(renderer); // hiển thị tất cả, phải có
     }
+
+void Game::renderMenu(){
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); //chọn màu
+    SDL_RenderClear(renderer); // 👈 vẽ menu
+    SDL_RenderPresent(renderer);
+}
 
 
 Game::~Game(){
