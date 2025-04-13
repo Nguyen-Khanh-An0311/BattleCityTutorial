@@ -10,13 +10,30 @@ void Map::loadFromFile(const string& filename, SDL_Renderer* renderer) {
     }
 
     string line;
-    int row = 0;
-    while (getline(file, line) && row < MAP_HEIGHT) {
-        for (int col = 0; col < line.length() && col < MAP_WIDTH; ++col) {
-            if (line[col] == '1') {
+    int row = 1;
+    while (getline(file, line) && row <= MAP_HEIGHT) {
+        for (int col = 1; col < line.length(); ++col) {
+            if (line[col] == '#') {
                 Wall wall(col * TILE_SIZE, row * TILE_SIZE, renderer);
                 walls.push_back(wall);
             }
+            else if (line[col] == '~') {
+                Water water(col * TILE_SIZE, row * TILE_SIZE, renderer);
+                waters.push_back(water);
+            }
+            else if (line[col] == '%'){
+                Bush bush(col * TILE_SIZE, row * TILE_SIZE, renderer);
+                bushs.push_back(bush);
+            }
+            else if (line[col] == '@'){
+                Stone stone(col * TILE_SIZE, row * TILE_SIZE, renderer);
+                stones.push_back(stone);
+            }
+            else if (line[col] == '-'){
+                Ice ice(col * TILE_SIZE, row * TILE_SIZE, renderer);
+                ices.push_back(ice);
+            }
+            else continue;
         }
         ++row;
     }
@@ -41,4 +58,7 @@ void Map::generateRandom(SDL_Renderer* renderer) {
 
 vector<Wall>& Map::getWalls(){
     return walls;
+}
+vector<Water>& Map::getWaters(){
+    return waters;
 }

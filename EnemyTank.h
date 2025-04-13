@@ -25,6 +25,8 @@ public:
     void shoot();
     void updateBullets();
     void render(SDL_Renderer*);
+
+    int level = 0;
 };
 
 #endif // ENEMYTANK_H_INCLUDED

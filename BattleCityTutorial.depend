@@ -1,11 +1,11 @@
 # depslib dependency file v1.0
-1744425404 source:c:\users\admin\documents\dev\battlecitytutorial\main.cpp
+1744564928 source:c:\users\admin\documents\dev\battlecitytutorial\main.cpp
 	<iostream>
 	<SDL.h>
 	"Game.h"
 	"Statistics.h"
 
-1744427997 c:\users\admin\documents\dev\battlecitytutorial\game.h
+1744558143 c:\users\admin\documents\dev\battlecitytutorial\game.h
 	<iostream>
 	<SDL.h>
 	<SDL_mixer.h>
@@ -18,7 +18,7 @@
 	"Map.h"
 	"Boss.h"
 
-1742665945 source:c:\users\admin\documents\dev\battlecitytutorial\wall.cpp
+1744557122 source:c:\users\admin\documents\dev\battlecitytutorial\wall.cpp
 	"Wall.h"
 
 1742664008 c:\users\admin\documents\dev\battlecitytutorial\wall.h
@@ -28,7 +28,7 @@
 	"Statistics.h"
 	<SDL_image.h>
 
-1744428124 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
+1744565041 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
 	"Game.h"
 
 1742662916 c:\users\admin\documents\dev\battlecitytutorial\playertank.h
@@ -43,7 +43,7 @@
 	"Heart.h"
 	"EnemyTank.h"
 
-1743952057 source:c:\users\admin\documents\dev\battlecitytutorial\playertank.cpp
+1744555525 source:c:\users\admin\documents\dev\battlecitytutorial\playertank.cpp
 	"PlayerTank.h"
 
 1744167088 source:c:\users\admin\documents\dev\battlecitytutorial\bullet.cpp
@@ -54,7 +54,7 @@
 	<SDL.h>
 	"Statistics.h"
 
-1744277948 c:\users\admin\documents\dev\battlecitytutorial\enemytank.h
+1744554183 c:\users\admin\documents\dev\battlecitytutorial\enemytank.h
 	<iostream>
 	<SDL_image.h>
 	<vector>
@@ -80,7 +80,7 @@
 	<iostream>
 	<SDL.h>
 
-1744204168 c:\users\admin\documents\dev\battlecitytutorial\map.h
+1744558143 c:\users\admin\documents\dev\battlecitytutorial\map.h
 	<iostream>
 	<vector>
 	<string>
@@ -89,8 +89,12 @@
 	"Wall.h"
 	<SDL.h>
 	"Statistics.h"
+	"Water.h"
+	"Bush.h"
+	"Stone.h"
+	"Ice.h"
 
-1744204149 source:c:\users\admin\documents\dev\battlecitytutorial\map.cpp
+1744563966 source:c:\users\admin\documents\dev\battlecitytutorial\map.cpp
 	"Map.h"
 
 1744376155 source:c:\users\admin\documents\dev\battlecitytutorial\boss.cpp
@@ -104,4 +108,44 @@
 	"Bullet.h"
 	"Wall.h"
 	"Statistics.h"
+
+1744556335 c:\users\admin\documents\dev\battlecitytutorial\water.h
+	<iostream>
+	<SDL.h>
+	<vector>
+	"Statistics.h"
+	<SDL_image.h>
+
+1744556357 source:c:\users\admin\documents\dev\battlecitytutorial\water.cpp
+	"Water.h"
+
+1744556977 source:c:\users\admin\documents\dev\battlecitytutorial\bush.cpp
+	"Bush.h"
+
+1744556949 c:\users\admin\documents\dev\battlecitytutorial\bush.h
+	<iostream>
+	<SDL.h>
+	<vector>
+	"Statistics.h"
+	<SDL_image.h>
+
+1744557692 c:\users\admin\documents\dev\battlecitytutorial\stone.h
+	<iostream>
+	<SDL.h>
+	<vector>
+	"Statistics.h"
+	<SDL_image.h>
+
+1744558143 c:\users\admin\documents\dev\battlecitytutorial\ice.h
+	<iostream>
+	<SDL.h>
+	<vector>
+	"Statistics.h"
+	<SDL_image.h>
+
+1744557803 source:c:\users\admin\documents\dev\battlecitytutorial\stone.cpp
+	"Stone.h"
+
+1744558143 source:c:\users\admin\documents\dev\battlecitytutorial\ice,cpp.cpp
+	"Ice.h"
 

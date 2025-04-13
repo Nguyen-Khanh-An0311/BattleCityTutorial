@@ -31,24 +31,30 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="Boss.cpp" />
-		<Unit filename="Boss.h" />
 		<Unit filename="Bullet.cpp" />
 		<Unit filename="Bullet.h" />
+		<Unit filename="Bush.cpp" />
+		<Unit filename="Bush.h" />
 		<Unit filename="EnemyTank.cpp" />
 		<Unit filename="EnemyTank.h" />
 		<Unit filename="Game.cpp" />
 		<Unit filename="Game.h" />
 		<Unit filename="Heart.cpp" />
 		<Unit filename="Heart.h" />
+		<Unit filename="Ice,cpp.cpp" />
+		<Unit filename="Ice.h" />
 		<Unit filename="Map.cpp" />
 		<Unit filename="Map.h" />
 		<Unit filename="PlayerTank.cpp" />
 		<Unit filename="PlayerTank.h" />
 		<Unit filename="Renderer.h" />
 		<Unit filename="Statistics.h" />
+		<Unit filename="Stone.cpp" />
+		<Unit filename="Stone.h" />
 		<Unit filename="Wall.cpp" />
 		<Unit filename="Wall.h" />
+		<Unit filename="Water.cpp" />
+		<Unit filename="Water.h" />
 		<Unit filename="main.cpp" />
 		<Extensions />
 	</Project>

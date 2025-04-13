@@ -7,7 +7,7 @@ Wall::Wall(int startX, int startY, SDL_Renderer* renderer){
     y = startY;
     active = true;
     rect = {x, y, TILE_SIZE, TILE_SIZE};
-    wallTexture = IMG_LoadTexture(renderer, "stone.png");
+    wallTexture = IMG_LoadTexture(renderer, "wall.png");
 }
 
 void Wall::render(SDL_Renderer* renderer) {

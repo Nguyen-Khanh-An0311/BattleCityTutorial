@@ -12,10 +12,10 @@
 using namespace std;
 
 
-enum GameState { PLAYING, GAME_OVER, MENU };
+enum GameState { PLAYING, WIN, GAME_OVER, MENU };
 enum class GameMode {
-    PVP,        // 2 người chơi đấu nhau
-    COOP_BOSS   // 2 người chơi đánh boss
+    PVE,
+    PVP
 };
 
 
@@ -35,14 +35,18 @@ public:
     PlayerTank player1;
     PlayerTank player2;
 
-    Boss boss;
+    //Boss boss;
 
-    int enemyNumber = 7;
+    int enemyNumber = 1;
     vector<EnemyTank> enemies;
     int heartNumber = 5;
     vector<Heart> hearts;
     Map gameMap;
     vector<Wall> walls;
+    vector<Water> waters;
+    vector<Bush> bushs;
+    vector<Stone> stones;
+    vector<Ice> ices;
 
     Game();
     void run();
@@ -57,6 +61,8 @@ public:
     void generateWalls();
     void spawnEnemies();
     void spawnHearts();
+
+    int level = 0;
 
     ~Game();
 };

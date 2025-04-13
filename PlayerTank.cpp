@@ -46,8 +46,8 @@ void PlayerTank::move(int dx, int dy, const vector<Wall>& walls, vector<Heart>& 
         }
     }
 
-    if (newX >= 0 && newX <= SCREEN_WIDTH - TILE_SIZE  &&
-        newY >= 0 && newY <= SCREEN_HEIGHT - TILE_SIZE ) {
+    if (newX >= TILE_SIZE && newX <= MAP_WIDTH * TILE_SIZE  &&
+        newY >= TILE_SIZE && newY <= MAP_HEIGHT * TILE_SIZE ) {
         x = newX;
         y = newY;
         rect.x = x;

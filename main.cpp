@@ -3,15 +3,14 @@
 #include "Game.h"
 #include "Statistics.h"
 
-const int SCREEN_WIDTH = 1500;
-const int SCREEN_HEIGHT = 1000;
-const int TILE_SIZE = 100;
-const int MAP_WIDTH = SCREEN_WIDTH / TILE_SIZE;
-const int MAP_HEIGHT = SCREEN_HEIGHT / TILE_SIZE;
+const int TILE_SIZE = 40;
+const int SCREEN_WIDTH = TILE_SIZE*35;
+const int SCREEN_HEIGHT = TILE_SIZE*28;
+const int MAP_WIDTH = 25;
+const int MAP_HEIGHT = 26;
 
 
 using namespace std;
-
 
 
 int main(int argc, char* argv[]){
