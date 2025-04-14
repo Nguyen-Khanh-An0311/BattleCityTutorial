@@ -23,7 +23,7 @@ class Game{
 public:
     SDL_Window* window;
     SDL_Renderer* renderer;
-    SDL_Texture* backgroundTexture;
+    SDL_Texture* menuTexture;
 
     SDL_Texture* loadTexture(const string& , SDL_Renderer*);
 

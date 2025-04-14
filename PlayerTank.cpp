@@ -27,7 +27,8 @@ void PlayerTank::updateBullets() {
         [](Bullet &b) { return !b.active; }), bullets.end());
 }
 
-void PlayerTank::move(int dx, int dy, const vector<Wall>& walls, vector<Heart>& hearts, vector<EnemyTank>& enemies) {
+void PlayerTank::move(int dx, int dy, const vector<Wall>& walls, vector<Heart>& hearts, vector<EnemyTank>& enemies,
+                      vector<Stone>& stones, vector<Bush>& bushs, vector<Water>& waters) {
     int newX = x + dx;
     int newY = y + dy;
     this->dirX = dx;
@@ -37,6 +38,16 @@ void PlayerTank::move(int dx, int dy, const vector<Wall>& walls, vector<Heart>& 
     for (int i = 0; i < walls.size(); i++) {
         if (walls[i].active && SDL_HasIntersection(&newRect, &walls[i].rect)) {
             return; // Prevent movement if colliding with a wall
+        }
+    }
+    for (int i = 0; i < stones.size(); i++) {
+        if (SDL_HasIntersection(&newRect, &stones[i].rect)) {
+            return;
+        }
+    }
+    for (int i = 0; i < waters.size(); i++) {
+        if (SDL_HasIntersection(&newRect, &waters[i].rect)) {
+            return;
         }
     }
 

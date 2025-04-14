@@ -12,7 +12,8 @@ EnemyTank::EnemyTank(int startX, int startY, SDL_Renderer* renderer) {
         active = true;
     }
 
-void EnemyTank::move(const vector<Wall>& walls, SDL_Renderer* renderer) {
+void EnemyTank::move(const vector<Wall>& walls, SDL_Renderer* renderer,
+                     vector<Stone>& stones, vector<Bush>& bushs, vector<Water>& waters) {
     if (--moveDelay > 0) return;
     moveDelay = 100;
     int r = rand() % 4;
@@ -45,6 +46,16 @@ void EnemyTank::move(const vector<Wall>& walls, SDL_Renderer* renderer) {
     SDL_Rect newRect = { newX, newY, TILE_SIZE, TILE_SIZE };
     for (int i = 0; i < walls.size(); i++) {
         if (walls[i].active && SDL_HasIntersection(&newRect, &walls[i].rect)) {
+            return; // Prevent movement if colliding with a wall
+        }
+    }
+    for (int i = 0; i < stones.size(); i++) {
+        if (SDL_HasIntersection(&newRect, &stones[i].rect)) {
+            return; // Prevent movement if colliding with a wall
+        }
+    }
+    for (int i = 0; i < waters.size(); i++) {
+        if (SDL_HasIntersection(&newRect, &waters[i].rect)) {
             return; // Prevent movement if colliding with a wall
         }
     }
