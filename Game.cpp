@@ -18,6 +18,15 @@ Game::Game(){
                 cout << "SDL_image không thể khởi tạo! IMG_Error: " << IMG_GetError() << std::endl;
                 running = false;
             }
+            if (TTF_Init() == -1) {
+                cout << "TTF init failed: " << TTF_GetError() << endl;
+            }
+
+            font = TTF_OpenFont("PressStart2P.ttf", 24);
+            if (!font) {
+                cout << "Failed to load font: " << TTF_GetError() << std::endl;
+            }
+
 
 
             window = SDL_CreateWindow(
@@ -212,12 +221,16 @@ void Game::handleEvents() {
                         case SDLK_1:
                             mode = GameMode::PVE;
                             level = 0;
+                            scoreP1 = 0;
+                            scoreP2 = 0;
                             initMode(mode);
                             state = PLAYING;
                             break;
                         case SDLK_2:
                             mode = GameMode::PVP;
                             level = 0;
+                            scoreP1 = 0;
+                            scoreP2 = 0;
                             initMode(mode);
                             state = PLAYING;
                             break;
@@ -225,9 +238,6 @@ void Game::handleEvents() {
                             state = PLAYING;
                         default:
                             return;
-                        /*case SDLK_ESCAPE:
-                            running = false;
-                            break;*/
                     }
                 }  // 👈 xử lý menu ở đây
             }
@@ -293,16 +303,15 @@ void Game::render(){
                 }
             }
 
-            /*SDL_RenderClear(renderer);
-            SDL_RenderCopy(renderer, backgroundTexture, nullptr, nullptr);*/ // Hiển thị ảnh nền
+            renderLevel();
 
 
                 player1.render(renderer);
 
                 if(mode == GameMode::PVP){
+                    renderScore();
                     player2.render(renderer);
                 }
-                //boss.render(renderer);
 
 
                 for (int i=0; i < heartNumber; i++){
@@ -327,13 +336,53 @@ void Game::render(){
                     ices[i].render(renderer);
                 }
 
-
-
                 for (auto& enemy : enemies) {
                     enemy.render(renderer);
                 }
             SDL_RenderPresent(renderer); // hiển thị tất cả, phải có
     }
+
+void Game::renderLevel(){
+    SDL_Color white = {0, 0, 0};
+
+    string p1 = "Level: " + to_string(level);
+
+    SDL_Surface* textSurface1 = TTF_RenderText_Blended(font, p1.c_str(), white);
+    SDL_Texture* textTexture1 = SDL_CreateTextureFromSurface(renderer, textSurface1);
+    SDL_Rect dstRect1 = {1100, 100, textSurface1->w, textSurface1->h}; // tuỳ chỉnh vị trí
+
+
+    SDL_RenderCopy(renderer, textTexture1, NULL, &dstRect1);
+
+    // Clean up
+    SDL_FreeSurface(textSurface1);
+    SDL_DestroyTexture(textTexture1);
+}
+void Game::renderScore(){
+    SDL_Color white = {0, 0, 0};
+
+    string p1 = "Player 1: " + to_string(scoreP1);
+    string p2 = "Player 2: " + to_string(scoreP2);
+
+    SDL_Surface* textSurface1 = TTF_RenderText_Blended(font, p1.c_str(), white);
+    SDL_Texture* textTexture1 = SDL_CreateTextureFromSurface(renderer, textSurface1);
+    SDL_Rect dstRect1 = {1100, 300, textSurface1->w, textSurface1->h}; // tuỳ chỉnh vị trí
+
+    SDL_Surface* textSurface2 = TTF_RenderText_Blended(font, p2.c_str(), white);
+    SDL_Texture* textTexture2 = SDL_CreateTextureFromSurface(renderer, textSurface2);
+    SDL_Rect dstRect2 = {1100, 400, textSurface2->w, textSurface2->h}; // tuỳ chỉnh vị trí
+
+    SDL_RenderCopy(renderer, textTexture1, NULL, &dstRect1);
+    SDL_RenderCopy(renderer, textTexture2, NULL, &dstRect2);
+
+    // Clean up
+    SDL_FreeSurface(textSurface1);
+    SDL_DestroyTexture(textTexture1);
+    SDL_FreeSurface(textSurface2);
+    SDL_DestroyTexture(textTexture2);
+}
+
+
 
 void Game::renderMenu(){
     //SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); //chọn màu
@@ -348,6 +397,8 @@ Game::~Game(){
             IMG_Quit();
             SDL_DestroyRenderer(renderer);
             SDL_DestroyWindow(window);
+            TTF_CloseFont(font);
+            TTF_Quit();
             SDL_Quit();
         }
 
@@ -409,6 +460,7 @@ void Game::update() {
                     player1.RemainingLives -= 1;
                 }
                 if(player1.RemainingLives == 0){
+                    scoreP1 = 0;
                     state = GAME_OVER;
                     initMode(mode);
                     return;
@@ -419,6 +471,7 @@ void Game::update() {
     if(mode == GameMode::PVE){
         if (enemies.empty()) {
             state = WIN;
+            scoreP1++;
             initMode(mode);
         }
     }
@@ -465,7 +518,14 @@ void Game::update() {
                         bullet.active = false;
                         player2.RemainingLives -= 1;
                     }
-                    if(player1.RemainingLives == 0 || player2.RemainingLives == 0){
+                    if(player1.RemainingLives == 0){
+                        scoreP2++;
+                        state = GAME_OVER;
+                        initMode(mode);
+                        return;
+                    }
+                    else if(player2.RemainingLives == 0){
+                        scoreP1++;
                         state = GAME_OVER;
                         initMode(mode);
                         return;
@@ -476,6 +536,7 @@ void Game::update() {
         for (auto& bullet : player1.bullets) { // dan nguoi choi 1 ban nguoi choi 2
             if (SDL_HasIntersection(&bullet.rect, &player2.rect)) {
                 state = WIN;
+                scoreP1 += 1;
                 initMode(mode);
             }
         }
@@ -483,6 +544,7 @@ void Game::update() {
         for (auto& bullet : player2.bullets) { // dan nguoi choi 2 ban nguoi choi 1
             if (SDL_HasIntersection(&bullet.rect, &player1.rect)) {
                 state = WIN;
+                scoreP2 += 1;
                 initMode(mode);
             }
         }

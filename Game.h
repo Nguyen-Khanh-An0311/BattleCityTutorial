@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <SDL_mixer.h>
 #include <SDL_image.h>
+#include <SDL_ttf.h>
 #include <vector>
 #include "PlayerTank.h"
 #include "EnemyTank.h"
@@ -26,6 +27,7 @@ public:
     SDL_Texture* menuTexture;
 
     SDL_Texture* loadTexture(const string& , SDL_Renderer*);
+    TTF_Font* font;
 
     bool running;
     GameState state;
@@ -33,7 +35,9 @@ public:
     void initMode(GameMode);
 
     PlayerTank player1;
+    int scoreP1;
     PlayerTank player2;
+    int scoreP2;
 
     //Boss boss;
 
@@ -48,6 +52,8 @@ public:
     vector<Stone> stones;
     vector<Ice> ices;
 
+
+
     Game();
     void run();
     void reset();
@@ -56,6 +62,8 @@ public:
     void update();
     void render();
     void renderMenu();
+    void renderLevel();
+    void renderScore();
 
     //void modeGame(mode);
     void generateWalls();

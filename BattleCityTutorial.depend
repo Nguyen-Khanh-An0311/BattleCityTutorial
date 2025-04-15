@@ -1,15 +1,16 @@
 # depslib dependency file v1.0
-1744564928 source:c:\users\admin\documents\dev\battlecitytutorial\main.cpp
+1744738726 source:c:\users\admin\documents\dev\battlecitytutorial\main.cpp
 	<iostream>
 	<SDL.h>
 	"Game.h"
 	"Statistics.h"
 
-1744629169 c:\users\admin\documents\dev\battlecitytutorial\game.h
+1744742167 c:\users\admin\documents\dev\battlecitytutorial\game.h
 	<iostream>
 	<SDL.h>
 	<SDL_mixer.h>
 	<SDL_image.h>
+	<SDL_ttf.h>
 	<vector>
 	"PlayerTank.h"
 	"EnemyTank.h"
@@ -28,10 +29,10 @@
 	"Statistics.h"
 	<SDL_image.h>
 
-1744629196 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
+1744741461 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
 	"Game.h"
 
-1744627170 c:\users\admin\documents\dev\battlecitytutorial\playertank.h
+1744742161 c:\users\admin\documents\dev\battlecitytutorial\playertank.h
 	<iostream>
 	<SDL.h>
 	<SDL_image.h>
@@ -44,7 +45,7 @@
 	"EnemyTank.h"
 	"Map.h"
 
-1744627645 source:c:\users\admin\documents\dev\battlecitytutorial\playertank.cpp
+1744742161 source:c:\users\admin\documents\dev\battlecitytutorial\playertank.cpp
 	"PlayerTank.h"
 
 1744167088 source:c:\users\admin\documents\dev\battlecitytutorial\bullet.cpp
@@ -150,4 +151,288 @@
 
 1744558143 source:c:\users\admin\documents\dev\battlecitytutorial\ice,cpp.cpp
 	"Ice.h"
+
+1744167088 source:c:\users\admin\onedrive\documents\dev\battlecitytutorial\bullet.cpp
+	"Bullet.h"
+
+1742440550 c:\users\admin\onedrive\documents\dev\battlecitytutorial\bullet.h
+	<iostream>
+	<SDL.h>
+	"Statistics.h"
+
+1742440092 c:\users\admin\onedrive\documents\dev\battlecitytutorial\statistics.h
+
+1744556977 source:c:\users\admin\onedrive\documents\dev\battlecitytutorial\bush.cpp
+	"Bush.h"
+
+1744556949 c:\users\admin\onedrive\documents\dev\battlecitytutorial\bush.h
+	<iostream>
+	<SDL.h>
+	<vector>
+	"Statistics.h"
+	<SDL_image.h>
+
+1744627645 source:c:\users\admin\onedrive\documents\dev\battlecitytutorial\enemytank.cpp
+	"EnemyTank.h"
+
+1744627582 c:\users\admin\onedrive\documents\dev\battlecitytutorial\enemytank.h
+	<iostream>
+	<SDL_image.h>
+	<vector>
+	<algorithm>
+	"Bullet.h"
+	"Wall.h"
+	"Statistics.h"
+	"Map.h"
+
+1742664008 c:\users\admin\onedrive\documents\dev\battlecitytutorial\wall.h
+	<iostream>
+	<SDL.h>
+	<vector>
+	"Statistics.h"
+	<SDL_image.h>
+
+1744558143 c:\users\admin\onedrive\documents\dev\battlecitytutorial\map.h
+	<iostream>
+	<vector>
+	<string>
+	<fstream>
+	<ctime>
+	"Wall.h"
+	<SDL.h>
+	"Statistics.h"
+	"Water.h"
+	"Bush.h"
+	"Stone.h"
+	"Ice.h"
+
+1744556335 c:\users\admin\onedrive\documents\dev\battlecitytutorial\water.h
+	<iostream>
+	<SDL.h>
+	<vector>
+	"Statistics.h"
+	<SDL_image.h>
+
+1744557692 c:\users\admin\onedrive\documents\dev\battlecitytutorial\stone.h
+	<iostream>
+	<SDL.h>
+	<vector>
+	"Statistics.h"
+	<SDL_image.h>
+
+1744558143 c:\users\admin\onedrive\documents\dev\battlecitytutorial\ice.h
+	<iostream>
+	<SDL.h>
+	<vector>
+	"Statistics.h"
+	<SDL_image.h>
+
+1744629472 source:c:\users\admin\onedrive\documents\dev\battlecitytutorial\game.cpp
+	"Game.h"
+
+1744629169 c:\users\admin\onedrive\documents\dev\battlecitytutorial\game.h
+	<iostream>
+	<SDL.h>
+	<SDL_mixer.h>
+	<SDL_image.h>
+	<vector>
+	"PlayerTank.h"
+	"EnemyTank.h"
+	"Statistics.h"
+	"Heart.h"
+	"Map.h"
+	"Boss.h"
+
+1744627170 c:\users\admin\onedrive\documents\dev\battlecitytutorial\playertank.h
+	<iostream>
+	<SDL.h>
+	<SDL_image.h>
+	<vector>
+	<algorithm>
+	"Bullet.h"
+	"Wall.h"
+	"Statistics.h"
+	"Heart.h"
+	"EnemyTank.h"
+	"Map.h"
+
+1742664321 c:\users\admin\onedrive\documents\dev\battlecitytutorial\heart.h
+	<iostream>
+	"SDL.h"
+	<SDL_image.h>
+
+1744375915 c:\users\admin\onedrive\documents\dev\battlecitytutorial\boss.h
+	<iostream>
+	<SDL_image.h>
+	<vector>
+	<algorithm>
+	"Bullet.h"
+	"Wall.h"
+	"Statistics.h"
+
+1742664363 source:c:\users\admin\onedrive\documents\dev\battlecitytutorial\heart.cpp
+	"Heart.h"
+
+1744558143 source:c:\users\admin\onedrive\documents\dev\battlecitytutorial\ice,cpp.cpp
+	"Ice.h"
+
+1744564928 source:c:\users\admin\onedrive\documents\dev\battlecitytutorial\main.cpp
+	<iostream>
+	<SDL.h>
+	"Game.h"
+	"Statistics.h"
+
+1744563966 source:c:\users\admin\onedrive\documents\dev\battlecitytutorial\map.cpp
+	"Map.h"
+
+1744627645 source:c:\users\admin\onedrive\documents\dev\battlecitytutorial\playertank.cpp
+	"PlayerTank.h"
+
+1744557803 source:c:\users\admin\onedrive\documents\dev\battlecitytutorial\stone.cpp
+	"Stone.h"
+
+1744557122 source:c:\users\admin\onedrive\documents\dev\battlecitytutorial\wall.cpp
+	"Wall.h"
+
+1744556357 source:c:\users\admin\onedrive\documents\dev\battlecitytutorial\water.cpp
+	"Water.h"
+
+1744167088 source:c:\users\admin\documents_old\dev\battlecitytutorial\bullet.cpp
+	"Bullet.h"
+
+1742440550 c:\users\admin\documents_old\dev\battlecitytutorial\bullet.h
+	<iostream>
+	<SDL.h>
+	"Statistics.h"
+
+1742440092 c:\users\admin\documents_old\dev\battlecitytutorial\statistics.h
+
+1744556977 source:c:\users\admin\documents_old\dev\battlecitytutorial\bush.cpp
+	"Bush.h"
+
+1744556949 c:\users\admin\documents_old\dev\battlecitytutorial\bush.h
+	<iostream>
+	<SDL.h>
+	<vector>
+	"Statistics.h"
+	<SDL_image.h>
+
+1744627645 source:c:\users\admin\documents_old\dev\battlecitytutorial\enemytank.cpp
+	"EnemyTank.h"
+
+1744627582 c:\users\admin\documents_old\dev\battlecitytutorial\enemytank.h
+	<iostream>
+	<SDL_image.h>
+	<vector>
+	<algorithm>
+	"Bullet.h"
+	"Wall.h"
+	"Statistics.h"
+	"Map.h"
+
+1742664008 c:\users\admin\documents_old\dev\battlecitytutorial\wall.h
+	<iostream>
+	<SDL.h>
+	<vector>
+	"Statistics.h"
+	<SDL_image.h>
+
+1744558143 c:\users\admin\documents_old\dev\battlecitytutorial\map.h
+	<iostream>
+	<vector>
+	<string>
+	<fstream>
+	<ctime>
+	"Wall.h"
+	<SDL.h>
+	"Statistics.h"
+	"Water.h"
+	"Bush.h"
+	"Stone.h"
+	"Ice.h"
+
+1744556335 c:\users\admin\documents_old\dev\battlecitytutorial\water.h
+	<iostream>
+	<SDL.h>
+	<vector>
+	"Statistics.h"
+	<SDL_image.h>
+
+1744557692 c:\users\admin\documents_old\dev\battlecitytutorial\stone.h
+	<iostream>
+	<SDL.h>
+	<vector>
+	"Statistics.h"
+	<SDL_image.h>
+
+1744558143 c:\users\admin\documents_old\dev\battlecitytutorial\ice.h
+	<iostream>
+	<SDL.h>
+	<vector>
+	"Statistics.h"
+	<SDL_image.h>
+
+1744629472 source:c:\users\admin\documents_old\dev\battlecitytutorial\game.cpp
+	"Game.h"
+
+1744629169 c:\users\admin\documents_old\dev\battlecitytutorial\game.h
+	<iostream>
+	<SDL.h>
+	<SDL_mixer.h>
+	<SDL_image.h>
+	<vector>
+	"PlayerTank.h"
+	"EnemyTank.h"
+	"Statistics.h"
+	"Heart.h"
+	"Map.h"
+	"Boss.h"
+
+1744627170 c:\users\admin\documents_old\dev\battlecitytutorial\playertank.h
+	<iostream>
+	<SDL.h>
+	<SDL_image.h>
+	<vector>
+	<algorithm>
+	"Bullet.h"
+	"Wall.h"
+	"Statistics.h"
+	"Heart.h"
+	"EnemyTank.h"
+	"Map.h"
+
+1742664321 c:\users\admin\documents_old\dev\battlecitytutorial\heart.h
+	<iostream>
+	"SDL.h"
+	<SDL_image.h>
+
+1744375915 c:\users\admin\documents_old\dev\battlecitytutorial\boss.h
+	<iostream>
+	<SDL_image.h>
+	<vector>
+	<algorithm>
+	"Bullet.h"
+	"Wall.h"
+	"Statistics.h"
+
+1742664363 source:c:\users\admin\documents_old\dev\battlecitytutorial\heart.cpp
+	"Heart.h"
+
+1744558143 source:c:\users\admin\documents_old\dev\battlecitytutorial\ice,cpp.cpp
+	"Ice.h"
+
+1744563966 source:c:\users\admin\documents_old\dev\battlecitytutorial\map.cpp
+	"Map.h"
+
+1744627645 source:c:\users\admin\documents_old\dev\battlecitytutorial\playertank.cpp
+	"PlayerTank.h"
+
+1744557803 source:c:\users\admin\documents_old\dev\battlecitytutorial\stone.cpp
+	"Stone.h"
+
+1744557122 source:c:\users\admin\documents_old\dev\battlecitytutorial\wall.cpp
+	"Wall.h"
+
+1744556357 source:c:\users\admin\documents_old\dev\battlecitytutorial\water.cpp
+	"Water.h"
 
