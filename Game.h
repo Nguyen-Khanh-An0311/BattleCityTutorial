@@ -25,11 +25,14 @@ public:
     SDL_Window* window;
     SDL_Renderer* renderer;
     SDL_Texture* menuTexture;
+    SDL_Texture* winnerTexture;
     SDL_Texture* explosionTexture;
 
     SDL_Texture* loadTexture(const string& , SDL_Renderer*);
     TTF_Font* font;
     Mix_Music* backgroundMusic;
+    Mix_Chunk* shootSound;
+
 
     bool running;
     GameState state;
@@ -66,6 +69,8 @@ public:
     void renderMenu();
     void renderLevel();
     void renderScore();
+    void renderWinner();
+    void renderRemainingLive(GameMode);
 
     //void modeGame(mode);
     void generateWalls();

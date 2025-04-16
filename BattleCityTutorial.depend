@@ -1,11 +1,11 @@
 # depslib dependency file v1.0
-1744738726 source:c:\users\admin\documents\dev\battlecitytutorial\main.cpp
+1744808394 source:c:\users\admin\documents\dev\battlecitytutorial\main.cpp
 	<iostream>
 	<SDL.h>
 	"Game.h"
 	"Statistics.h"
 
-1744783426 c:\users\admin\documents\dev\battlecitytutorial\game.h
+1744808841 c:\users\admin\documents\dev\battlecitytutorial\game.h
 	<iostream>
 	<SDL.h>
 	<SDL_mixer.h>
@@ -29,7 +29,7 @@
 	"Statistics.h"
 	<SDL_image.h>
 
-1744782926 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
+1744808374 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
 	"Game.h"
 
 1744780233 c:\users\admin\documents\dev\battlecitytutorial\playertank.h
