@@ -9,9 +9,10 @@ Game::Game(){
                 running = false;
             }
 
-            if (SDL_Init(SDL_INIT_AUDIO) < 0) {
-                cout << "SDL_Init Error: " << SDL_GetError() << std::endl;
+            if (SDL_Init(SDL_INIT_AUDIO) < 0 || Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+                cout << "SDL_mixer could not initialize! Error: " << Mix_GetError() << endl;
                 running = false;
+                return;
             }
 
             if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
@@ -47,7 +48,16 @@ Game::Game(){
                 cout << "Renderer could not be created! SDL_Erroe: " << SDL_GetError() << endl;
                 running = false;
             }
+            backgroundMusic = Mix_LoadMUS("Soundtrack.mp3");
+               if (!backgroundMusic) {
+                    cout << "Failed to load music! Error: " << Mix_GetError() << endl;
+                    running = false;
+                } else {
+                    Mix_PlayMusic(backgroundMusic, 1);
+                }
+                Mix_VolumeMusic(60);
             menuTexture = IMG_LoadTexture(renderer, "menu.png");
+            explosionTexture = IMG_LoadTexture(renderer, "explosion.jpg");
         }
 
 
@@ -263,7 +273,7 @@ void Game::handleEvents() {
                     player1.tankTexture = IMG_LoadTexture(renderer, "player_right.png");
                 }
                 if (keystate[SDL_SCANCODE_LCTRL]) {
-                    player1.shoot();
+                    player1.shoot(renderer);
                 }
 
                 // Điều khiển Player 2 nếu có
@@ -285,7 +295,7 @@ void Game::handleEvents() {
                         player2.tankTexture = IMG_LoadTexture(renderer, "player_right.png");
                     }
                     if (keystate[SDL_SCANCODE_SPACE]) { // Player 2 bắn đạn bằng phím Ctrl trái
-                        player2.shoot();
+                        player2.shoot(renderer);
                     }
                 }
             }
@@ -410,7 +420,7 @@ void Game::update() {
         enemy.move(walls, renderer,stones, bushs, waters);
         enemy.updateBullets();
         if (rand() % 100 < 2) {
-            enemy.shoot();
+            enemy.shoot(renderer);
         }
     }
     for (auto& enemy : enemies) { // dan dich ban tuong
@@ -447,6 +457,7 @@ void Game::update() {
     for (auto& bullet : player1.bullets) { // dan nguoi choi 1 ban dich
         for (auto& enemy : enemies) {
             if (enemy.active && SDL_HasIntersection(&bullet.rect, &enemy.rect)) {
+                SDL_RenderCopy(renderer, explosionTexture, nullptr, &enemy.rect);
                 enemy.active = false;
                 bullet.active = false;
             }

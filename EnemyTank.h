@@ -23,7 +23,7 @@ public:
 
     EnemyTank(int, int, SDL_Renderer*);
     void move(const vector<Wall>&, SDL_Renderer*,vector<Stone>&, vector<Bush>&, vector<Water>&);
-    void shoot();
+    void shoot(SDL_Renderer*);
     void updateBullets();
     void render(SDL_Renderer*);
 

@@ -29,7 +29,7 @@ public:
     PlayerTank();
 
     void move(int, int, const vector<Wall>&, vector<Heart>&, vector<EnemyTank>&, vector<Stone>&, vector<Bush>&, vector<Water>&);
-    void shoot();
+    void shoot(SDL_Renderer*);
     void updateBullets();
 
     void render(SDL_Renderer*);

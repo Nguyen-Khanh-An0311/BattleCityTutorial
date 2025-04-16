@@ -71,11 +71,11 @@ void EnemyTank::move(const vector<Wall>& walls, SDL_Renderer* renderer,
 
 }
 
-void EnemyTank::shoot() {
+void EnemyTank::shoot(SDL_Renderer* renderer) {
     if (--shootDelay > 0) return;
     shootDelay = 5;
     bullets.push_back(Bullet(x + TILE_SIZE / 2 - 5, y + TILE_SIZE / 2 - 5,
-                             this->dirX, this->dirY));
+                             this->dirX, this->dirY, renderer));
 }
 
 void EnemyTank::updateBullets() {

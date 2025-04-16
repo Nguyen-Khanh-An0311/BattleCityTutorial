@@ -1,13 +1,21 @@
 #include "Bullet.h"
 
 
-Bullet::Bullet(int startX, int startY, int dirX, int dirY) {
+Bullet::Bullet(int startX, int startY, int dirX, int dirY, SDL_Renderer* renderer) {
         x = startX;
         y = startY;
         dx = dirX;
         dy = dirY;
+
+        // Gán góc xoay dựa trên hướng
+        if (dx >0) angle = 0;
+        else if (dx <0) angle = 180;
+        else if (dy >0) angle = 90;
+        else angle = 270;
+
         active = true;
-        rect = {x, y, 10, 10}; // Square shape bullet
+        rect = {x, y, 20, 20};// Square shape bullet
+        bulletTexture = IMG_LoadTexture(renderer, "bullet.png");
 }
 
 void Bullet::move() {
@@ -23,7 +31,11 @@ void Bullet::move() {
 
 void Bullet::render(SDL_Renderer* renderer) {
     if (active) {
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-        SDL_RenderFillRect(renderer, &rect);
+        SDL_RenderCopyEx(renderer, bulletTexture, nullptr, &rect, angle, nullptr, SDL_FLIP_NONE);
     }
 }
+
+
+
+
+

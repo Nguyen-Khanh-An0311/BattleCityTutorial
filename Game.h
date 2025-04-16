@@ -25,9 +25,11 @@ public:
     SDL_Window* window;
     SDL_Renderer* renderer;
     SDL_Texture* menuTexture;
+    SDL_Texture* explosionTexture;
 
     SDL_Texture* loadTexture(const string& , SDL_Renderer*);
     TTF_Font* font;
+    Mix_Music* backgroundMusic;
 
     bool running;
     GameState state;

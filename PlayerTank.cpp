@@ -14,9 +14,9 @@ PlayerTank::PlayerTank(int startX, int startY, SDL_Renderer* renderer) {
     }
 PlayerTank::PlayerTank(){};
 
-void PlayerTank::shoot() {
+void PlayerTank::shoot(SDL_Renderer* renderer) {
     bullets.push_back(Bullet(x + TILE_SIZE / 2 - 5, y + TILE_SIZE / 2 - 5,
-        this->dirX, this->dirY));
+        this->dirX, this->dirY, renderer));
 }
 
 void PlayerTank::updateBullets() {
