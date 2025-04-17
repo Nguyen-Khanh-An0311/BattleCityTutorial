@@ -5,7 +5,7 @@
 	"Game.h"
 	"Statistics.h"
 
-1744808841 c:\users\admin\documents\dev\battlecitytutorial\game.h
+1744860678 c:\users\admin\documents\dev\battlecitytutorial\game.h
 	<iostream>
 	<SDL.h>
 	<SDL_mixer.h>
@@ -29,7 +29,7 @@
 	"Statistics.h"
 	<SDL_image.h>
 
-1744808374 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
+1744861131 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
 	"Game.h"
 
 1744780233 c:\users\admin\documents\dev\battlecitytutorial\playertank.h

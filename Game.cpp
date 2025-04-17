@@ -23,7 +23,7 @@ Game::Game(){
                 cout << "TTF init failed: " << TTF_GetError() << endl;
             }
 
-            font = TTF_OpenFont("tank_font.ttf", 24);
+            font = TTF_OpenFont("prstartk.ttf", 50);
             if (!font) {
                 cout << "Failed to load font: " << TTF_GetError() << std::endl;
             }
@@ -49,15 +49,18 @@ Game::Game(){
                 running = false;
             }
             backgroundMusic = Mix_LoadMUS("Soundtrack.mp3");
-               if (!backgroundMusic) {
-                    cout << "Failed to load music! Error: " << Mix_GetError() << endl;
-                    running = false;
-                } else {
-                    Mix_PlayMusic(backgroundMusic, 1);
-                }
-                Mix_VolumeMusic(10);
+            if (!backgroundMusic) {
+                cout << "Failed to load music! Error: " << Mix_GetError() << endl;
+                running = false;
+            } else {
+                Mix_PlayMusic(backgroundMusic, 1);
+            }
+            Mix_VolumeMusic(10);
+
             menuTexture = IMG_LoadTexture(renderer, "menu.png");
             explosionTexture = IMG_LoadTexture(renderer, "explosion.png");
+            levelTexture = IMG_LoadTexture(renderer, "level_flag.png");
+
             shootSound = Mix_LoadWAV("fireSound.wav");
             if (shootSound == nullptr) {
                 cout << "Failed to load shoot sound! SDL_mixer Error: " << Mix_GetError() << endl;
@@ -325,6 +328,12 @@ void Game::render(){
                 }
             }
 
+            SDL_Rect flagRect;
+            flagRect.x = TILE_SIZE * 28;  // hoặc tùy bạn
+            flagRect.y = TILE_SIZE * 1;  // vị trí dưới chữ số "1"
+            flagRect.w = TILE_SIZE * 8;
+            flagRect.h = TILE_SIZE * 8;
+            SDL_RenderCopy(renderer, levelTexture, nullptr, &flagRect);
             renderLevel();
             renderRemainingLive(mode);
 
@@ -368,11 +377,11 @@ void Game::render(){
 void Game::renderLevel(){
     SDL_Color white = {0, 0, 0};
 
-    string p1 = "Level: " + to_string(level);
+    string p1 = to_string(level);
 
     SDL_Surface* textSurface1 = TTF_RenderText_Blended(font, p1.c_str(), white);
     SDL_Texture* textTexture1 = SDL_CreateTextureFromSurface(renderer, textSurface1);
-    SDL_Rect dstRect1 = {TILE_SIZE * 28, TILE_SIZE * 3, textSurface1->w, textSurface1->h}; // tuỳ chỉnh vị trí
+    SDL_Rect dstRect1 = {TILE_SIZE * 31, TILE_SIZE * 3, textSurface1->w, textSurface1->h}; // tuỳ chỉnh vị trí
 
 
     SDL_RenderCopy(renderer, textTexture1, NULL, &dstRect1);

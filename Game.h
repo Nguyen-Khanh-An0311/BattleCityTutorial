@@ -27,6 +27,7 @@ public:
     SDL_Texture* menuTexture;
     SDL_Texture* winnerTexture;
     SDL_Texture* explosionTexture;
+    SDL_Texture* levelTexture;
 
     SDL_Texture* loadTexture(const string& , SDL_Renderer*);
     TTF_Font* font;
