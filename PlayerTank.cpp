@@ -2,16 +2,34 @@
 using namespace std;
 
 
-PlayerTank::PlayerTank(int startX, int startY, SDL_Renderer* renderer) {
+PlayerTank::PlayerTank(int startX, int startY, SDL_Renderer* renderer, const char* imagePath) {
         RemainingLives = 3;
         x = startX;
         y = startY;
-        rect = {x, y, TILE_SIZE, TILE_SIZE}; // Vị trí và kích thước xe tăng
-        tankTexture = IMG_LoadTexture(renderer, "player_up.png");
+        rect = {x, y, TILE_SIZE, TILE_SIZE};
+        angle = 0;
+        //tankTexture = IMG_LoadTexture(renderer, imageLink);
+        // Load ảnh từ file vào surface
+        SDL_Surface* tempSurface = IMG_Load(imagePath);
+        if (!tempSurface) {
+            printf("Failed to load surface: %s\n", IMG_GetError());
+        }
+
+        // Set colorkey để làm trong suốt nền đen
+        SDL_SetColorKey(tempSurface, SDL_TRUE, SDL_MapRGB(tempSurface->format, 0, 0, 0));
+
+        // Tạo texture từ surface sau khi đã xử lý colorkey
+        tankTexture = SDL_CreateTextureFromSurface(renderer, tempSurface);
+        SDL_FreeSurface(tempSurface);
+
+        // Blend để hỗ trợ trong suốt
+        SDL_SetTextureBlendMode(tankTexture, SDL_BLENDMODE_BLEND);
+
 
         dirX = 0;
         dirY = -1; // Default direction up
     }
+
 PlayerTank::PlayerTank(){};
 
 void PlayerTank::shoot(SDL_Renderer* renderer) {
@@ -33,6 +51,11 @@ void PlayerTank::move(int dx, int dy, const vector<Wall>& walls, vector<Heart>& 
     int newY = y + dy;
     this->dirX = dx;
     this->dirY = dy;
+
+    if (dx >0) angle = 90;
+    else if (dx <0) angle = 270;
+    else if (dy >0) angle = 180;
+    else angle = 0;
 
     SDL_Rect newRect = { newX, newY, TILE_SIZE, TILE_SIZE };
     for (int i = 0; i < walls.size(); i++) {
@@ -78,7 +101,7 @@ void PlayerTank::move(int dx, int dy, const vector<Wall>& walls, vector<Heart>& 
 void PlayerTank::render(SDL_Renderer* renderer){
     //SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
     //SDL_RenderFillRect(renderer, &rect);
-    SDL_RenderCopy(renderer, tankTexture, nullptr, &rect);
+    SDL_RenderCopyEx(renderer, tankTexture, nullptr, &rect, angle, nullptr, SDL_FLIP_NONE);
     for (auto &bullet : bullets) {
         bullet.render(renderer);
     }

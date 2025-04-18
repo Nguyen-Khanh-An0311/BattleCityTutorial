@@ -15,6 +15,7 @@ class EnemyTank{
 public:
     int x, y;
     int dirX, dirY;
+    int angle;
     int moveDelay, shootDelay;
     SDL_Rect rect;
     SDL_Texture* tankTexture;

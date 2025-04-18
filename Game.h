@@ -13,8 +13,9 @@
 using namespace std;
 
 
-enum GameState { PLAYING, WIN, GAME_OVER, MENU };
-enum class GameMode {
+enum GameState { PLAYING, WIN, GAME_OVER, MENU, EXIT };
+enum GameMode {
+    NONE,
     PVE,
     PVP
 };
@@ -39,6 +40,9 @@ public:
     GameState state;
     GameMode mode;
     void initMode(GameMode);
+    int menuSelection = 0; // 0: PVE, 1: PVP
+    const int MENU_COUNT = 3;
+
 
     PlayerTank player1;
     int scoreP1;
@@ -65,6 +69,8 @@ public:
     void reset();
 
     void handleEvents();
+    void showMenu();
+    void ChooseMode();
     void update();
     void render();
     void renderMenu();

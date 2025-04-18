@@ -5,6 +5,7 @@ EnemyTank::EnemyTank(int startX, int startY, SDL_Renderer* renderer) {
         shootDelay = 5; // Delay for shooting
         x = startX;
         y = startY;
+        angle = 0;
         rect = {x, y, TILE_SIZE, TILE_SIZE};
         tankTexture = IMG_LoadTexture(renderer, "enemy_up.png");
         dirX = 0;
@@ -20,23 +21,27 @@ void EnemyTank::move(const vector<Wall>& walls, SDL_Renderer* renderer,
     if (r == 0) { // Up
         this->dirX = 0;
         this->dirY = -40;
-        tankTexture = IMG_LoadTexture(renderer, "enemy_up.png");
+        //tankTexture = IMG_LoadTexture(renderer, "enemy_up.png");
     }
     else if (r == 1) { // Down
         this->dirX = 0;
         this->dirY = 40;
-        tankTexture = IMG_LoadTexture(renderer, "enemy_down.png");
+        //tankTexture = IMG_LoadTexture(renderer, "enemy_down.png");
     }
     else if (r == 2) { // Left
         this->dirY = 0;
         this->dirX = -40;
-        tankTexture = IMG_LoadTexture(renderer, "enemy_left.png");
+        //tankTexture = IMG_LoadTexture(renderer, "enemy_left.png");
     }
     else if (r == 3) { // Right
         this->dirY = 0;
         this->dirX = 40;
-        tankTexture = IMG_LoadTexture(renderer, "enemy_right.png");
+        //tankTexture = IMG_LoadTexture(renderer, "enemy_right.png");
     }
+    if (dirX > 0) angle = 90;
+    else if (dirX < 0) angle = 270;
+    else if (dirY > 0) angle = 180;
+    else angle = 0;
 
     int newX = x + dirX;
     int newY = y + dirY;
@@ -89,7 +94,7 @@ void EnemyTank::updateBullets() {
 void EnemyTank::render(SDL_Renderer* renderer) {
     //SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
     //SDL_RenderFillRect(renderer, &rect);
-    SDL_RenderCopy(renderer, tankTexture, nullptr, &rect);
+    SDL_RenderCopyEx(renderer, tankTexture, nullptr, &rect, angle, nullptr, SDL_FLIP_NONE);
     for (auto &bullet : bullets) {
         bullet.render(renderer);
     }

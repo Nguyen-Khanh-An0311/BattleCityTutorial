@@ -19,13 +19,15 @@ class PlayerTank{
 public:
     int x,y;
     SDL_Rect rect;
+    int angle;
+    const char* imgLink;
     SDL_Texture* tankTexture;
 
     int dirX, dirY;
     int RemainingLives;
     vector<Bullet> bullets;
 
-    PlayerTank(int, int, SDL_Renderer*);
+    PlayerTank(int, int, SDL_Renderer*, const char*);
     PlayerTank();
 
     void move(int, int, const vector<Wall>&, vector<Heart>&, vector<EnemyTank>&, vector<Stone>&, vector<Bush>&, vector<Water>&);

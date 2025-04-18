@@ -4,6 +4,8 @@ using namespace std;
 Game::Game(){
             running = true;
             state = MENU;
+            mode = GameMode::NONE;
+
             if(SDL_Init(SDL_INIT_EVERYTHING) < 0){
                 cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << endl;
                 running = false;
@@ -61,13 +63,12 @@ Game::Game(){
             explosionTexture = IMG_LoadTexture(renderer, "explosion.png");
             levelTexture = IMG_LoadTexture(renderer, "level_flag.png");
 
+
             shootSound = Mix_LoadWAV("fireSound.wav");
             if (shootSound == nullptr) {
                 cout << "Failed to load shoot sound! SDL_mixer Error: " << Mix_GetError() << endl;
             }
         }
-
-
 
 
 SDL_Texture* Game::loadTexture(const string& path, SDL_Renderer* renderer) {
@@ -92,28 +93,160 @@ SDL_Texture* Game::loadTexture(const string& path, SDL_Renderer* renderer) {
 void Game::run() {
             if(running){
                 handleEvents();
-                if(state == PLAYING){
                     update();
                     render();
                     SDL_Delay(16);
-                }
-                else if(state == MENU){
-                    renderMenu();
+            }
+        }
+
+void Game::showMenu() {
+    if(state != MENU) return;
+
+    level = 0;
+    scoreP1 = 0;
+    scoreP2 = 0;
+    bool inMenu = true;
+    int selectedOption = 0; // 0 = Start Game, 1 = Exit
+    SDL_Event event;
+    SDL_Color white = {255, 255, 255};
+    SDL_Color yellow = {255, 255, 0};
+
+    while (inMenu) {
+        // V? n?n menu
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+
+        // T?o các chu?i menu
+        string options[2] = {"Start Game", "Exit"};
+        for (int i = 0; i < 2; ++i) {
+            SDL_Color color = (i == selectedOption) ? yellow : white;
+            SDL_Surface* surface = TTF_RenderText_Blended(font, options[i].c_str(), color);
+            SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+            SDL_Rect dstRect = { SCREEN_WIDTH / 2 - surface->w / 2, 200 + i * 50, surface->w, surface->h };
+            SDL_RenderCopy(renderer, texture, NULL, &dstRect);
+            SDL_FreeSurface(surface);
+            SDL_DestroyTexture(texture);
+        }
+
+        SDL_RenderPresent(renderer);
+
+        // X? lý s? ki?n bàn phím trong menu
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                running = false;
+                inMenu = false;
+                return;
+            } else if (event.type == SDL_KEYDOWN) {
+                switch (event.key.keysym.sym) {
+                    case SDLK_UP:
+                        selectedOption = (selectedOption - 1 + 2) % 2;
+                        break;
+                    case SDLK_DOWN:
+                        selectedOption = (selectedOption + 1) % 2;
+                        break;
+                    case SDLK_RETURN:
+                    case SDLK_KP_ENTER:
+                        if (selectedOption == 0) {
+                            ChooseMode();
+                            initMode(mode);
+                            state = PLAYING;
+                            inMenu = false;
+                        }
+                        else {
+                            running = false; // Thoát game
+                        }
+                        break;
                 }
             }
         }
 
+        SDL_Delay(100); // Làm ch?m vòng l?p m?t chút cho d? nhìn
+    }
+}
+
+void Game::ChooseMode(){
+    if(state != MENU) return;
+    bool inChooseMode = true;
+    int selectedMode = 0; //0 = 1P, 1= 2P
+    SDL_Event event;
+    SDL_Color white = {255, 255, 255};
+    SDL_Color yellow = {255, 255, 0};
+    while (inChooseMode) {
+        // V? n?n menu
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+
+        // T?o các chu?i menu
+        string options[2] = {"Player vs Emenies", "Player vs Player"};
+        for (int i = 0; i < 2; ++i) {
+            SDL_Color color = (i == selectedMode) ? yellow : white;
+            SDL_Surface* surface = TTF_RenderText_Blended(font, options[i].c_str(), color);
+            SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+            SDL_Rect dstRect = { SCREEN_WIDTH / 2 - surface->w / 2, 200 + i * 50, surface->w, surface->h };
+            SDL_RenderCopy(renderer, texture, NULL, &dstRect);
+            SDL_FreeSurface(surface);
+            SDL_DestroyTexture(texture);
+        }
+
+        SDL_RenderPresent(renderer);
+
+        // X? lý s? ki?n bàn phím trong menu
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                running = false;
+                inChooseMode = false;
+                return;
+            } else if (event.type == SDL_KEYDOWN) {
+                switch (event.key.keysym.sym) {
+                    case SDLK_UP:
+                        selectedMode = (selectedMode - 1 + 2) % 2;
+                        break;
+                    case SDLK_DOWN:
+                        selectedMode = (selectedMode + 1) % 2;
+                        break;
+                    case SDLK_RETURN:
+                    case SDLK_KP_ENTER:
+                        if (selectedMode == 0) {
+                            mode = PVE;
+                            cout<<"Chon Mode 1 Nguoi Choi";
+                            inChooseMode = false; // Ch?n 1P
+
+                        }
+                        else{
+                            mode = PVP;
+                            cout<<"Chon Mode 2 Nguoi Choi";
+                            inChooseMode = false;//Ch?n 2p
+                        }
+
+                        break;
+                }
+            }
+        }
+
+        SDL_Delay(100); // Làm ch?m vòng l?p m?t chút cho d? nhìn
+    }
+}
+
+
 void Game::initMode(GameMode mode){
     if(state != MENU && state != GAME_OVER && state != WIN) return;
     if(level > 9){
-        if(scoreP1 > scoreP2){
-            winnerTexture = IMG_LoadTexture(renderer, "P1win.png");
-        }
-        else winnerTexture = IMG_LoadTexture(renderer, "P2win.png");
-        renderWinner();
-        SDL_Delay(3000);
         state = MENU;
         level = 0;
+        if(mode == PVP){
+            if(scoreP1 > scoreP2){
+                winnerTexture = IMG_LoadTexture(renderer, "P1win.png");
+            }
+            else winnerTexture = IMG_LoadTexture(renderer, "P2win.png");
+            renderWinner();
+        }
+        else{
+            SDL_Texture* winTexture = IMG_LoadTexture(renderer, "youwin.jpg");
+            SDL_RenderClear(renderer);// 👈 vẽ menu
+            SDL_RenderCopy(renderer, winTexture, nullptr, nullptr); // Hiển thị ảnh nền
+            SDL_RenderPresent(renderer);
+        }
+        SDL_Delay(3000);
         return;
     }
 
@@ -125,14 +258,16 @@ void Game::initMode(GameMode mode){
     gameMap.stones.clear();
     gameMap.ices.clear();
 
-    player1 = PlayerTank(TILE_SIZE*10 - 1, MAP_HEIGHT * TILE_SIZE - 1, renderer);
+    player1.imgLink = "player1.png";
+    player2.imgLink = "player2.png";
+    player1 = PlayerTank(TILE_SIZE*10 - 1, MAP_HEIGHT * TILE_SIZE - 1, renderer, player1.imgLink);
     string filename;
 
     if(state == WIN){
         level++;
         filename = "gameMaps//" + to_string(level) + ".txt";
         if(mode == GameMode::PVP){
-            player2 = PlayerTank(TILE_SIZE*15, MAP_HEIGHT * TILE_SIZE - 1, renderer);
+            player2 = PlayerTank(TILE_SIZE*15, MAP_HEIGHT * TILE_SIZE - 1, renderer, player2.imgLink);
             spawnHearts();
             gameMap.loadFromFile(filename, renderer);
             walls = gameMap.walls;
@@ -157,7 +292,7 @@ void Game::initMode(GameMode mode){
     else if(state == GAME_OVER){
         filename = "gameMaps//" + to_string(level) + ".txt";
         if(mode == GameMode::PVP){
-            player2 = PlayerTank(TILE_SIZE*15, MAP_HEIGHT * TILE_SIZE - 1, renderer);
+            player2 = PlayerTank(TILE_SIZE*15, MAP_HEIGHT * TILE_SIZE - 1, renderer, player2.imgLink);
             spawnHearts();
             gameMap.loadFromFile(filename, renderer);
             walls = gameMap.walls;
@@ -182,7 +317,8 @@ void Game::initMode(GameMode mode){
     else{
         filename = "gameMaps//" + to_string(level) + ".txt";
         if(mode == GameMode::PVP){
-            player2 = PlayerTank(TILE_SIZE*15, MAP_HEIGHT * TILE_SIZE - 1, renderer);
+            //player2.imgLink = "player_up";
+            player2 = PlayerTank(TILE_SIZE*15, MAP_HEIGHT * TILE_SIZE - 1, renderer, player2.imgLink);
             spawnHearts();
             gameMap.loadFromFile(filename, renderer);
             walls = gameMap.walls;
@@ -207,21 +343,6 @@ void Game::initMode(GameMode mode){
     state = PLAYING;
 }
 
-/*void Game::reset() {
-    running = true;
-
-    enemies.clear();
-    hearts.clear();
-    walls.clear();
-    waters.clear();
-    bushs.clear();
-    stones.clear();
-    ices.clear();
-
-    initMode(mode);
-    state = PLAYING;
-}*/
-
 
 void Game::handleEvents() {
         SDL_Event event;
@@ -239,30 +360,7 @@ void Game::handleEvents() {
                 }
             }*/
             else if (state == MENU) {
-                if (event.type == SDL_KEYDOWN) {
-                    switch (event.key.keysym.sym) {
-                        case SDLK_1:
-                            mode = GameMode::PVE;
-                            level = 0;
-                            scoreP1 = 0;
-                            scoreP2 = 0;
-                            initMode(mode);
-                            state = PLAYING;
-                            break;
-                        case SDLK_2:
-                            mode = GameMode::PVP;
-                            level = 0;
-                            scoreP1 = 0;
-                            scoreP2 = 0;
-                            initMode(mode);
-                            state = PLAYING;
-                            break;
-                        case SDLK_RETURN:
-                            state = PLAYING;
-                        default:
-                            return;
-                    }
-                }  // 👈 xử lý menu ở đây
+                showMenu();
             }
             else if (state == PLAYING && event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN) {
                 state = MENU;
@@ -271,19 +369,19 @@ void Game::handleEvents() {
                 // Điều khiển Player 1 (Phím WASD)
                 if (keystate[SDL_SCANCODE_W]) {
                     player1.move(0, -5, walls, hearts, enemies, stones, bushs, waters);
-                    player1.tankTexture = IMG_LoadTexture(renderer, "player_up.png");
+                    //player1.tankTexture = IMG_LoadTexture(renderer, "player_up.png");
                 }
                 if (keystate[SDL_SCANCODE_S]) {
                     player1.move(0, 5, walls, hearts, enemies, stones, bushs, waters);
-                    player1.tankTexture = IMG_LoadTexture(renderer, "player_down.png");
+                    //player1.tankTexture = IMG_LoadTexture(renderer, "player_down.png");
                 }
                 if (keystate[SDL_SCANCODE_A]) {
                     player1.move(-5, 0, walls, hearts, enemies, stones, bushs, waters);
-                    player1.tankTexture = IMG_LoadTexture(renderer, "player_left.png");
+                    //player1.tankTexture = IMG_LoadTexture(renderer, "player_left.png");
                 }
                 if (keystate[SDL_SCANCODE_D]) {
                     player1.move(5, 0, walls, hearts, enemies, stones, bushs, waters);
-                    player1.tankTexture = IMG_LoadTexture(renderer, "player_right.png");
+                    //player1.tankTexture = IMG_LoadTexture(renderer, "player_right.png");
                 }
                 if (keystate[SDL_SCANCODE_LCTRL]) {
                     player1.shoot(renderer);
@@ -294,19 +392,19 @@ void Game::handleEvents() {
                 if(mode == GameMode::PVP){
                     if (keystate[SDL_SCANCODE_UP]) {
                         player2.move(0, -5, walls, hearts, enemies, stones, bushs, waters);
-                        player2.tankTexture = IMG_LoadTexture(renderer, "player_up.png");
+                        //player2.tankTexture = IMG_LoadTexture(renderer, "player_up.png");
                     }
                     if (keystate[SDL_SCANCODE_DOWN]) {
                         player2.move(0, 5, walls, hearts, enemies, stones, bushs, waters);
-                        player2.tankTexture = IMG_LoadTexture(renderer, "player_down.png");
+                        //player2.tankTexture = IMG_LoadTexture(renderer, "player_down.png");
                     }
                     if (keystate[SDL_SCANCODE_LEFT]) {
                         player2.move(-5, 0, walls, hearts, enemies, stones, bushs, waters);
-                        player2.tankTexture = IMG_LoadTexture(renderer, "player_left.png");
+                        //player2.tankTexture = IMG_LoadTexture(renderer, "player_left.png");
                     }
                     if (keystate[SDL_SCANCODE_RIGHT]) {
                         player2.move(5, 0, walls, hearts, enemies, stones, bushs, waters);
-                        player2.tankTexture = IMG_LoadTexture(renderer, "player_right.png");
+                        //player2.tankTexture = IMG_LoadTexture(renderer, "player_right.png");
                     }
                     if (keystate[SDL_SCANCODE_SPACE]) { // Player 2 bắn đạn bằng phím Ctrl trái
                         player2.shoot(renderer);
@@ -617,60 +715,14 @@ void Game::update() {
     [](EnemyTank& e) { return !e.active; }), enemies.end());
 }
 
-/*void Game::generateWalls(){
-    /*for (int i = 3; i < MAP_HEIGHT - 3; i += 2) {
-        for (int j = 3; j < MAP_WIDTH - 3; j += 2) {
-            Wall w = Wall(j * TILE_SIZE, i * TILE_SIZE);
-            walls.push_back(w);
-        }
-    }*/
-    /*Wall w = Wall(2 * TILE_SIZE, 3 * TILE_SIZE);
-    walls.push_back(w);*/
-
-    /*walls.clear();
-    for (int i = 0; i < 30; ++i) {
-        int wx, wy;
-        bool validPosition = false;
-        while (!validPosition) {
-            wx = (rand() % (MAP_WIDTH - 2) + 1) * TILE_SIZE;
-            wy = (rand() % (MAP_HEIGHT - 2) + 1) * TILE_SIZE;
-            validPosition = true;
-
-
-            if (wx == player1.x|| wx == player2.x) {
-                validPosition = false;
-                //break;
-            }
-
-
-            for (const auto& enemy : enemies) {
-                if (enemy.active && enemy.x == wx && enemy.y == wy) {
-                    validPosition = false;
-                    //break;
-                }
-            }
-            //break;
-
-            for (const auto& heart : hearts) {  // Di chuyển vào vòng while
-                if (heart.active && heart.x == wx && heart.y == wy) {
-                    validPosition = false;
-                    //break;
-                }
-            }
-            //break;
-        }
-        if(validPosition) walls.push_back(Wall(wx, wy, renderer));
-    }
-}*/
-
 void Game::spawnEnemies() {
     enemies.clear();
     for (int i = 0; i < enemyNumber; ++i) {
         int ex, ey;
         bool validPosition = false;
         while (!validPosition) {
-            ex = (rand() % (MAP_WIDTH - 2) + 1) * TILE_SIZE;
-            ey = (rand() % (MAP_HEIGHT - 2) + 1) * TILE_SIZE;
+            ex = (rand() % (MAP_WIDTH / 2) + 1) * TILE_SIZE;
+            ey = (rand() % (MAP_HEIGHT / 2) + 1) * TILE_SIZE;
             validPosition = true;
             if( (player1.x == ex && player1.y == ey) ||(mode == GameMode::PVP && (player2.x == ex && player2.y == ey))){
                 validPosition = false;
@@ -678,7 +730,6 @@ void Game::spawnEnemies() {
             for (const auto& wall : walls) {
                 if (wall.active && wall.x == ex && wall.y == ey) {
                     validPosition = false;
-                    //break;
                 }
             }
         }
