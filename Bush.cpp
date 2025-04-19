@@ -8,5 +8,5 @@ Bush::Bush(int startX, int startY, SDL_Renderer* renderer){
 }
 
 void Bush::render(SDL_Renderer* renderer) {
-        SDL_RenderCopy(renderer, bushTexture, nullptr, &rect);
+    SDL_RenderCopy(renderer, bushTexture, nullptr, &rect);
 }

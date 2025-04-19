@@ -25,7 +25,8 @@ Game::Game(){
                 cout << "TTF init failed: " << TTF_GetError() << endl;
             }
 
-            font = TTF_OpenFont("prstartk.ttf", 50);
+            font = TTF_OpenFont("prstartk.ttf", 30);
+            fontScore = TTF_OpenFont("prstartk.ttf", 80);
             if (!font) {
                 cout << "Failed to load font: " << TTF_GetError() << std::endl;
             }
@@ -59,9 +60,11 @@ Game::Game(){
             }
             Mix_VolumeMusic(10);
 
-            menuTexture = IMG_LoadTexture(renderer, "menu.png");
+            menuTexture = IMG_LoadTexture(renderer, "menu.jpg");
             explosionTexture = IMG_LoadTexture(renderer, "explosion.png");
             levelTexture = IMG_LoadTexture(renderer, "level_flag.png");
+            RML1 = IMG_LoadTexture(renderer, "heart.png");
+            RML2 = IMG_LoadTexture(renderer, "heart.png");
 
 
             shootSound = Mix_LoadWAV("fireSound.wav");
@@ -93,15 +96,14 @@ SDL_Texture* Game::loadTexture(const string& path, SDL_Renderer* renderer) {
 void Game::run() {
             if(running){
                 handleEvents();
-                    update();
-                    render();
-                    SDL_Delay(16);
+                update();
+                render();
+                SDL_Delay(16);
             }
         }
 
 void Game::showMenu() {
     if(state != MENU) return;
-
     level = 0;
     scoreP1 = 0;
     scoreP2 = 0;
@@ -113,8 +115,9 @@ void Game::showMenu() {
 
     while (inMenu) {
         // V? n?n menu
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
+        SDL_RenderClear(renderer);// 👈 vẽ menu
+        SDL_RenderCopy(renderer, menuTexture, nullptr, nullptr); // Hiển thị ảnh nền
+        SDL_RenderPresent(renderer);
 
         // T?o các chu?i menu
         string options[2] = {"Start Game", "Exit"};
@@ -153,7 +156,8 @@ void Game::showMenu() {
                             inMenu = false;
                         }
                         else {
-                            running = false; // Thoát game
+                            running = false;
+                            return; // Thoát game
                         }
                         break;
                 }
@@ -173,8 +177,9 @@ void Game::ChooseMode(){
     SDL_Color yellow = {255, 255, 0};
     while (inChooseMode) {
         // V? n?n menu
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
+        SDL_RenderClear(renderer);// 👈 vẽ menu
+        SDL_RenderCopy(renderer, menuTexture, nullptr, nullptr); // Hiển thị ảnh nền
+        SDL_RenderPresent(renderer);
 
         // T?o các chu?i menu
         string options[2] = {"Player vs Emenies", "Player vs Player"};
@@ -230,26 +235,6 @@ void Game::ChooseMode(){
 
 void Game::initMode(GameMode mode){
     if(state != MENU && state != GAME_OVER && state != WIN) return;
-    if(level > 9){
-        state = MENU;
-        level = 0;
-        if(mode == PVP){
-            if(scoreP1 > scoreP2){
-                winnerTexture = IMG_LoadTexture(renderer, "P1win.png");
-            }
-            else winnerTexture = IMG_LoadTexture(renderer, "P2win.png");
-            renderWinner();
-        }
-        else{
-            SDL_Texture* winTexture = IMG_LoadTexture(renderer, "youwin.jpg");
-            SDL_RenderClear(renderer);// 👈 vẽ menu
-            SDL_RenderCopy(renderer, winTexture, nullptr, nullptr); // Hiển thị ảnh nền
-            SDL_RenderPresent(renderer);
-        }
-        SDL_Delay(3000);
-        return;
-    }
-
     enemies.clear();
     hearts.clear();
     gameMap.walls.clear();
@@ -257,6 +242,27 @@ void Game::initMode(GameMode mode){
     gameMap.bushs.clear();
     gameMap.stones.clear();
     gameMap.ices.clear();
+    if(level > 9){
+        if(mode == PVP){
+            if(scoreP1 > scoreP2){
+                winnerTexture = IMG_LoadTexture(renderer, "P1win.png");
+            }
+            else winnerTexture = IMG_LoadTexture(renderer, "P2win.png");
+            renderWinner();
+            SDL_Delay(3000);
+            SDL_DestroyTexture(winnerTexture);
+        }
+        else{
+            SDL_Texture* winTexture = IMG_LoadTexture(renderer, "youwin.jpg");
+            SDL_RenderClear(renderer);// 👈 vẽ menu
+            SDL_RenderCopy(renderer, winTexture, nullptr, nullptr); // Hiển thị ảnh nền
+            SDL_RenderPresent(renderer);
+            SDL_Delay(3000);
+            SDL_DestroyTexture(winTexture);
+        }
+        state = MENU;
+        return;
+    }
 
     player1.imgLink = "player1.png";
     player2.imgLink = "player2.png";
@@ -432,7 +438,16 @@ void Game::render(){
             flagRect.w = TILE_SIZE * 8;
             flagRect.h = TILE_SIZE * 8;
             SDL_RenderCopy(renderer, levelTexture, nullptr, &flagRect);
+
+            SDL_Rect rect1;
+            SDL_Rect rect2;
+            rect1 = {TILE_SIZE * 5, TILE_SIZE * 27.75, TILE_SIZE * 1.5, TILE_SIZE * 1.5};
+            rect2 = {TILE_SIZE * 5, TILE_SIZE * 28.75, TILE_SIZE * 1.5, TILE_SIZE * 1.5};
+            SDL_RenderCopy(renderer, RML1, nullptr, &rect1); // Hiển thị ảnh nền
+            if(mode == PVP) SDL_RenderCopy(renderer, RML2, nullptr, &rect2);
+
             renderLevel();
+            //renderHeart();
             renderRemainingLive(mode);
 
 
@@ -477,9 +492,9 @@ void Game::renderLevel(){
 
     string p1 = to_string(level);
 
-    SDL_Surface* textSurface1 = TTF_RenderText_Blended(font, p1.c_str(), white);
+    SDL_Surface* textSurface1 = TTF_RenderText_Blended(fontScore, p1.c_str(), white);
     SDL_Texture* textTexture1 = SDL_CreateTextureFromSurface(renderer, textSurface1);
-    SDL_Rect dstRect1 = {TILE_SIZE * 31, TILE_SIZE * 3, textSurface1->w, textSurface1->h}; // tuỳ chỉnh vị trí
+    SDL_Rect dstRect1 = {TILE_SIZE * 31, TILE_SIZE * 2, textSurface1->w, textSurface1->h}; // tuỳ chỉnh vị trí
 
 
     SDL_RenderCopy(renderer, textTexture1, NULL, &dstRect1);
@@ -491,47 +506,57 @@ void Game::renderLevel(){
 void Game::renderScore(){
     SDL_Color white = {0, 0, 0};
 
-    string p1 = "Player 1: " + to_string(scoreP1);
-    string p2 = "Player 2: " + to_string(scoreP2);
+    string p1 = to_string(scoreP1) + "-" + to_string(scoreP2);
+    //string p2 = to_string(scoreP2);
 
-    SDL_Surface* textSurface1 = TTF_RenderText_Blended(font, p1.c_str(), white);
+    SDL_Surface* textSurface1 = TTF_RenderText_Blended(fontScore, p1.c_str(), white);
     SDL_Texture* textTexture1 = SDL_CreateTextureFromSurface(renderer, textSurface1);
-    SDL_Rect dstRect1 = {TILE_SIZE * 28, TILE_SIZE * 10, textSurface1->w, textSurface1->h}; // tuỳ chỉnh vị trí
+    SDL_Rect dstRect1 = {TILE_SIZE * 29, TILE_SIZE * 28, textSurface1->w, textSurface1->h}; // tuỳ chỉnh vị trí
 
-    SDL_Surface* textSurface2 = TTF_RenderText_Blended(font, p2.c_str(), white);
+    /*SDL_Surface* textSurface2 = TTF_RenderText_Blended(font, p2.c_str(), white);
     SDL_Texture* textTexture2 = SDL_CreateTextureFromSurface(renderer, textSurface2);
-    SDL_Rect dstRect2 = {TILE_SIZE * 28, TILE_SIZE * 11, textSurface2->w, textSurface2->h}; // tuỳ chỉnh vị trí
+    SDL_Rect dstRect2 = {TILE_SIZE * 28, TILE_SIZE * 11, textSurface2->w, textSurface2->h}; // tuỳ chỉnh vị trí*/
 
     SDL_RenderCopy(renderer, textTexture1, NULL, &dstRect1);
-    SDL_RenderCopy(renderer, textTexture2, NULL, &dstRect2);
+    //SDL_RenderCopy(renderer, textTexture2, NULL, &dstRect2);
 
     // Clean up
     SDL_FreeSurface(textSurface1);
     SDL_DestroyTexture(textTexture1);
-    SDL_FreeSurface(textSurface2);
-    SDL_DestroyTexture(textTexture2);
+    /*SDL_FreeSurface(textSurface2);
+    SDL_DestroyTexture(textTexture2);*/
+}
+
+void Game::renderHeart(){
+    SDL_Rect rect1;
+    SDL_Rect rect2;
+    rect1 = {TILE_SIZE * 5, TILE_SIZE * 27.75, TILE_SIZE * 1.5, TILE_SIZE * 1.5};
+    rect2 = {TILE_SIZE * 5, TILE_SIZE * 28.75, TILE_SIZE * 1.5, TILE_SIZE * 1.5};
+    RML1 = IMG_LoadTexture(renderer, "heart.png");
+    RML2 = IMG_LoadTexture(renderer, "heart.png");
+    SDL_RenderCopy(renderer, RML1, nullptr, &rect1); // Hiển thị ảnh nền
+    if(mode == PVP) SDL_RenderCopy(renderer, RML2, nullptr, &rect2);
 }
 
 
 
 void Game::renderMenu(){
-    //SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); //chọn màu
     SDL_RenderClear(renderer);// 👈 vẽ menu
     SDL_RenderCopy(renderer, menuTexture, nullptr, nullptr); // Hiển thị ảnh nền
     SDL_RenderPresent(renderer);
 }
 
 void Game::renderWinner(){
-    SDL_RenderClear(renderer);// 👈 vẽ menu
-    SDL_RenderCopy(renderer, winnerTexture, nullptr, nullptr); // Hiển thị ảnh nền
+    SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, winnerTexture, nullptr, nullptr);
     SDL_RenderPresent(renderer);
 }
 
 void Game::renderRemainingLive(GameMode mode){
     SDL_Color white = {0, 0, 0};
 
-    string p1 = "LiveP1: " + to_string(player1.RemainingLives);
-    string p2 = "LiveP2: " + to_string(player2.RemainingLives);
+    string p1 = "P1: " + to_string(player1.RemainingLives);
+    string p2 = "P2: " + to_string(player2.RemainingLives);
 
     SDL_Surface* textSurface1 = TTF_RenderText_Blended(font, p1.c_str(), white);
     SDL_Texture* textTexture1 = SDL_CreateTextureFromSurface(renderer, textSurface1);

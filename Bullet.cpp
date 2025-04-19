@@ -23,10 +23,10 @@ void Bullet::move() {
     y += dy;
     rect = {x,y,10,10};
 
-    /*if (x < TILE_SIZE || x > SCREEN_WIDTH - TILE_SIZE ||
-        y < TILE_SIZE || y > SCREEN_HEIGHT - TILE_SIZE) {
+    if (x < TILE_SIZE || x > (MAP_WIDTH + 2) * TILE_SIZE ||
+        y < TILE_SIZE || y > (MAP_HEIGHT + 1) * TILE_SIZE) {
         active = false;
-    }*/
+    }
 }
 
 void Bullet::render(SDL_Renderer* renderer) {

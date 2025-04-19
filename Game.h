@@ -32,6 +32,7 @@ public:
 
     SDL_Texture* loadTexture(const string& , SDL_Renderer*);
     TTF_Font* font;
+    TTF_Font* fontScore;
     Mix_Music* backgroundMusic;
     Mix_Chunk* shootSound;
 
@@ -77,6 +78,10 @@ public:
     void renderLevel();
     void renderScore();
     void renderWinner();
+    void renderHeart();
+
+    SDL_Texture* RML1;
+    SDL_Texture* RML2;
     void renderRemainingLive(GameMode);
 
     //void modeGame(mode);

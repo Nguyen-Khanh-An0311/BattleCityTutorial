@@ -5,7 +5,7 @@
 	"Game.h"
 	"Statistics.h"
 
-1744986428 c:\users\admin\documents\dev\battlecitytutorial\game.h
+1745031537 c:\users\admin\documents\dev\battlecitytutorial\game.h
 	<iostream>
 	<SDL.h>
 	<SDL_mixer.h>
@@ -29,7 +29,7 @@
 	"Statistics.h"
 	<SDL_image.h>
 
-1744990083 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
+1745032231 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
 	"Game.h"
 
 1744984517 c:\users\admin\documents\dev\battlecitytutorial\playertank.h
@@ -48,7 +48,7 @@
 1744984969 source:c:\users\admin\documents\dev\battlecitytutorial\playertank.cpp
 	"PlayerTank.h"
 
-1744781116 source:c:\users\admin\documents\dev\battlecitytutorial\bullet.cpp
+1745030141 source:c:\users\admin\documents\dev\battlecitytutorial\bullet.cpp
 	"Bullet.h"
 
 1744780817 c:\users\admin\documents\dev\battlecitytutorial\bullet.h
@@ -123,7 +123,7 @@
 1744556357 source:c:\users\admin\documents\dev\battlecitytutorial\water.cpp
 	"Water.h"
 
-1744556977 source:c:\users\admin\documents\dev\battlecitytutorial\bush.cpp
+1745029762 source:c:\users\admin\documents\dev\battlecitytutorial\bush.cpp
 	"Bush.h"
 
 1744556949 c:\users\admin\documents\dev\battlecitytutorial\bush.h
