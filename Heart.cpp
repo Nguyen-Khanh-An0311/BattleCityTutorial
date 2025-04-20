@@ -7,7 +7,7 @@ Heart::Heart(int X, int Y,SDL_Renderer* renderer){
     y = Y;
     active = true;
     rect = {x ,y, 50, 50};
-    heartTexture = IMG_LoadTexture(renderer, "heart.png");
+    heartTexture = IMG_LoadTexture(renderer, "Image//heart.png");
 }
 
 void Heart::render(SDL_Renderer* renderer){

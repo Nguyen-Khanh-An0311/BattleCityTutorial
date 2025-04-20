@@ -41,7 +41,7 @@
 		<Unit filename="Game.h" />
 		<Unit filename="Heart.cpp" />
 		<Unit filename="Heart.h" />
-		<Unit filename="Ice,cpp.cpp" />
+		<Unit filename="Ice.cpp" />
 		<Unit filename="Ice.h" />
 		<Unit filename="Map.cpp" />
 		<Unit filename="Map.h" />

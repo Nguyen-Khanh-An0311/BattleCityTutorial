@@ -25,8 +25,8 @@ Game::Game(){
                 cout << "TTF init failed: " << TTF_GetError() << endl;
             }
 
-            font = TTF_OpenFont("prstartk.ttf", 30);
-            fontScore = TTF_OpenFont("prstartk.ttf", 80);
+            font = TTF_OpenFont("Font//prstartk.ttf", 30);
+            fontScore = TTF_OpenFont("Font//prstartk.ttf", 80);
             if (!font) {
                 cout << "Failed to load font: " << TTF_GetError() << std::endl;
             }
@@ -51,7 +51,7 @@ Game::Game(){
                 cout << "Renderer could not be created! SDL_Erroe: " << SDL_GetError() << endl;
                 running = false;
             }
-            backgroundMusic = Mix_LoadMUS("Soundtrack.mp3");
+            backgroundMusic = Mix_LoadMUS("Sound//Soundtrack.mp3");
             if (!backgroundMusic) {
                 cout << "Failed to load music! Error: " << Mix_GetError() << endl;
                 running = false;
@@ -60,14 +60,14 @@ Game::Game(){
             }
             Mix_VolumeMusic(10);
 
-            menuTexture = IMG_LoadTexture(renderer, "menu.jpg");
-            explosionTexture = IMG_LoadTexture(renderer, "explosion.png");
-            levelTexture = IMG_LoadTexture(renderer, "level_flag.png");
-            RML1 = IMG_LoadTexture(renderer, "heart.png");
-            RML2 = IMG_LoadTexture(renderer, "heart.png");
+            menuTexture = IMG_LoadTexture(renderer, "Image//menu.jpg");
+            explosionTexture = IMG_LoadTexture(renderer, "Image//explosion.png");
+            levelTexture = IMG_LoadTexture(renderer, "Image//level_flag.png");
+            RML1 = IMG_LoadTexture(renderer, "Image//heart.png");
+            RML2 = IMG_LoadTexture(renderer, "Image//heart.png");
 
 
-            shootSound = Mix_LoadWAV("fireSound.wav");
+            shootSound = Mix_LoadWAV("Sound//fireSound.wav");
             if (shootSound == nullptr) {
                 cout << "Failed to load shoot sound! SDL_mixer Error: " << Mix_GetError() << endl;
             }
@@ -590,14 +590,14 @@ void Game::ChooseMode(){
     SDL_Color white = {255, 255, 255};
     SDL_Color yellow = {255, 255, 0};
     while (inChooseMode) {
-        // V? n?n menu
+        // Vẽ nền menu
         SDL_RenderClear(renderer);// 👈 vẽ menu
         SDL_RenderCopy(renderer, menuTexture, nullptr, nullptr); // Hiển thị ảnh nền
         SDL_RenderPresent(renderer);
 
         // T?o các chu?i menu
-        string options[2] = {"Player vs Emenies", "Player vs Player"};
-        for (int i = 0; i < 2; ++i) {
+        string options[3] = {"Player vs Emenies", "Player vs Player", "<-"};
+        for (int i = 0; i < 3; ++i) {
             SDL_Color color = (i == selectedMode) ? yellow : white;
             SDL_Surface* surface = TTF_RenderText_Blended(font, options[i].c_str(), color);
             SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
@@ -618,10 +618,10 @@ void Game::ChooseMode(){
             } else if (event.type == SDL_KEYDOWN) {
                 switch (event.key.keysym.sym) {
                     case SDLK_UP:
-                        selectedMode = (selectedMode - 1 + 2) % 2;
+                        selectedMode = (selectedMode - 1 + 3) % 3;
                         break;
                     case SDLK_DOWN:
-                        selectedMode = (selectedMode + 1) % 2;
+                        selectedMode = (selectedMode + 1) % 3;
                         break;
                     case SDLK_RETURN:
                     case SDLK_KP_ENTER:
@@ -633,12 +633,17 @@ void Game::ChooseMode(){
                             state = PLAYING;
 
                         }
-                        else{
+                        else if(selectedMode == 1){
                             mode = PVP;
                             cout<<"Chon Mode 2 Nguoi Choi";
                             inChooseMode = false;//Ch?n 2p
                             initMode(mode);
                             state = PLAYING;
+                        }
+                        else{
+                            showMenu();
+                            inChooseMode = false;
+                            return;
                         }
 
                         break;
@@ -663,8 +668,8 @@ void Game::initMode(GameMode mode){
         return;
     }
 
-    player1.imgLink = "player1.png";
-    player2.imgLink = "player2.png";
+    player1.imgLink = "Image//player1.png";
+    player2.imgLink = "Image//player2.png";
     player1 = PlayerTank(TILE_SIZE*10 - 1, MAP_HEIGHT * TILE_SIZE - 1, renderer, player1.imgLink);
     string filename;
 

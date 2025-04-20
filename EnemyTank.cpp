@@ -7,7 +7,7 @@ EnemyTank::EnemyTank(int startX, int startY, SDL_Renderer* renderer) {
         y = startY;
         angle = 0;
         rect = {x, y, TILE_SIZE, TILE_SIZE};
-        tankTexture = IMG_LoadTexture(renderer, "enemy_up.png");
+        tankTexture = IMG_LoadTexture(renderer, "Image//enemy_up.png");
         dirX = 0;
         dirY = 1;
         active = true;

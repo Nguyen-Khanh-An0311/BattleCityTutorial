@@ -5,7 +5,7 @@
 	"Game.h"
 	"Statistics.h"
 
-1745078460 c:\users\admin\documents\dev\battlecitytutorial\game.h
+1745153313 c:\users\admin\documents\dev\battlecitytutorial\game.h
 	<iostream>
 	<SDL.h>
 	<SDL_mixer.h>
@@ -19,7 +19,7 @@
 	"Map.h"
 	"Boss.h"
 
-1744557122 source:c:\users\admin\documents\dev\battlecitytutorial\wall.cpp
+1745152736 source:c:\users\admin\documents\dev\battlecitytutorial\wall.cpp
 	"Wall.h"
 
 1742664008 c:\users\admin\documents\dev\battlecitytutorial\wall.h
@@ -29,7 +29,7 @@
 	"Statistics.h"
 	<SDL_image.h>
 
-1745144960 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
+1745152882 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
 	"Game.h"
 
 1744984517 c:\users\admin\documents\dev\battlecitytutorial\playertank.h
@@ -48,7 +48,7 @@
 1744984969 source:c:\users\admin\documents\dev\battlecitytutorial\playertank.cpp
 	"PlayerTank.h"
 
-1745030141 source:c:\users\admin\documents\dev\battlecitytutorial\bullet.cpp
+1745152614 source:c:\users\admin\documents\dev\battlecitytutorial\bullet.cpp
 	"Bullet.h"
 
 1744780817 c:\users\admin\documents\dev\battlecitytutorial\bullet.h
@@ -67,12 +67,12 @@
 	"Statistics.h"
 	"Map.h"
 
-1744968140 source:c:\users\admin\documents\dev\battlecitytutorial\enemytank.cpp
+1745152139 source:c:\users\admin\documents\dev\battlecitytutorial\enemytank.cpp
 	"EnemyTank.h"
 
 1742440092 c:\users\admin\documents\dev\battlecitytutorial\statistics.h
 
-1742664363 source:c:\users\admin\documents\dev\battlecitytutorial\heart.cpp
+1745152736 source:c:\users\admin\documents\dev\battlecitytutorial\heart.cpp
 	"Heart.h"
 
 1742664321 c:\users\admin\documents\dev\battlecitytutorial\heart.h
@@ -120,10 +120,10 @@
 	"Statistics.h"
 	<SDL_image.h>
 
-1744556357 source:c:\users\admin\documents\dev\battlecitytutorial\water.cpp
+1745152736 source:c:\users\admin\documents\dev\battlecitytutorial\water.cpp
 	"Water.h"
 
-1745029762 source:c:\users\admin\documents\dev\battlecitytutorial\bush.cpp
+1745152090 source:c:\users\admin\documents\dev\battlecitytutorial\bush.cpp
 	"Bush.h"
 
 1744556949 c:\users\admin\documents\dev\battlecitytutorial\bush.h
@@ -147,7 +147,7 @@
 	"Statistics.h"
 	<SDL_image.h>
 
-1744557803 source:c:\users\admin\documents\dev\battlecitytutorial\stone.cpp
+1745152736 source:c:\users\admin\documents\dev\battlecitytutorial\stone.cpp
 	"Stone.h"
 
 1744558143 source:c:\users\admin\documents\dev\battlecitytutorial\ice,cpp.cpp
@@ -436,4 +436,7 @@
 
 1744556357 source:c:\users\admin\documents_old\dev\battlecitytutorial\water.cpp
 	"Water.h"
+
+1745152736 source:c:\users\admin\documents\dev\battlecitytutorial\ice.cpp
+	"Ice.h"
 
