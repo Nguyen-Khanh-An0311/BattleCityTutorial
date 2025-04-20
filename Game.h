@@ -13,7 +13,7 @@
 using namespace std;
 
 
-enum GameState { PLAYING, WIN, GAME_OVER, MENU, EXIT };
+enum GameState { PLAYING, WIN, GAME_OVER, MENU, EXIT, SHOW_WINNER };
 enum GameMode {
     NONE,
     PVE,
@@ -25,33 +25,56 @@ class Game{
 public:
     SDL_Window* window;
     SDL_Renderer* renderer;
+    SDL_Texture* loadTexture(const string& , SDL_Renderer*);
+
+    Game();
+    GameState state;
+    GameMode mode;
+    int level = 0;
+    ~Game();
+
+    //run
+    void run();
+    bool running;
+
+    //handle event
+    void handleEvents();
+    void showMenu();
+    void ChooseMode();
+    int menuSelection = 0; // 0: PVE, 1: PVP
+    const int MENU_COUNT = 3;
+
+    //update
+    void update();
+
+    //render
+    void render();
+    void renderMenu();
+    void renderLevel();
+    void renderScore();
+    void renderWinner();
+    void renderHeart();
+    void renderRemainingLive(GameMode);
     SDL_Texture* menuTexture;
     SDL_Texture* winnerTexture;
     SDL_Texture* explosionTexture;
     SDL_Texture* levelTexture;
-
-    SDL_Texture* loadTexture(const string& , SDL_Renderer*);
+    SDL_Texture* RML1;
+    SDL_Texture* RML2;
     TTF_Font* font;
     TTF_Font* fontScore;
     Mix_Music* backgroundMusic;
     Mix_Chunk* shootSound;
 
-
-    bool running;
-    GameState state;
-    GameMode mode;
+    //init
     void initMode(GameMode);
-    int menuSelection = 0; // 0: PVE, 1: PVP
-    const int MENU_COUNT = 3;
-
-
+    void generateWalls();
+    void spawnEnemies();
+    void spawnHearts();
     PlayerTank player1;
     int scoreP1;
     PlayerTank player2;
     int scoreP2;
-
-    //Boss boss;
-
     int enemyNumber = 1;
     vector<EnemyTank> enemies;
     int heartNumber = 5;
@@ -62,34 +85,4 @@ public:
     vector<Bush> bushs;
     vector<Stone> stones;
     vector<Ice> ices;
-
-
-
-    Game();
-    void run();
-    void reset();
-
-    void handleEvents();
-    void showMenu();
-    void ChooseMode();
-    void update();
-    void render();
-    void renderMenu();
-    void renderLevel();
-    void renderScore();
-    void renderWinner();
-    void renderHeart();
-
-    SDL_Texture* RML1;
-    SDL_Texture* RML2;
-    void renderRemainingLive(GameMode);
-
-    //void modeGame(mode);
-    void generateWalls();
-    void spawnEnemies();
-    void spawnHearts();
-
-    int level = 0;
-
-    ~Game();
 };

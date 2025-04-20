@@ -45,8 +45,6 @@ void EnemyTank::move(const vector<Wall>& walls, SDL_Renderer* renderer,
 
     int newX = x + dirX;
     int newY = y + dirY;
-    /*this->dirX = dx;
-    this->dirY = dy;*/
 
     SDL_Rect newRect = { newX, newY, TILE_SIZE, TILE_SIZE };
     for (int i = 0; i < walls.size(); i++) {

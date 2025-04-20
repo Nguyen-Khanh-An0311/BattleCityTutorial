@@ -92,282 +92,37 @@ SDL_Texture* Game::loadTexture(const string& path, SDL_Renderer* renderer) {
             return texture;
         }
 
-
 void Game::run() {
             if(running){
-                handleEvents();
-                update();
-                render();
-                SDL_Delay(16);
+                switch(state){
+                    case MENU:
+                        showMenu();
+                        break;
+                    case PLAYING:
+                        handleEvents();
+                        update();
+                        render();
+                        SDL_Delay(16);
+                        break;
+                    case SHOW_WINNER:
+                        renderWinner();
+                        state = MENU;
+                        break;
             }
         }
-
-void Game::showMenu() {
-    if(state != MENU) return;
-    level = 0;
-    scoreP1 = 0;
-    scoreP2 = 0;
-    bool inMenu = true;
-    int selectedOption = 0; // 0 = Start Game, 1 = Exit
-    SDL_Event event;
-    SDL_Color white = {255, 255, 255};
-    SDL_Color yellow = {255, 255, 0};
-
-    while (inMenu) {
-        // V? n?n menu
-        SDL_RenderClear(renderer);// 👈 vẽ menu
-        SDL_RenderCopy(renderer, menuTexture, nullptr, nullptr); // Hiển thị ảnh nền
-        SDL_RenderPresent(renderer);
-
-        // T?o các chu?i menu
-        string options[2] = {"Start Game", "Exit"};
-        for (int i = 0; i < 2; ++i) {
-            SDL_Color color = (i == selectedOption) ? yellow : white;
-            SDL_Surface* surface = TTF_RenderText_Blended(font, options[i].c_str(), color);
-            SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-            SDL_Rect dstRect = { SCREEN_WIDTH / 2 - surface->w / 2, 200 + i * 50, surface->w, surface->h };
-            SDL_RenderCopy(renderer, texture, NULL, &dstRect);
-            SDL_FreeSurface(surface);
-            SDL_DestroyTexture(texture);
-        }
-
-        SDL_RenderPresent(renderer);
-
-        // X? lý s? ki?n bàn phím trong menu
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) {
-                running = false;
-                inMenu = false;
-                return;
-            } else if (event.type == SDL_KEYDOWN) {
-                switch (event.key.keysym.sym) {
-                    case SDLK_UP:
-                        selectedOption = (selectedOption - 1 + 2) % 2;
-                        break;
-                    case SDLK_DOWN:
-                        selectedOption = (selectedOption + 1) % 2;
-                        break;
-                    case SDLK_RETURN:
-                    case SDLK_KP_ENTER:
-                        if (selectedOption == 0) {
-                            ChooseMode();
-                            initMode(mode);
-                            state = PLAYING;
-                            inMenu = false;
-                        }
-                        else {
-                            running = false;
-                            return; // Thoát game
-                        }
-                        break;
-                }
-            }
-        }
-
-        SDL_Delay(100); // Làm ch?m vòng l?p m?t chút cho d? nhìn
-    }
 }
-
-void Game::ChooseMode(){
-    if(state != MENU) return;
-    bool inChooseMode = true;
-    int selectedMode = 0; //0 = 1P, 1= 2P
-    SDL_Event event;
-    SDL_Color white = {255, 255, 255};
-    SDL_Color yellow = {255, 255, 0};
-    while (inChooseMode) {
-        // V? n?n menu
-        SDL_RenderClear(renderer);// 👈 vẽ menu
-        SDL_RenderCopy(renderer, menuTexture, nullptr, nullptr); // Hiển thị ảnh nền
-        SDL_RenderPresent(renderer);
-
-        // T?o các chu?i menu
-        string options[2] = {"Player vs Emenies", "Player vs Player"};
-        for (int i = 0; i < 2; ++i) {
-            SDL_Color color = (i == selectedMode) ? yellow : white;
-            SDL_Surface* surface = TTF_RenderText_Blended(font, options[i].c_str(), color);
-            SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-            SDL_Rect dstRect = { SCREEN_WIDTH / 2 - surface->w / 2, 200 + i * 50, surface->w, surface->h };
-            SDL_RenderCopy(renderer, texture, NULL, &dstRect);
-            SDL_FreeSurface(surface);
-            SDL_DestroyTexture(texture);
-        }
-
-        SDL_RenderPresent(renderer);
-
-        // X? lý s? ki?n bàn phím trong menu
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) {
-                running = false;
-                inChooseMode = false;
-                return;
-            } else if (event.type == SDL_KEYDOWN) {
-                switch (event.key.keysym.sym) {
-                    case SDLK_UP:
-                        selectedMode = (selectedMode - 1 + 2) % 2;
-                        break;
-                    case SDLK_DOWN:
-                        selectedMode = (selectedMode + 1) % 2;
-                        break;
-                    case SDLK_RETURN:
-                    case SDLK_KP_ENTER:
-                        if (selectedMode == 0) {
-                            mode = PVE;
-                            cout<<"Chon Mode 1 Nguoi Choi";
-                            inChooseMode = false; // Ch?n 1P
-
-                        }
-                        else{
-                            mode = PVP;
-                            cout<<"Chon Mode 2 Nguoi Choi";
-                            inChooseMode = false;//Ch?n 2p
-                        }
-
-                        break;
-                }
-            }
-        }
-
-        SDL_Delay(100); // Làm ch?m vòng l?p m?t chút cho d? nhìn
-    }
-}
-
-
-void Game::initMode(GameMode mode){
-    if(state != MENU && state != GAME_OVER && state != WIN) return;
-    enemies.clear();
-    hearts.clear();
-    gameMap.walls.clear();
-    gameMap.waters.clear();
-    gameMap.bushs.clear();
-    gameMap.stones.clear();
-    gameMap.ices.clear();
-    if(level > 9){
-        if(mode == PVP){
-            if(scoreP1 > scoreP2){
-                winnerTexture = IMG_LoadTexture(renderer, "P1win.png");
-            }
-            else winnerTexture = IMG_LoadTexture(renderer, "P2win.png");
-            renderWinner();
-            SDL_Delay(3000);
-            SDL_DestroyTexture(winnerTexture);
-        }
-        else{
-            SDL_Texture* winTexture = IMG_LoadTexture(renderer, "youwin.jpg");
-            SDL_RenderClear(renderer);// 👈 vẽ menu
-            SDL_RenderCopy(renderer, winTexture, nullptr, nullptr); // Hiển thị ảnh nền
-            SDL_RenderPresent(renderer);
-            SDL_Delay(3000);
-            SDL_DestroyTexture(winTexture);
-        }
-        state = MENU;
-        return;
-    }
-
-    player1.imgLink = "player1.png";
-    player2.imgLink = "player2.png";
-    player1 = PlayerTank(TILE_SIZE*10 - 1, MAP_HEIGHT * TILE_SIZE - 1, renderer, player1.imgLink);
-    string filename;
-
-    if(state == WIN){
-        level++;
-        filename = "gameMaps//" + to_string(level) + ".txt";
-        if(mode == GameMode::PVP){
-            player2 = PlayerTank(TILE_SIZE*15, MAP_HEIGHT * TILE_SIZE - 1, renderer, player2.imgLink);
-            spawnHearts();
-            gameMap.loadFromFile(filename, renderer);
-            walls = gameMap.walls;
-            waters = gameMap.waters;
-            bushs = gameMap.bushs;
-            stones = gameMap.stones;
-            ices = gameMap.ices;
-            spawnEnemies();
-        }
-        else{
-            gameMap.loadFromFile(filename, renderer);
-            walls = gameMap.walls;
-            waters = gameMap.waters;
-            bushs = gameMap.bushs;
-            stones = gameMap.stones;
-            ices = gameMap.ices;
-            spawnHearts();
-            spawnEnemies();
-        }
-    }
-
-    else if(state == GAME_OVER){
-        filename = "gameMaps//" + to_string(level) + ".txt";
-        if(mode == GameMode::PVP){
-            player2 = PlayerTank(TILE_SIZE*15, MAP_HEIGHT * TILE_SIZE - 1, renderer, player2.imgLink);
-            spawnHearts();
-            gameMap.loadFromFile(filename, renderer);
-            walls = gameMap.walls;
-            waters = gameMap.waters;
-            bushs = gameMap.bushs;
-            stones = gameMap.stones;
-            ices = gameMap.ices;
-            spawnEnemies();
-        }
-        else{
-            gameMap.loadFromFile(filename, renderer);
-            walls = gameMap.walls;
-            waters = gameMap.waters;
-            bushs = gameMap.bushs;
-            stones = gameMap.stones;
-            ices = gameMap.ices;
-            spawnHearts();
-            spawnEnemies();
-        }
-    }
-
-    else{
-        filename = "gameMaps//" + to_string(level) + ".txt";
-        if(mode == GameMode::PVP){
-            //player2.imgLink = "player_up";
-            player2 = PlayerTank(TILE_SIZE*15, MAP_HEIGHT * TILE_SIZE - 1, renderer, player2.imgLink);
-            spawnHearts();
-            gameMap.loadFromFile(filename, renderer);
-            walls = gameMap.walls;
-            waters = gameMap.waters;
-            bushs = gameMap.bushs;
-            stones = gameMap.stones;
-            ices = gameMap.ices;
-            spawnEnemies();
-        }
-        else{
-            gameMap.loadFromFile(filename, renderer);
-            walls = gameMap.walls;
-            waters = gameMap.waters;
-            bushs = gameMap.bushs;
-            stones = gameMap.stones;
-            ices = gameMap.ices;
-            spawnHearts();
-            spawnEnemies();
-        }
-    }
-
-    state = PLAYING;
-}
-
 
 void Game::handleEvents() {
         SDL_Event event;
         const Uint8* keystate = SDL_GetKeyboardState(NULL); // Lấy trạng thái bàn phím
-
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
                 running = false;
                 break;
             }
-            /*else if (event.type == SDL_KEYDOWN){
-                if(event.key.keysym.sym == SDLK_ESCAPE){
-                    running = false;
-                    break;
-                }
-            }*/
-            else if (state == MENU) {
+            /*else if (state == MENU) {
                 showMenu();
-            }
+            }*/
             else if (state == PLAYING && event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN) {
                 state = MENU;
             }
@@ -420,175 +175,6 @@ void Game::handleEvents() {
             }
         }
     }
-void Game::render(){
-            SDL_SetRenderDrawColor(renderer, 192, 192, 192, 255); //chọn màu
-            SDL_RenderClear(renderer); // tô toàn bộ màu vừa chọn
-
-            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // chọn màu mới
-            for(int i=1; i <= MAP_HEIGHT; i++){
-                for(int j=1; j <= MAP_HEIGHT; j++){
-                    SDL_Rect tile = {j*TILE_SIZE, i*TILE_SIZE, TILE_SIZE, TILE_SIZE}; // tạo hcn tên tile (x,y,cr,cd)
-                    SDL_RenderFillRect(renderer, &tile);
-                }
-            }
-
-            SDL_Rect flagRect;
-            flagRect.x = TILE_SIZE * 28;  // hoặc tùy bạn
-            flagRect.y = TILE_SIZE * 1;  // vị trí dưới chữ số "1"
-            flagRect.w = TILE_SIZE * 8;
-            flagRect.h = TILE_SIZE * 8;
-            SDL_RenderCopy(renderer, levelTexture, nullptr, &flagRect);
-
-            SDL_Rect rect1;
-            SDL_Rect rect2;
-            rect1 = {TILE_SIZE * 5, TILE_SIZE * 27.75, TILE_SIZE * 1.5, TILE_SIZE * 1.5};
-            rect2 = {TILE_SIZE * 5, TILE_SIZE * 28.75, TILE_SIZE * 1.5, TILE_SIZE * 1.5};
-            SDL_RenderCopy(renderer, RML1, nullptr, &rect1); // Hiển thị ảnh nền
-            if(mode == PVP) SDL_RenderCopy(renderer, RML2, nullptr, &rect2);
-
-            renderLevel();
-            //renderHeart();
-            renderRemainingLive(mode);
-
-
-                player1.render(renderer);
-
-                if(mode == GameMode::PVP){
-                    renderScore();
-                    player2.render(renderer);
-                }
-
-
-                for (int i=0; i < heartNumber; i++){
-                    hearts[i].render(renderer);
-                }
-
-                for(int i=0; i<walls.size(); i++){
-                    walls[i].render(renderer);
-                }
-
-                for(int i=0; i<waters.size(); i++){
-                    waters[i].render(renderer);
-                }
-
-                for(int i=0; i<bushs.size(); i++){
-                    bushs[i].render(renderer);
-                }
-                for(int i=0; i<stones.size(); i++){
-                    stones[i].render(renderer);
-                }
-                for(int i=0; i<ices.size(); i++){
-                    ices[i].render(renderer);
-                }
-
-                for (auto& enemy : enemies) {
-                    enemy.render(renderer);
-                }
-            SDL_RenderPresent(renderer); // hiển thị tất cả, phải có
-    }
-
-void Game::renderLevel(){
-    SDL_Color white = {0, 0, 0};
-
-    string p1 = to_string(level);
-
-    SDL_Surface* textSurface1 = TTF_RenderText_Blended(fontScore, p1.c_str(), white);
-    SDL_Texture* textTexture1 = SDL_CreateTextureFromSurface(renderer, textSurface1);
-    SDL_Rect dstRect1 = {TILE_SIZE * 31, TILE_SIZE * 2, textSurface1->w, textSurface1->h}; // tuỳ chỉnh vị trí
-
-
-    SDL_RenderCopy(renderer, textTexture1, NULL, &dstRect1);
-
-    // Clean up
-    SDL_FreeSurface(textSurface1);
-    SDL_DestroyTexture(textTexture1);
-}
-void Game::renderScore(){
-    SDL_Color white = {0, 0, 0};
-
-    string p1 = to_string(scoreP1) + "-" + to_string(scoreP2);
-    //string p2 = to_string(scoreP2);
-
-    SDL_Surface* textSurface1 = TTF_RenderText_Blended(fontScore, p1.c_str(), white);
-    SDL_Texture* textTexture1 = SDL_CreateTextureFromSurface(renderer, textSurface1);
-    SDL_Rect dstRect1 = {TILE_SIZE * 29, TILE_SIZE * 28, textSurface1->w, textSurface1->h}; // tuỳ chỉnh vị trí
-
-    /*SDL_Surface* textSurface2 = TTF_RenderText_Blended(font, p2.c_str(), white);
-    SDL_Texture* textTexture2 = SDL_CreateTextureFromSurface(renderer, textSurface2);
-    SDL_Rect dstRect2 = {TILE_SIZE * 28, TILE_SIZE * 11, textSurface2->w, textSurface2->h}; // tuỳ chỉnh vị trí*/
-
-    SDL_RenderCopy(renderer, textTexture1, NULL, &dstRect1);
-    //SDL_RenderCopy(renderer, textTexture2, NULL, &dstRect2);
-
-    // Clean up
-    SDL_FreeSurface(textSurface1);
-    SDL_DestroyTexture(textTexture1);
-    /*SDL_FreeSurface(textSurface2);
-    SDL_DestroyTexture(textTexture2);*/
-}
-
-void Game::renderHeart(){
-    SDL_Rect rect1;
-    SDL_Rect rect2;
-    rect1 = {TILE_SIZE * 5, TILE_SIZE * 27.75, TILE_SIZE * 1.5, TILE_SIZE * 1.5};
-    rect2 = {TILE_SIZE * 5, TILE_SIZE * 28.75, TILE_SIZE * 1.5, TILE_SIZE * 1.5};
-    RML1 = IMG_LoadTexture(renderer, "heart.png");
-    RML2 = IMG_LoadTexture(renderer, "heart.png");
-    SDL_RenderCopy(renderer, RML1, nullptr, &rect1); // Hiển thị ảnh nền
-    if(mode == PVP) SDL_RenderCopy(renderer, RML2, nullptr, &rect2);
-}
-
-
-
-void Game::renderMenu(){
-    SDL_RenderClear(renderer);// 👈 vẽ menu
-    SDL_RenderCopy(renderer, menuTexture, nullptr, nullptr); // Hiển thị ảnh nền
-    SDL_RenderPresent(renderer);
-}
-
-void Game::renderWinner(){
-    SDL_RenderClear(renderer);
-    SDL_RenderCopy(renderer, winnerTexture, nullptr, nullptr);
-    SDL_RenderPresent(renderer);
-}
-
-void Game::renderRemainingLive(GameMode mode){
-    SDL_Color white = {0, 0, 0};
-
-    string p1 = "P1: " + to_string(player1.RemainingLives);
-    string p2 = "P2: " + to_string(player2.RemainingLives);
-
-    SDL_Surface* textSurface1 = TTF_RenderText_Blended(font, p1.c_str(), white);
-    SDL_Texture* textTexture1 = SDL_CreateTextureFromSurface(renderer, textSurface1);
-    SDL_Rect dstRect1 = {TILE_SIZE * 1, TILE_SIZE * 28, textSurface1->w, textSurface1->h}; // tuỳ chỉnh vị trí
-
-    SDL_Surface* textSurface2 = TTF_RenderText_Blended(font, p2.c_str(), white);
-    SDL_Texture* textTexture2 = SDL_CreateTextureFromSurface(renderer, textSurface2);
-    SDL_Rect dstRect2 = {TILE_SIZE * 1, TILE_SIZE * 29, textSurface2->w, textSurface2->h}; // tuỳ chỉnh vị trí
-
-    SDL_RenderCopy(renderer, textTexture1, NULL, &dstRect1);
-    if(mode == GameMode::PVP) SDL_RenderCopy(renderer, textTexture2, NULL, &dstRect2);
-
-    // Clean up
-    SDL_FreeSurface(textSurface1);
-    SDL_DestroyTexture(textTexture1);
-    SDL_FreeSurface(textSurface2);
-    SDL_DestroyTexture(textTexture2);
-}
-
-
-Game::~Game(){
-            SDL_DestroyTexture(menuTexture);
-            IMG_Quit();
-            SDL_DestroyRenderer(renderer);
-            SDL_DestroyWindow(window);
-            TTF_CloseFont(font);
-            TTF_Quit();
-            SDL_Quit();
-        }
-
-
-
 void Game::update() {
     player1.updateBullets();
     for (auto& enemy : enemies) { // cap nhat dan của dich
@@ -739,27 +325,382 @@ void Game::update() {
     enemies.erase(std::remove_if(enemies.begin(), enemies.end(),
     [](EnemyTank& e) { return !e.active; }), enemies.end());
 }
+void Game::render(){
+        SDL_SetRenderDrawColor(renderer, 192, 192, 192, 255); //chọn màu
+        SDL_RenderClear(renderer); // tô toàn bộ màu vừa chọn
 
-void Game::spawnEnemies() {
-    enemies.clear();
-    for (int i = 0; i < enemyNumber; ++i) {
-        int ex, ey;
-        bool validPosition = false;
-        while (!validPosition) {
-            ex = (rand() % (MAP_WIDTH / 2) + 1) * TILE_SIZE;
-            ey = (rand() % (MAP_HEIGHT / 2) + 1) * TILE_SIZE;
-            validPosition = true;
-            if( (player1.x == ex && player1.y == ey) ||(mode == GameMode::PVP && (player2.x == ex && player2.y == ey))){
-                validPosition = false;
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // chọn màu mới
+        for(int i=1; i <= MAP_HEIGHT; i++){
+            for(int j=1; j <= MAP_HEIGHT; j++){
+                SDL_Rect tile = {j*TILE_SIZE, i*TILE_SIZE, TILE_SIZE, TILE_SIZE}; // tạo hcn tên tile (x,y,cr,cd)
+                SDL_RenderFillRect(renderer, &tile);
             }
-            for (const auto& wall : walls) {
-                if (wall.active && wall.x == ex && wall.y == ey) {
-                    validPosition = false;
+        }
+
+            SDL_Rect flagRect;
+            flagRect.x = TILE_SIZE * 28;  // hoặc tùy bạn
+            flagRect.y = TILE_SIZE * 1;  // vị trí dưới chữ số "1"
+            flagRect.w = TILE_SIZE * 8;
+            flagRect.h = TILE_SIZE * 8;
+            SDL_RenderCopy(renderer, levelTexture, nullptr, &flagRect);
+
+            SDL_Rect rect1;
+            SDL_Rect rect2;
+            rect1 = {TILE_SIZE * 5, TILE_SIZE * 27.75, TILE_SIZE * 1.5, TILE_SIZE * 1.5};
+            rect2 = {TILE_SIZE * 5, TILE_SIZE * 28.75, TILE_SIZE * 1.5, TILE_SIZE * 1.5};
+            SDL_RenderCopy(renderer, RML1, nullptr, &rect1); // Hiển thị ảnh nền
+            if(mode == PVP) SDL_RenderCopy(renderer, RML2, nullptr, &rect2);
+
+            renderLevel();
+            //renderHeart();
+            renderRemainingLive(mode);
+
+
+                player1.render(renderer);
+
+                if(mode == GameMode::PVP){
+                    renderScore();
+                    player2.render(renderer);
+                }
+
+
+                for (int i=0; i < heartNumber; i++){
+                    hearts[i].render(renderer);
+                }
+
+                for(int i=0; i<walls.size(); i++){
+                    walls[i].render(renderer);
+                }
+
+                for(int i=0; i<waters.size(); i++){
+                    waters[i].render(renderer);
+                }
+
+                for(int i=0; i<bushs.size(); i++){
+                    bushs[i].render(renderer);
+                }
+                for(int i=0; i<stones.size(); i++){
+                    stones[i].render(renderer);
+                }
+                for(int i=0; i<ices.size(); i++){
+                    ices[i].render(renderer);
+                }
+
+                for (auto& enemy : enemies) {
+                    enemy.render(renderer);
+                }
+            SDL_RenderPresent(renderer); // hiển thị tất cả, phải có
+    }
+
+
+
+void Game::renderLevel(){
+    SDL_Color white = {0, 0, 0};
+
+    string p1 = to_string(level);
+
+    SDL_Surface* textSurface1 = TTF_RenderText_Blended(fontScore, p1.c_str(), white);
+    SDL_Texture* textTexture1 = SDL_CreateTextureFromSurface(renderer, textSurface1);
+    SDL_Rect dstRect1 = {TILE_SIZE * 31, TILE_SIZE * 2, textSurface1->w, textSurface1->h}; // tuỳ chỉnh vị trí
+
+
+    SDL_RenderCopy(renderer, textTexture1, NULL, &dstRect1);
+
+    // Clean up
+    SDL_FreeSurface(textSurface1);
+    SDL_DestroyTexture(textTexture1);
+}
+void Game::renderScore(){
+    SDL_Color white = {0, 0, 0};
+
+    string p1 = to_string(scoreP1) + "-" + to_string(scoreP2);
+    //string p2 = to_string(scoreP2);
+
+    SDL_Surface* textSurface1 = TTF_RenderText_Blended(fontScore, p1.c_str(), white);
+    SDL_Texture* textTexture1 = SDL_CreateTextureFromSurface(renderer, textSurface1);
+    SDL_Rect dstRect1 = {TILE_SIZE * 29, TILE_SIZE * 28, textSurface1->w, textSurface1->h}; // tuỳ chỉnh vị trí
+
+    /*SDL_Surface* textSurface2 = TTF_RenderText_Blended(font, p2.c_str(), white);
+    SDL_Texture* textTexture2 = SDL_CreateTextureFromSurface(renderer, textSurface2);
+    SDL_Rect dstRect2 = {TILE_SIZE * 28, TILE_SIZE * 11, textSurface2->w, textSurface2->h}; // tuỳ chỉnh vị trí*/
+
+    SDL_RenderCopy(renderer, textTexture1, NULL, &dstRect1);
+    //SDL_RenderCopy(renderer, textTexture2, NULL, &dstRect2);
+
+    // Clean up
+    SDL_FreeSurface(textSurface1);
+    SDL_DestroyTexture(textTexture1);
+    /*SDL_FreeSurface(textSurface2);
+    SDL_DestroyTexture(textTexture2);*/
+}
+void Game::renderHeart(){
+    SDL_Rect rect1;
+    SDL_Rect rect2;
+    rect1 = {TILE_SIZE * 5, TILE_SIZE * 27.75, TILE_SIZE * 1.5, TILE_SIZE * 1.5};
+    rect2 = {TILE_SIZE * 5, TILE_SIZE * 28.75, TILE_SIZE * 1.5, TILE_SIZE * 1.5};
+    RML1 = IMG_LoadTexture(renderer, "heart.png");
+    RML2 = IMG_LoadTexture(renderer, "heart.png");
+    SDL_RenderCopy(renderer, RML1, nullptr, &rect1); // Hiển thị ảnh nền
+    if(mode == PVP) SDL_RenderCopy(renderer, RML2, nullptr, &rect2);
+}
+void Game::renderWinner(){
+    SDL_Color color = {255, 255, 0}; // Vàng rực rỡ
+    SDL_Surface* textSurface;
+    if(mode == PVE){
+        textSurface = TTF_RenderText_Blended(font, "YOU WIN!!!", color);
+    }
+    else {
+        if(scoreP1 > scoreP2) textSurface = TTF_RenderText_Blended(font, "PLAYER 1 WIN!!!", color);
+        else if(scoreP1 < scoreP2) textSurface = TTF_RenderText_Blended(font, "PLAYER 2 WIN!!!", color);
+    }
+
+    SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
+
+    int textW = textSurface->w;
+    int textH = textSurface->h;
+    SDL_FreeSurface(textSurface);
+
+    int screenW = SCREEN_WIDTH;
+    int screenH = SCREEN_HEIGHT;
+
+    int startY = -textH; // Bắt đầu từ trên cùng
+    int endY = (screenH - textH) / 2; // Vị trí giữa
+
+    Uint32 start = SDL_GetTicks();
+    Uint32 duration = 2000; // 2s
+
+    SDL_Event e;
+
+    while (SDL_GetTicks() - start < duration) {
+        // Tính toán vị trí chữ theo thời gian
+        float t = (float)(SDL_GetTicks() - start) / duration;
+        int currentY = startY + (int)((endY - startY) * t);
+
+        // Xử lý sự kiện
+        while (SDL_PollEvent(&e)) {
+            if (e.type == SDL_QUIT)
+                exit(0);
+        }
+
+        SDL_RenderClear(renderer);
+
+        SDL_Rect dstRect = {(screenW - textW) / 2, currentY, textW, textH};
+        SDL_RenderCopy(renderer, textTexture, nullptr, &dstRect);
+
+        SDL_RenderPresent(renderer);
+        SDL_Delay(16); // ~60 FPS
+    }
+
+    // Hiển thị thêm vài giây nếu muốn
+    SDL_Delay(2000);
+}
+void Game::renderRemainingLive(GameMode mode){
+    SDL_Color white = {0, 0, 0};
+
+    string p1 = "P1: " + to_string(player1.RemainingLives);
+    string p2 = "P2: " + to_string(player2.RemainingLives);
+
+    SDL_Surface* textSurface1 = TTF_RenderText_Blended(font, p1.c_str(), white);
+    SDL_Texture* textTexture1 = SDL_CreateTextureFromSurface(renderer, textSurface1);
+    SDL_Rect dstRect1 = {TILE_SIZE * 1, TILE_SIZE * 28, textSurface1->w, textSurface1->h}; // tuỳ chỉnh vị trí
+
+    SDL_Surface* textSurface2 = TTF_RenderText_Blended(font, p2.c_str(), white);
+    SDL_Texture* textTexture2 = SDL_CreateTextureFromSurface(renderer, textSurface2);
+    SDL_Rect dstRect2 = {TILE_SIZE * 1, TILE_SIZE * 29, textSurface2->w, textSurface2->h}; // tuỳ chỉnh vị trí
+
+    SDL_RenderCopy(renderer, textTexture1, NULL, &dstRect1);
+    if(mode == GameMode::PVP) SDL_RenderCopy(renderer, textTexture2, NULL, &dstRect2);
+
+    // Clean up
+    SDL_FreeSurface(textSurface1);
+    SDL_DestroyTexture(textTexture1);
+    SDL_FreeSurface(textSurface2);
+    SDL_DestroyTexture(textTexture2);
+}
+
+
+void Game::showMenu() {
+    if(state != MENU) return;
+    level = 0;
+    scoreP1 = 0;
+    scoreP2 = 0;
+    bool inMenu = true;
+    int selectedOption = 0; // 0 = Start Game, 1 = Exit
+    SDL_Event event;
+    SDL_Color white = {255, 255, 255};
+    SDL_Color yellow = {255, 255, 0};
+
+    while (inMenu) {
+        // Vẽ menu
+        SDL_RenderClear(renderer);// 👈 vẽ menu
+        SDL_RenderCopy(renderer, menuTexture, nullptr, nullptr); // Hiển thị ảnh nền
+        SDL_RenderPresent(renderer);
+
+        // T?o các chuỗi menu
+        string options[2] = {"Start Game", "Exit"};
+        for (int i = 0; i < 2; ++i) {
+            SDL_Color color = (i == selectedOption) ? yellow : white;
+            SDL_Surface* surface = TTF_RenderText_Blended(font, options[i].c_str(), color);
+            SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+            SDL_Rect dstRect = { SCREEN_WIDTH / 2 - surface->w / 2, 200 + i * 50, surface->w, surface->h };
+            SDL_RenderCopy(renderer, texture, NULL, &dstRect);
+            SDL_FreeSurface(surface);
+            SDL_DestroyTexture(texture);
+        }
+
+        SDL_RenderPresent(renderer);
+
+        // X? lý s? ki?n bàn phím trong menu
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                running = false;
+                inMenu = false;
+                return;
+            } else if (event.type == SDL_KEYDOWN) {
+                switch (event.key.keysym.sym) {
+                    case SDLK_UP:
+                        selectedOption = (selectedOption - 1 + 2) % 2;
+                        break;
+                    case SDLK_DOWN:
+                        selectedOption = (selectedOption + 1) % 2;
+                        break;
+                    case SDLK_RETURN:
+                    case SDLK_KP_ENTER:
+                        if (selectedOption == 0) {
+                            ChooseMode();
+                            inMenu = false;
+                        }
+                        else {
+                            running = false;
+                            return; // Thoát game
+                        }
+                        break;
                 }
             }
         }
-        enemies.push_back(EnemyTank(ex, ey, renderer));
+
+        SDL_Delay(100); // Làm ch?m vòng l?p m?t chút cho d? nhìn
     }
+}
+void Game::ChooseMode(){
+    if(state != MENU) return;
+    bool inChooseMode = true;
+    int selectedMode = 0; //0 = 1P, 1= 2P
+    SDL_Event event;
+    SDL_Color white = {255, 255, 255};
+    SDL_Color yellow = {255, 255, 0};
+    while (inChooseMode) {
+        // V? n?n menu
+        SDL_RenderClear(renderer);// 👈 vẽ menu
+        SDL_RenderCopy(renderer, menuTexture, nullptr, nullptr); // Hiển thị ảnh nền
+        SDL_RenderPresent(renderer);
+
+        // T?o các chu?i menu
+        string options[2] = {"Player vs Emenies", "Player vs Player"};
+        for (int i = 0; i < 2; ++i) {
+            SDL_Color color = (i == selectedMode) ? yellow : white;
+            SDL_Surface* surface = TTF_RenderText_Blended(font, options[i].c_str(), color);
+            SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+            SDL_Rect dstRect = { SCREEN_WIDTH / 2 - surface->w / 2, 200 + i * 50, surface->w, surface->h };
+            SDL_RenderCopy(renderer, texture, NULL, &dstRect);
+            SDL_FreeSurface(surface);
+            SDL_DestroyTexture(texture);
+        }
+
+        SDL_RenderPresent(renderer);
+
+        // X? lý s? ki?n bàn phím trong menu
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                running = false;
+                inChooseMode = false;
+                return;
+            } else if (event.type == SDL_KEYDOWN) {
+                switch (event.key.keysym.sym) {
+                    case SDLK_UP:
+                        selectedMode = (selectedMode - 1 + 2) % 2;
+                        break;
+                    case SDLK_DOWN:
+                        selectedMode = (selectedMode + 1) % 2;
+                        break;
+                    case SDLK_RETURN:
+                    case SDLK_KP_ENTER:
+                        if (selectedMode == 0) {
+                            mode = PVE;
+                            cout<<"Chon Mode 1 Nguoi Choi";
+                            inChooseMode = false; // Ch?n 1P
+                            initMode(mode);
+                            state = PLAYING;
+
+                        }
+                        else{
+                            mode = PVP;
+                            cout<<"Chon Mode 2 Nguoi Choi";
+                            inChooseMode = false;//Ch?n 2p
+                            initMode(mode);
+                            state = PLAYING;
+                        }
+
+                        break;
+                }
+            }
+        }
+
+        SDL_Delay(100); // Làm ch?m vòng l?p m?t chút cho d? nhìn
+    }
+}
+void Game::initMode(GameMode mode){
+    if(state != MENU && state != GAME_OVER && state != WIN) return;
+    enemies.clear();
+    hearts.clear();
+    gameMap.walls.clear();
+    gameMap.waters.clear();
+    gameMap.bushs.clear();
+    gameMap.stones.clear();
+    gameMap.ices.clear();
+    if(level == 2){
+        state = SHOW_WINNER;
+        return;
+    }
+
+    player1.imgLink = "player1.png";
+    player2.imgLink = "player2.png";
+    player1 = PlayerTank(TILE_SIZE*10 - 1, MAP_HEIGHT * TILE_SIZE - 1, renderer, player1.imgLink);
+    string filename;
+
+    if(mode == GameMode::PVP){
+        if(state == WIN){
+            level++;
+        }
+        filename = "gameMaps//" + to_string(level) + ".txt";
+        gameMap.loadFromFile(filename, renderer);
+        player2 = PlayerTank(TILE_SIZE*15, MAP_HEIGHT * TILE_SIZE - 1, renderer, player2.imgLink);
+        walls = gameMap.walls;
+        waters = gameMap.waters;
+        bushs = gameMap.bushs;
+        stones = gameMap.stones;
+        ices = gameMap.ices;
+        spawnHearts();
+        spawnEnemies();
+    }
+    else{
+        if(state == WIN){
+            level++;
+        }
+        else if(state == GAME_OVER){
+            level = 0;
+        }
+        filename = "gameMaps//" + to_string(level) + ".txt";
+        gameMap.loadFromFile(filename, renderer);
+        walls = gameMap.walls;
+        waters = gameMap.waters;
+        bushs = gameMap.bushs;
+        stones = gameMap.stones;
+        ices = gameMap.ices;
+        spawnHearts();
+        spawnEnemies();
+    }
+    state = PLAYING;
 }
 
 void Game::spawnHearts(){
@@ -787,4 +728,34 @@ void Game::spawnHearts(){
         }
     }
 }
+void Game::spawnEnemies() {
+    enemies.clear();
+    for (int i = 0; i < enemyNumber; ++i) {
+        int ex, ey;
+        bool validPosition = false;
+        while (!validPosition) {
+            ex = (rand() % (MAP_WIDTH / 2) + 1) * TILE_SIZE;
+            ey = (rand() % (MAP_HEIGHT / 2) + 1) * TILE_SIZE;
+            validPosition = true;
+            if( (player1.x == ex && player1.y == ey) ||(mode == GameMode::PVP && (player2.x == ex && player2.y == ey))){
+                validPosition = false;
+            }
+            for (const auto& wall : walls) {
+                if (wall.active && wall.x == ex && wall.y == ey) {
+                    validPosition = false;
+                }
+            }
+        }
+        enemies.push_back(EnemyTank(ex, ey, renderer));
+    }
+}
+Game::~Game(){
+            SDL_DestroyTexture(menuTexture);
+            IMG_Quit();
+            SDL_DestroyRenderer(renderer);
+            SDL_DestroyWindow(window);
+            TTF_CloseFont(font);
+            TTF_Quit();
+            SDL_Quit();
+        }
 
