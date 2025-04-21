@@ -10,6 +10,7 @@
 #include "Heart.h"
 #include "Map.h"
 #include "Boss.h"
+#include "Explosion.h"
 using namespace std;
 
 
@@ -41,6 +42,7 @@ public:
     void handleEvents();
     void showMenu();
     void ChooseMode();
+    void renderInstruction();
     int menuSelection = 0; // 0: PVE, 1: PVP
     const int MENU_COUNT = 3;
 
@@ -57,7 +59,6 @@ public:
     void renderRemainingLive(GameMode);
     SDL_Texture* menuTexture;
     SDL_Texture* winnerTexture;
-    SDL_Texture* explosionTexture;
     SDL_Texture* levelTexture;
     SDL_Texture* RML1;
     SDL_Texture* RML2;
@@ -85,4 +86,5 @@ public:
     vector<Bush> bushs;
     vector<Stone> stones;
     vector<Ice> ices;
+    vector<Explosion> explosions;
 };

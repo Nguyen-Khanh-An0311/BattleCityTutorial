@@ -61,7 +61,6 @@ Game::Game(){
             Mix_VolumeMusic(10);
 
             menuTexture = IMG_LoadTexture(renderer, "Image//menu.jpg");
-            explosionTexture = IMG_LoadTexture(renderer, "Image//explosion.png");
             levelTexture = IMG_LoadTexture(renderer, "Image//level_flag.png");
             RML1 = IMG_LoadTexture(renderer, "Image//heart.png");
             RML2 = IMG_LoadTexture(renderer, "Image//heart.png");
@@ -120,9 +119,6 @@ void Game::handleEvents() {
                 running = false;
                 break;
             }
-            /*else if (state == MENU) {
-                showMenu();
-            }*/
             else if (state == PLAYING && event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN) {
                 state = MENU;
             }
@@ -130,19 +126,15 @@ void Game::handleEvents() {
                 // Điều khiển Player 1 (Phím WASD)
                 if (keystate[SDL_SCANCODE_W]) {
                     player1.move(0, -5, walls, hearts, enemies, stones, bushs, waters);
-                    //player1.tankTexture = IMG_LoadTexture(renderer, "player_up.png");
                 }
                 if (keystate[SDL_SCANCODE_S]) {
                     player1.move(0, 5, walls, hearts, enemies, stones, bushs, waters);
-                    //player1.tankTexture = IMG_LoadTexture(renderer, "player_down.png");
                 }
                 if (keystate[SDL_SCANCODE_A]) {
                     player1.move(-5, 0, walls, hearts, enemies, stones, bushs, waters);
-                    //player1.tankTexture = IMG_LoadTexture(renderer, "player_left.png");
                 }
                 if (keystate[SDL_SCANCODE_D]) {
                     player1.move(5, 0, walls, hearts, enemies, stones, bushs, waters);
-                    //player1.tankTexture = IMG_LoadTexture(renderer, "player_right.png");
                 }
                 if (keystate[SDL_SCANCODE_LCTRL]) {
                     player1.shoot(renderer);
@@ -153,19 +145,15 @@ void Game::handleEvents() {
                 if(mode == GameMode::PVP){
                     if (keystate[SDL_SCANCODE_UP]) {
                         player2.move(0, -5, walls, hearts, enemies, stones, bushs, waters);
-                        //player2.tankTexture = IMG_LoadTexture(renderer, "player_up.png");
                     }
                     if (keystate[SDL_SCANCODE_DOWN]) {
                         player2.move(0, 5, walls, hearts, enemies, stones, bushs, waters);
-                        //player2.tankTexture = IMG_LoadTexture(renderer, "player_down.png");
                     }
                     if (keystate[SDL_SCANCODE_LEFT]) {
                         player2.move(-5, 0, walls, hearts, enemies, stones, bushs, waters);
-                        //player2.tankTexture = IMG_LoadTexture(renderer, "player_left.png");
                     }
                     if (keystate[SDL_SCANCODE_RIGHT]) {
                         player2.move(5, 0, walls, hearts, enemies, stones, bushs, waters);
-                        //player2.tankTexture = IMG_LoadTexture(renderer, "player_right.png");
                     }
                     if (keystate[SDL_SCANCODE_SPACE]) { // Player 2 bắn đạn bằng phím Ctrl trái
                         player2.shoot(renderer);
@@ -188,6 +176,7 @@ void Game::update() {
         for (auto& bullet : enemy.bullets) {
             for (auto& wall : walls) {
                 if (wall.active && SDL_HasIntersection(&bullet.rect, &wall.rect)) {
+                    explosions.emplace_back(renderer, wall.x, wall.y);
                     wall.active = false;
                     bullet.active = false;
                     break;
@@ -198,6 +187,7 @@ void Game::update() {
     for (auto& bullet : player1.bullets) { // dan nguoi choi 1 ban tuong
         for (auto& wall : walls) {
             if (wall.active && SDL_HasIntersection(&bullet.rect, &wall.rect)) {
+                explosions.emplace_back(renderer, wall.x, wall.y); //emplace_back: khởi tạo cùng lúc push_back
                 wall.active = false;
                 bullet.active = false;
                 break;
@@ -207,6 +197,7 @@ void Game::update() {
     for (auto& bullet : player1.bullets) { // dan nguoi choi 1 ban da
         for (auto& stone : stones) {
             if (SDL_HasIntersection(&bullet.rect, &stone.rect)) {
+                explosions.emplace_back(renderer, bullet.x, bullet.y);
                 bullet.active = false;
                 break;
             }
@@ -218,7 +209,7 @@ void Game::update() {
     for (auto& bullet : player1.bullets) { // dan nguoi choi 1 ban dich
         for (auto& enemy : enemies) {
             if (enemy.active && SDL_HasIntersection(&bullet.rect, &enemy.rect)) {
-                SDL_RenderCopy(renderer, explosionTexture, nullptr, &enemy.rect);
+                explosions.emplace_back(renderer, enemy.x, enemy.y);
                 enemy.active = false;
                 bullet.active = false;
             }
@@ -228,6 +219,7 @@ void Game::update() {
         for (auto& bullet : enemy.bullets) {
             // Update
                 if (SDL_HasIntersection(&bullet.rect, &player1.rect)) {
+                    explosions.emplace_back(renderer, player1.x, player1.y);
                     bullet.active = false;
                     player1.RemainingLives -= 1;
                 }
@@ -253,15 +245,17 @@ void Game::update() {
         for (auto& bullet : player2.bullets) { // dan nguoi choi 2 ban tuong
             for (auto& wall : walls) {
                 if (wall.active && SDL_HasIntersection(&bullet.rect, &wall.rect)) {
+                    explosions.emplace_back(renderer, wall.x, wall.y);
                     wall.active = false;
                     bullet.active = false;
                     break;
                 }
             }
         }
-        for (auto& bullet : player2.bullets) { // dan nguoi choi 1 ban tuong
+        for (auto& bullet : player2.bullets) { // dan nguoi choi 2 ban da
             for (auto& stone : stones) {
                 if (SDL_HasIntersection(&bullet.rect, &stone.rect)) {
+                    explosions.emplace_back(renderer, bullet.x, bullet.y);
                     bullet.active = false;
                     break;
                 }
@@ -271,6 +265,7 @@ void Game::update() {
         for (auto& bullet : player2.bullets) { // dan nguoi choi 2 ban dich
             for (auto& enemy : enemies) {
                 if (enemy.active && SDL_HasIntersection(&bullet.rect, &enemy.rect)) {
+                    explosions.emplace_back(renderer, enemy.x, enemy.y);
                     enemy.active = false;
                     bullet.active = false;
                 }
@@ -283,10 +278,12 @@ void Game::update() {
             for (auto& bullet : enemy.bullets) {
                 // Update
                     if (SDL_HasIntersection(&bullet.rect, &player1.rect)) {
+                        explosions.emplace_back(renderer, player1.x, player1.y);
                         bullet.active = false;
                         player1.RemainingLives -= 1;
                     }
                     if (SDL_HasIntersection(&bullet.rect, &player2.rect)) {
+                        explosions.emplace_back(renderer, player2.x, player2.y);
                         bullet.active = false;
                         player2.RemainingLives -= 1;
                     }
@@ -307,6 +304,7 @@ void Game::update() {
 
         for (auto& bullet : player1.bullets) { // dan nguoi choi 1 ban nguoi choi 2
             if (SDL_HasIntersection(&bullet.rect, &player2.rect)) {
+                explosions.emplace_back(renderer, player2.x, player2.y);
                 state = WIN;
                 scoreP1 += 1;
                 initMode(mode);
@@ -315,6 +313,7 @@ void Game::update() {
 
         for (auto& bullet : player2.bullets) { // dan nguoi choi 2 ban nguoi choi 1
             if (SDL_HasIntersection(&bullet.rect, &player1.rect)) {
+                explosions.emplace_back(renderer, player1.x, player1.y);
                 state = WIN;
                 scoreP2 += 1;
                 initMode(mode);
@@ -349,7 +348,6 @@ void Game::render(){
             rect1 = {TILE_SIZE * 5, TILE_SIZE * 27.75, TILE_SIZE * 1.5, TILE_SIZE * 1.5};
             rect2 = {TILE_SIZE * 5, TILE_SIZE * 28.75, TILE_SIZE * 1.5, TILE_SIZE * 1.5};
             SDL_RenderCopy(renderer, RML1, nullptr, &rect1); // Hiển thị ảnh nền
-            if(mode == PVP) SDL_RenderCopy(renderer, RML2, nullptr, &rect2);
 
             renderLevel();
             //renderHeart();
@@ -360,6 +358,7 @@ void Game::render(){
 
                 if(mode == GameMode::PVP){
                     renderScore();
+                    SDL_RenderCopy(renderer, RML2, nullptr, &rect2);
                     player2.render(renderer);
                 }
 
@@ -389,6 +388,19 @@ void Game::render(){
                 for (auto& enemy : enemies) {
                     enemy.render(renderer);
                 }
+                for (auto it = explosions.begin(); it != explosions.end();) {
+                    if (it->isFinished()) {
+                        it = explosions.erase(it);
+                    } else {
+                        if(it->soundPlay){
+                            Mix_PlayChannel(-1, it->explosionSound, 0);
+                            it->soundPlay = false;
+                        }
+                        it->render(renderer);
+                        ++it;
+                    }
+                }
+
             SDL_RenderPresent(renderer); // hiển thị tất cả, phải có
     }
 
@@ -537,8 +549,8 @@ void Game::showMenu() {
         SDL_RenderPresent(renderer);
 
         // T?o các chuỗi menu
-        string options[2] = {"Start Game", "Exit"};
-        for (int i = 0; i < 2; ++i) {
+        string options[3] = {"Start Game", "Instruction", "Exit"};
+        for (int i = 0; i < 3; ++i) {
             SDL_Color color = (i == selectedOption) ? yellow : white;
             SDL_Surface* surface = TTF_RenderText_Blended(font, options[i].c_str(), color);
             SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
@@ -559,15 +571,19 @@ void Game::showMenu() {
             } else if (event.type == SDL_KEYDOWN) {
                 switch (event.key.keysym.sym) {
                     case SDLK_UP:
-                        selectedOption = (selectedOption - 1 + 2) % 2;
+                        selectedOption = (selectedOption - 1 + 3) % 3;
                         break;
                     case SDLK_DOWN:
-                        selectedOption = (selectedOption + 1) % 2;
+                        selectedOption = (selectedOption + 1) % 3;
                         break;
                     case SDLK_RETURN:
                     case SDLK_KP_ENTER:
                         if (selectedOption == 0) {
                             ChooseMode();
+                            inMenu = false;
+                        }
+                        else if (selectedOption == 1){
+                            renderInstruction();
                             inMenu = false;
                         }
                         else {
@@ -651,7 +667,60 @@ void Game::ChooseMode(){
             }
         }
 
-        SDL_Delay(100); // Làm ch?m vòng l?p m?t chút cho d? nhìn
+        SDL_Delay(100); // Làm chậm vòng lăp một chút cho dễ nhìn
+    }
+}
+void Game::renderInstruction(){
+    if(state != MENU) return;
+    bool renderInstruction = true;
+    SDL_Event event;
+
+    while (renderInstruction){
+        SDL_RenderClear(renderer);// 👈 vẽ menu
+        SDL_RenderCopy(renderer, menuTexture, nullptr, nullptr); // Hiển thị ảnh nền
+
+        SDL_Color color = {255, 255, 255}; // Màu trắng
+
+        const char* instructions[] = {
+            "PLAYER 1: "
+            " WASD: Move",
+            " LEFT_CONTROL: Shoot",
+            "PLAYER 2: ",
+            " U,D,L,R: Move",
+            " SPACE: Shoot",
+            "*Note: If you wanna go back to MENU at any time, press ENTER*"
+        };
+
+        int y = 100;
+        for (const char* text : instructions) {
+            SDL_Surface* surface = TTF_RenderText_Blended(font, text, color);
+            SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+            SDL_Rect dstRect = {SCREEN_WIDTH/2, y, surface->w, surface->h};
+
+            SDL_RenderCopy(renderer, texture, nullptr, &dstRect);
+
+            SDL_FreeSurface(surface);
+            SDL_DestroyTexture(texture);
+
+            y += 30; // Khoảng cách giữa các dòng
+        }
+        SDL_RenderPresent(renderer);
+
+            while (SDL_PollEvent(&event)) {
+                if (event.type == SDL_QUIT) {
+                    running = false;
+                    renderInstruction = false;
+                    return;
+                } else if (event.type == SDL_KEYDOWN) {
+                    switch (event.key.keysym.sym) {
+                        case SDLK_RETURN:
+                            renderInstruction = false;
+                            showMenu();
+                            break;
+                    }
+                }
+            }
+        SDL_Delay(100);
     }
 }
 void Game::initMode(GameMode mode){
