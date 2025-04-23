@@ -15,6 +15,8 @@
 #include "Map.h"
 using namespace std;
 
+class EnemyTank;
+
 class PlayerTank{
 public:
     int x,y;

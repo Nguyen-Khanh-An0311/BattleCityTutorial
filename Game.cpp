@@ -166,7 +166,7 @@ void Game::handleEvents() {
 void Game::update() {
     player1.updateBullets();
     for (auto& enemy : enemies) { // cap nhat dan của dich
-        enemy.move(walls, renderer,stones, bushs, waters);
+        enemy.move(walls, renderer,stones, bushs, waters, player1);
         enemy.updateBullets();
         if (rand() % 100 < 2) {
             enemy.shoot(renderer);
