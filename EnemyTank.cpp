@@ -13,80 +13,21 @@ EnemyTank::EnemyTank(int startX, int startY, SDL_Renderer* renderer) {
         active = true;
     }
 
-/*void EnemyTank::move(const vector<Wall>& walls, SDL_Renderer* renderer,
-                     vector<Stone>& stones, vector<Bush>& bushs, vector<Water>& waters) {
-    if (--moveDelay > 0) return;
-    moveDelay = 100;
-    int r = rand() % 4;
-    if (r == 0) { // Up
-        this->dirX = 0;
-        this->dirY = -40;
-        //tankTexture = IMG_LoadTexture(renderer, "enemy_up.png");
-    }
-    else if (r == 1) { // Down
-        this->dirX = 0;
-        this->dirY = 40;
-        //tankTexture = IMG_LoadTexture(renderer, "enemy_down.png");
-    }
-    else if (r == 2) { // Left
-        this->dirY = 0;
-        this->dirX = -40;
-        //tankTexture = IMG_LoadTexture(renderer, "enemy_left.png");
-    }
-    else if (r == 3) { // Right
-        this->dirY = 0;
-        this->dirX = 40;
-        //tankTexture = IMG_LoadTexture(renderer, "enemy_right.png");
-    }
-    if (dirX > 0) angle = 90;
-    else if (dirX < 0) angle = 270;
-    else if (dirY > 0) angle = 180;
-    else angle = 0;
-
-    int newX = x + dirX;
-    int newY = y + dirY;
-
-    SDL_Rect newRect = { newX, newY, TILE_SIZE, TILE_SIZE };
-    for (int i = 0; i < walls.size(); i++) {
-        if (walls[i].active && SDL_HasIntersection(&newRect, &walls[i].rect)) {
-            return; // Prevent movement if colliding with a wall
-        }
-    }
-    for (int i = 0; i < stones.size(); i++) {
-        if (SDL_HasIntersection(&newRect, &stones[i].rect)) {
-            return; // Prevent movement if colliding with a wall
-        }
-    }
-    for (int i = 0; i < waters.size(); i++) {
-        if (SDL_HasIntersection(&newRect, &waters[i].rect)) {
-            return; // Prevent movement if colliding with a wall
-        }
-    }
-
-    if (newX >= TILE_SIZE && newX <= SCREEN_WIDTH  &&
-        newY >= TILE_SIZE && newY <= SCREEN_HEIGHT ) {
-        x = newX;
-        y = newY;
-        rect.x = x;
-        rect.y = y;
-    }
-
-
-}*/
-
 void EnemyTank::move(const vector<Wall>& walls, SDL_Renderer* renderer,
                      vector<Stone>& stones, vector<Bush>& bushs, vector<Water>& waters,
-                     PlayerTank& player) {
+                     Base base) {
     if (--moveDelay > 0) return;
     moveDelay = 50;
 
 
-    if (abs(player.x - x) > abs(player.y - y)) {
+    if (abs(base.x - x) > abs(base.y - y)) {
         // Ưu tiên trục ngang
-        dirX = (player.x > x) ? 20 : -20;
+        dirX = (base.x > x) ? 20 : -20;
+        dirY = 0;
     } else {
         // Ưu tiên trục dọc
-        dirY = (player.y > y) ? 20 : -20;
+        dirY = (base.y > y) ? 20 : -20;
+        dirX = 0;
     }
 
     // Cập nhật hướng và góc

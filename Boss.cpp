@@ -1,86 +1,23 @@
 #include "Boss.h"
 
-Boss::Boss(){}
-
-Boss::Boss(int startX, int startY, SDL_Renderer* renderer) {
-        moveDelay = 100; // Delay for movement
-        shootDelay = 5; // Delay for shooting
-        x = startX;
-        y = startY;
-        rect = {x, y, TILE_SIZE*3, TILE_SIZE*3};
-        tankTexture = IMG_LoadTexture(renderer, "enemy_up.png");
-        dirX = 0;
-        dirY = 1;
-        active = true;
-    }
-
-void Boss::move(const vector<Wall>& walls, SDL_Renderer* renderer) {
-    if (--moveDelay > 0) return;
-    moveDelay = 100;
-    int r = rand() % 4;
-    if (r == 0) { // Up
-        this->dirX = 0;
-        this->dirY = -20;
-        tankTexture = IMG_LoadTexture(renderer, "enemy_up.png");
-    }
-    else if (r == 1) { // Down
-        this->dirX = 0;
-        this->dirY = 20;
-        tankTexture = IMG_LoadTexture(renderer, "enemy_down.png");
-    }
-    else if (r == 2) { // Left
-        this->dirY = 0;
-        this->dirX = -20;
-        tankTexture = IMG_LoadTexture(renderer, "enemy_left.png");
-    }
-    else if (r == 3) { // Right
-        this->dirY = 0;
-        this->dirX = 20;
-        tankTexture = IMG_LoadTexture(renderer, "enemy_right.png");
-    }
-
-    int newX = x + dirX;
-    int newY = y + dirY;
-    /*this->dirX = dx;
-    this->dirY = dy;*/
-
-    SDL_Rect newRect = { newX, newY, TILE_SIZE, TILE_SIZE };
-    for (int i = 0; i < walls.size(); i++) {
-        if (walls[i].active && SDL_HasIntersection(&newRect, &walls[i].rect)) {
-            return; // Prevent movement if colliding with a wall
+FireBoss::FireBoss(int x, int y, SDL_Renderer* renderer) : Boss(x, y) {
+        // Load ảnh riêng
+    texture = IMG_LoadTexture(renderer, "Image//fire_monster_chosen.png");
+    name = "FireBoss";
+}
+void FireBoss::update() {
+    // Hành vi tấn công bắn đạn lửa
+    //cout << "FireBoss update\n";
+    return;
+}
+void FireBoss::render(SDL_Renderer* renderer) {
+        Uint32 now = SDL_GetTicks();
+        if (now - lastFrameTime >= FRAME_DURATION) {
+            currentFrame = (currentFrame + 1) % FRAME_COUNT;
+            lastFrameTime = now;
         }
-    }
 
-    if (newX >= TILE_SIZE && newX <= SCREEN_WIDTH  &&
-        newY >= TILE_SIZE && newY <= SCREEN_HEIGHT ) {
-        x = newX;
-        y = newY;
-        rect.x = x;
-        rect.y = y;
-    }
-
-
+        SDL_Rect srcRect = { currentFrame * FRAME_WIDTH, 0, FRAME_WIDTH, FRAME_HEIGHT };
+        SDL_RenderCopy(renderer, texture, &srcRect, &destRect);
+        SDL_Delay(16);// dieu chinh fps = 60
 }
-
-void Boss::shoot() {
-    if (--shootDelay > 0) return;
-    shootDelay = 5;
-    bullets.push_back(Bullet(x + TILE_SIZE / 2 - 5, y + TILE_SIZE / 2 - 5,
-                             this->dirX, this->dirY));
-}
-
-void Boss::updateBullets() {
-    for (auto &bullet : bullets) {
-        bullet.move();
-    }
-    bullets.erase(std::remove_if(bullets.begin(), bullets.end(),
-                 [](Bullet &b) { return !b.active; }), bullets.end());
-}
-
-void Boss::render(SDL_Renderer* renderer) {
-    SDL_RenderCopy(renderer, tankTexture, nullptr, &rect);
-    for (auto &bullet : bullets) {
-        bullet.render(renderer);
-    }
-}
-

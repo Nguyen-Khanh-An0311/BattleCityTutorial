@@ -10,6 +10,7 @@
 #include "Statistics.h"
 #include "Map.h"
 #include "PlayerTank.h"
+#include "Base.h"
 using namespace std;
 
 class PlayerTank;
@@ -26,7 +27,7 @@ public:
     vector<Bullet> bullets;
 
     EnemyTank(int, int, SDL_Renderer*);
-    void move(const vector<Wall>&, SDL_Renderer*,vector<Stone>&, vector<Bush>&, vector<Water>&, PlayerTank&);
+    void move(const vector<Wall>&, SDL_Renderer*,vector<Stone>&, vector<Bush>&, vector<Water>&, Base);
     void shoot(SDL_Renderer*);
     void updateBullets();
     void render(SDL_Renderer*);

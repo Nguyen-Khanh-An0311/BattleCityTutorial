@@ -1,31 +1,38 @@
 #ifndef BOSS_H_INCLUDED
 #define BOSS_H_INCLUDED
-
-#include <iostream>
+#include <bits/stdc++.h>
+#include <SDL.h>
 #include <SDL_image.h>
-#include <vector>
-#include <algorithm>
-#include "Bullet.h"
-#include "Wall.h"
 #include "Statistics.h"
 using namespace std;
 
-class Boss{
+const int FRAME_WIDTH = 64;
+const int FRAME_HEIGHT = 64;
+const int FRAME_COUNT = 9;
+const Uint32 FRAME_DURATION = 150;
+
+
+class Boss {
 public:
     int x, y;
-    int dirX, dirY;
-    int moveDelay, shootDelay;
-    SDL_Rect rect;
-    SDL_Texture* tankTexture;
-    bool active;
-    vector<Bullet> bullets;
+    string name;
+    bool active = true;
+    SDL_Texture* texture;
+    int currentFrame = 0;
+    Uint32 lastFrameTime = SDL_GetTicks();
+    SDL_Rect destRect = {x, y, TILE_SIZE * 5, TILE_SIZE * 5 };
 
-    Boss();
-    Boss(int, int, SDL_Renderer*);
-    void move(const vector<Wall>&, SDL_Renderer*);
-    void shoot();
-    void updateBullets();
-    void render(SDL_Renderer*);
+    Boss(int x, int y) : x(x), y(y) {}
+    virtual void update() = 0; // hàm ảo để overide
+    virtual void render(SDL_Renderer* renderer) = 0;
+    virtual ~Boss() {}
+};
+
+class FireBoss : public Boss {
+public:
+    FireBoss(int x, int y, SDL_Renderer* renderer);
+    void update() override;
+    void render(SDL_Renderer* renderer) override ;
 };
 
 

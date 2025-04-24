@@ -28,6 +28,7 @@ PlayerTank::PlayerTank(int startX, int startY, SDL_Renderer* renderer, const cha
 
         dirX = 0;
         dirY = -1; // Default direction up
+        active = true;
     }
 
 PlayerTank::PlayerTank(){};
@@ -47,62 +48,64 @@ void PlayerTank::updateBullets() {
 
 void PlayerTank::move(int dx, int dy, const vector<Wall>& walls, vector<Heart>& hearts, vector<EnemyTank>& enemies,
                       vector<Stone>& stones, vector<Bush>& bushs, vector<Water>& waters) {
-    int newX = x + dx;
-    int newY = y + dy;
-    this->dirX = dx;
-    this->dirY = dy;
+    if(active){
+        int newX = x + dx;
+        int newY = y + dy;
+        this->dirX = dx;
+        this->dirY = dy;
 
-    if (dx >0) angle = 90;
-    else if (dx <0) angle = 270;
-    else if (dy >0) angle = 180;
-    else angle = 0;
+        if (dx >0) angle = 90;
+        else if (dx <0) angle = 270;
+        else if (dy >0) angle = 180;
+        else angle = 0;
 
-    SDL_Rect newRect = { newX, newY, TILE_SIZE, TILE_SIZE };
-    for (int i = 0; i < walls.size(); i++) {
-        if (walls[i].active && SDL_HasIntersection(&newRect, &walls[i].rect)) {
-            return; // Prevent movement if colliding with a wall
+        SDL_Rect newRect = { newX, newY, TILE_SIZE, TILE_SIZE };
+        for (int i = 0; i < walls.size(); i++) {
+            if (walls[i].active && SDL_HasIntersection(&newRect, &walls[i].rect)) {
+                return; // Prevent movement if colliding with a wall
+            }
         }
-    }
-    for (int i = 0; i < stones.size(); i++) {
-        if (SDL_HasIntersection(&newRect, &stones[i].rect)) {
-            return;
+        for (int i = 0; i < stones.size(); i++) {
+            if (SDL_HasIntersection(&newRect, &stones[i].rect)) {
+                return;
+            }
         }
-    }
-    for (int i = 0; i < waters.size(); i++) {
-        if (SDL_HasIntersection(&newRect, &waters[i].rect)) {
-            return;
+        for (int i = 0; i < waters.size(); i++) {
+            if (SDL_HasIntersection(&newRect, &waters[i].rect)) {
+                return;
+            }
         }
-    }
 
-    for (int i = 0; i < enemies.size(); i++) {
-        if (enemies[i].active && SDL_HasIntersection(&newRect, &enemies[i].rect)) {
-            return; // Prevent movement if colliding with a wall
+        for (int i = 0; i < enemies.size(); i++) {
+            if (enemies[i].active && SDL_HasIntersection(&newRect, &enemies[i].rect)) {
+                return; // Prevent movement if colliding with a wall
+            }
         }
-    }
 
-    if (newX >= TILE_SIZE && newX <= MAP_WIDTH * TILE_SIZE  &&
-        newY >= TILE_SIZE && newY <= MAP_HEIGHT * TILE_SIZE ) {
-        x = newX;
-        y = newY;
-        rect.x = x;
-        rect.y = y;
-    }
+        if (newX >= TILE_SIZE && newX <= MAP_WIDTH * TILE_SIZE  &&
+            newY >= TILE_SIZE && newY <= MAP_HEIGHT * TILE_SIZE ) {
+            x = newX;
+            y = newY;
+            rect.x = x;
+            rect.y = y;
+        }
 
-    for(int i=0; i<hearts.size(); i++){
-        if (hearts[i].active && SDL_HasIntersection(&newRect, &hearts[i].rect) ){
-            hearts[i].active = false;
-            RemainingLives += 1;
-            //hearts.erase(hearts.begin() + i);
-            break;
+        for(int i=0; i<hearts.size(); i++){
+            if (hearts[i].active && SDL_HasIntersection(&newRect, &hearts[i].rect) ){
+                hearts[i].active = false;
+                RemainingLives += 1;
+                //hearts.erase(hearts.begin() + i);
+                break;
+            }
         }
     }
 }
 
 void PlayerTank::render(SDL_Renderer* renderer){
-    //SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
-    //SDL_RenderFillRect(renderer, &rect);
-    SDL_RenderCopyEx(renderer, tankTexture, nullptr, &rect, angle, nullptr, SDL_FLIP_NONE);
-    for (auto &bullet : bullets) {
-        bullet.render(renderer);
+    if(active){
+        SDL_RenderCopyEx(renderer, tankTexture, nullptr, &rect, angle, nullptr, SDL_FLIP_NONE);
+        for (auto &bullet : bullets) {
+            bullet.render(renderer);
+        }
     }
 }

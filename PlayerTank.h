@@ -27,6 +27,7 @@ public:
 
     int dirX, dirY;
     int RemainingLives;
+    bool active;
     vector<Bullet> bullets;
 
     PlayerTank(int, int, SDL_Renderer*, const char*);

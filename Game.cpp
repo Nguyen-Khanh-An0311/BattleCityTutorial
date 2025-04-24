@@ -31,8 +31,6 @@ Game::Game(){
                 cout << "Failed to load font: " << TTF_GetError() << std::endl;
             }
 
-
-
             window = SDL_CreateWindow(
                 "Battle City",
                 SDL_WINDOWPOS_CENTERED,
@@ -51,6 +49,10 @@ Game::Game(){
                 cout << "Renderer could not be created! SDL_Erroe: " << SDL_GetError() << endl;
                 running = false;
             }
+
+            base = Base((MAP_WIDTH / 2)*TILE_SIZE, (MAP_HEIGHT - 1)*TILE_SIZE, renderer);
+            gateOut = Gate(renderer);
+
             backgroundMusic = Mix_LoadMUS("Sound//Soundtrack.mp3");
             if (!backgroundMusic) {
                 cout << "Failed to load music! Error: " << Mix_GetError() << endl;
@@ -112,14 +114,14 @@ void Game::run() {
 }
 
 void Game::handleEvents() {
-        SDL_Event event;
+        /*SDL_Event event;
         const Uint8* keystate = SDL_GetKeyboardState(NULL); // Lấy trạng thái bàn phím
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
                 running = false;
                 break;
             }
-            else if (state == PLAYING && event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN) {
+            else if (state == PLAYING && event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) {
                 state = MENU;
             }
             else if(event.type == SDL_KEYDOWN){
@@ -127,16 +129,16 @@ void Game::handleEvents() {
                 if (keystate[SDL_SCANCODE_W]) {
                     player1.move(0, -5, walls, hearts, enemies, stones, bushs, waters);
                 }
-                if (keystate[SDL_SCANCODE_S]) {
+                else if (keystate[SDL_SCANCODE_S]) {
                     player1.move(0, 5, walls, hearts, enemies, stones, bushs, waters);
                 }
-                if (keystate[SDL_SCANCODE_A]) {
+                else if (keystate[SDL_SCANCODE_A]) {
                     player1.move(-5, 0, walls, hearts, enemies, stones, bushs, waters);
                 }
-                if (keystate[SDL_SCANCODE_D]) {
+                else if (keystate[SDL_SCANCODE_D]) {
                     player1.move(5, 0, walls, hearts, enemies, stones, bushs, waters);
                 }
-                if (keystate[SDL_SCANCODE_LCTRL]) {
+                else if (keystate[SDL_SCANCODE_LCTRL]) {
                     player1.shoot(renderer);
                     Mix_PlayChannel(-1, shootSound, 0);
                 }
@@ -146,27 +148,108 @@ void Game::handleEvents() {
                     if (keystate[SDL_SCANCODE_UP]) {
                         player2.move(0, -5, walls, hearts, enemies, stones, bushs, waters);
                     }
-                    if (keystate[SDL_SCANCODE_DOWN]) {
+                    else if (keystate[SDL_SCANCODE_DOWN]) {
                         player2.move(0, 5, walls, hearts, enemies, stones, bushs, waters);
                     }
-                    if (keystate[SDL_SCANCODE_LEFT]) {
+                    else if (keystate[SDL_SCANCODE_LEFT]) {
                         player2.move(-5, 0, walls, hearts, enemies, stones, bushs, waters);
                     }
-                    if (keystate[SDL_SCANCODE_RIGHT]) {
+                    else if (keystate[SDL_SCANCODE_RIGHT]) {
                         player2.move(5, 0, walls, hearts, enemies, stones, bushs, waters);
                     }
-                    if (keystate[SDL_SCANCODE_SPACE]) { // Player 2 bắn đạn bằng phím Ctrl trái
+                    else if (keystate[SDL_SCANCODE_SPACE]) { // Player 2 bắn đạn bằng phím Ctrl trái
                         player2.shoot(renderer);
                         Mix_PlayChannel(-1, shootSound, 0);
                     }
                 }
             }
+        }*/
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+        if (event.type == SDL_QUIT) {
+            running = false;
+        } else if (event.type == SDL_KEYDOWN) {
+            switch (event.key.keysym.sym) {
+                case SDL_SCANCODE_LCTRL:
+                    player1.shoot(renderer);
+                    if (Mix_PlayChannel(-1, shootSound, 0) == -1) {
+                        cerr << "Failed to play sound: " << Mix_GetError() << endl;
+                    }
+                    break;
+                case SDL_SCANCODE_SPACE:
+                    if(mode == PVP){
+                        player2.shoot(renderer);
+                    }
+                    break;
+
+                case SDLK_ESCAPE:
+                    state = MENU;
+                    break;
+            }
         }
     }
+
+    // Xử lý giữ phím để di chuyển mượt hơn
+    const Uint8* keystates = SDL_GetKeyboardState(NULL);
+
+    // Player 1
+                if (keystates[SDL_SCANCODE_W]) {
+                    player1.move(0, -5, walls, hearts, enemies, stones, bushs, waters);
+                }
+                else if (keystates[SDL_SCANCODE_S]) {
+                    player1.move(0, 5, walls, hearts, enemies, stones, bushs, waters);
+                }
+                else if (keystates[SDL_SCANCODE_A]) {
+                    player1.move(-5, 0, walls, hearts, enemies, stones, bushs, waters);
+                }
+                else if (keystates[SDL_SCANCODE_D]) {
+                    player1.move(5, 0, walls, hearts, enemies, stones, bushs, waters);
+                }
+                else if (keystates[SDL_SCANCODE_LCTRL]) {
+                    player1.shoot(renderer);
+                }
+
+    // Player 2
+                if(mode == PVP){
+                    if (keystates[SDL_SCANCODE_UP]) {
+                        player2.move(0, -5, walls, hearts, enemies, stones, bushs, waters);
+                    }
+                    else if (keystates[SDL_SCANCODE_DOWN]) {
+                        player2.move(0, 5, walls, hearts, enemies, stones, bushs, waters);
+                    }
+                    else if (keystates[SDL_SCANCODE_LEFT]) {
+                        player2.move(-5, 0, walls, hearts, enemies, stones, bushs, waters);
+                    }
+                    else if (keystates[SDL_SCANCODE_RIGHT]) {
+                        player2.move(5, 0, walls, hearts, enemies, stones, bushs, waters);
+                    }
+                    else if (keystates[SDL_SCANCODE_SPACE]) {
+                        player2.shoot(renderer);
+                    }
+    }
+}
 void Game::update() {
     player1.updateBullets();
+    currentBoss->update();
+            if (gateOut.active) {
+                SDL_Rect gateRect = gateOut.getRect();
+                if(mode == PVE){
+                    if (SDL_HasIntersection(&player1.rect, &gateRect)) {
+                        gateOut.active = false;
+                        state = WIN;
+                        initMode(mode); // gọi lại để load map mới
+                    }
+                }
+                else {
+                    if (SDL_HasIntersection(&player1.rect, &gateRect) && SDL_HasIntersection(&player2.rect, &gateRect)) {
+                        gateOut.active = false;
+                        state = WIN;
+                        initMode(mode); // gọi lại để load map mới
+                    }
+                }
+            }
     for (auto& enemy : enemies) { // cap nhat dan của dich
-        enemy.move(walls, renderer,stones, bushs, waters, player1);
+        enemy.move(walls, renderer,stones, bushs, waters, base);
         enemy.updateBullets();
         if (rand() % 100 < 2) {
             enemy.shoot(renderer);
@@ -184,6 +267,19 @@ void Game::update() {
             }
         }
     }
+
+    for (auto& enemy : enemies) { // dan dich ban tru
+        for (auto& bullet : enemy.bullets) {
+            if (base.active && SDL_HasIntersection(&bullet.rect, &base.rect)) {
+                explosions.emplace_back(renderer, base.x, base.y);
+                bullet.active = false;
+                base.active = false;
+                state = SHOW_WINNER;
+                break;
+            }
+        }
+    }
+
     for (auto& bullet : player1.bullets) { // dan nguoi choi 1 ban tuong
         for (auto& wall : walls) {
             if (wall.active && SDL_HasIntersection(&bullet.rect, &wall.rect)) {
@@ -204,8 +300,6 @@ void Game::update() {
         }
     }
 
-
-
     for (auto& bullet : player1.bullets) { // dan nguoi choi 1 ban dich
         for (auto& enemy : enemies) {
             if (enemy.active && SDL_HasIntersection(&bullet.rect, &enemy.rect)) {
@@ -215,6 +309,7 @@ void Game::update() {
             }
         }
     }
+
     for (auto& enemy : enemies) { // dan dich ban nguoi choi 1
         for (auto& bullet : enemy.bullets) {
             // Update
@@ -224,22 +319,18 @@ void Game::update() {
                     player1.RemainingLives -= 1;
                 }
                 if(player1.RemainingLives == 0){
-                    scoreP1 = 0;
-                    state = GAME_OVER;
-                    initMode(mode);
-                    return;
+                    player1.active = false;
                 }
             }
         }
 
     if(mode == GameMode::PVE){
-        if (enemies.empty()) {
-            state = WIN;
-            scoreP1++;
-            initMode(mode);
+        if (!player1.active) {
+            state = SHOW_WINNER;
+            return;
         }
     }
-    else{
+    else {
         player2.updateBullets();
 
         for (auto& bullet : player2.bullets) { // dan nguoi choi 2 ban tuong
@@ -272,53 +363,31 @@ void Game::update() {
             }
         }
 
-
-
-        for (auto& enemy : enemies) { // dan dich ban nguoi choi 1, 2
+        for (auto& enemy : enemies) { // dan dich ban nguoi choi 2
             for (auto& bullet : enemy.bullets) {
                 // Update
-                    if (SDL_HasIntersection(&bullet.rect, &player1.rect)) {
-                        explosions.emplace_back(renderer, player1.x, player1.y);
-                        bullet.active = false;
-                        player1.RemainingLives -= 1;
-                    }
                     if (SDL_HasIntersection(&bullet.rect, &player2.rect)) {
                         explosions.emplace_back(renderer, player2.x, player2.y);
                         bullet.active = false;
                         player2.RemainingLives -= 1;
                     }
-                    if(player1.RemainingLives == 0){
-                        scoreP2++;
-                        state = GAME_OVER;
-                        initMode(mode);
-                        return;
-                    }
                     else if(player2.RemainingLives == 0){
-                        scoreP1++;
-                        state = GAME_OVER;
-                        initMode(mode);
+                        player2.active = false;
                         return;
                     }
                 }
             }
 
-        for (auto& bullet : player1.bullets) { // dan nguoi choi 1 ban nguoi choi 2
-            if (SDL_HasIntersection(&bullet.rect, &player2.rect)) {
-                explosions.emplace_back(renderer, player2.x, player2.y);
-                state = WIN;
-                scoreP1 += 1;
-                initMode(mode);
-            }
+        //xet thua cuoc
+        if(!player1.active && !player2.active){
+            state = SHOW_WINNER;
+            return;
         }
+    }
 
-        for (auto& bullet : player2.bullets) { // dan nguoi choi 2 ban nguoi choi 1
-            if (SDL_HasIntersection(&bullet.rect, &player1.rect)) {
-                explosions.emplace_back(renderer, player1.x, player1.y);
-                state = WIN;
-                scoreP2 += 1;
-                initMode(mode);
-            }
-        }
+    //xet thang cuoc
+    if(enemies.empty()){
+        gateOut.spawn((MAP_WIDTH/2)*TILE_SIZE, (MAP_HEIGHT/2)*TILE_SIZE);
     }
 
     enemies.erase(std::remove_if(enemies.begin(), enemies.end(),
@@ -352,6 +421,8 @@ void Game::render(){
             renderLevel();
             //renderHeart();
             renderRemainingLive(mode);
+            if(currentBoss->active) currentBoss->render(renderer);
+            base.render(renderer);
 
 
                 player1.render(renderer);
@@ -399,6 +470,9 @@ void Game::render(){
                         it->render(renderer);
                         ++it;
                     }
+                }
+                if(gateOut.active){
+                    gateOut.render(renderer);
                 }
 
             SDL_RenderPresent(renderer); // hiển thị tất cả, phải có
@@ -458,12 +532,11 @@ void Game::renderHeart(){
 void Game::renderWinner(){
     SDL_Color color = {255, 255, 0}; // Vàng rực rỡ
     SDL_Surface* textSurface;
-    if(mode == PVE){
+    if(enemies.empty() && base.active){
         textSurface = TTF_RenderText_Blended(font, "YOU WIN!!!", color);
     }
     else {
-        if(scoreP1 > scoreP2) textSurface = TTF_RenderText_Blended(font, "PLAYER 1 WIN!!!", color);
-        else if(scoreP1 < scoreP2) textSurface = TTF_RenderText_Blended(font, "PLAYER 2 WIN!!!", color);
+        textSurface = TTF_RenderText_Blended(font, "GAME OVER!!!", color);
     }
 
     SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
@@ -732,6 +805,7 @@ void Game::initMode(GameMode mode){
     gameMap.bushs.clear();
     gameMap.stones.clear();
     gameMap.ices.clear();
+    gateOut.active = false;
     if(level == 2){
         state = SHOW_WINNER;
         return;
@@ -740,6 +814,8 @@ void Game::initMode(GameMode mode){
     player1.imgLink = "Image//player1.png";
     player2.imgLink = "Image//player2.png";
     player1 = PlayerTank(TILE_SIZE*10 - 1, MAP_HEIGHT * TILE_SIZE - 1, renderer, player1.imgLink);
+    base = Base((MAP_WIDTH / 2)*TILE_SIZE, (MAP_HEIGHT - 1)*TILE_SIZE, renderer);
+    spawnBoss();
     string filename;
 
     if(mode == GameMode::PVP){
@@ -774,6 +850,7 @@ void Game::initMode(GameMode mode){
         spawnHearts();
         spawnEnemies();
     }
+    spawnBoss();
     state = PLAYING;
 }
 
@@ -819,10 +896,28 @@ void Game::spawnEnemies() {
                     validPosition = false;
                 }
             }
+            for (auto& stone : stones) {
+                if (stone.x == ex && stone.y == ey) {
+                    validPosition = false;
+                }
+            }
         }
         enemies.push_back(EnemyTank(ex, ey, renderer));
     }
 }
+
+void Game::spawnBoss(){
+    /*switch (level) {
+        case 0:
+            currentBoss = make_unique<FireBoss>((MAP_WIDTH/2)*TILE_SIZE, (MAP_HEIGHT/2)*TILE_SIZE, renderer);
+        case 1:
+            currentBoss = make_unique<FireBoss>((MAP_WIDTH/2)*TILE_SIZE, (MAP_HEIGHT/2)*TILE_SIZE, renderer); break; // khởi tại cho unique_ptr
+        default:
+            return;
+    }*/
+    currentBoss = make_unique<FireBoss>((MAP_WIDTH/2) * TILE_SIZE, (MAP_HEIGHT/2) * TILE_SIZE, renderer);
+}
+
 Game::~Game(){
             SDL_DestroyTexture(menuTexture);
             IMG_Quit();

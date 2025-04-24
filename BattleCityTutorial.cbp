@@ -31,6 +31,10 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="Base.cpp" />
+		<Unit filename="Base.h" />
+		<Unit filename="Boss.cpp" />
+		<Unit filename="Boss.h" />
 		<Unit filename="Bullet.cpp" />
 		<Unit filename="Bullet.h" />
 		<Unit filename="Bush.cpp" />
@@ -41,6 +45,8 @@
 		<Unit filename="Explosion.h" />
 		<Unit filename="Game.cpp" />
 		<Unit filename="Game.h" />
+		<Unit filename="Gate.cpp" />
+		<Unit filename="Gate.h" />
 		<Unit filename="Heart.cpp" />
 		<Unit filename="Heart.h" />
 		<Unit filename="Ice.cpp" />

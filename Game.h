@@ -1,3 +1,5 @@
+#include <bits/stdc++.h>
+#include <memory>
 #include <iostream>
 #include <SDL.h>
 #include <SDL_mixer.h>
@@ -11,6 +13,9 @@
 #include "Map.h"
 #include "Boss.h"
 #include "Explosion.h"
+#include "Boss.h"
+#include "Base.h"
+#include "Gate.h"
 using namespace std;
 
 
@@ -72,6 +77,9 @@ public:
     void generateWalls();
     void spawnEnemies();
     void spawnHearts();
+    void spawnBoss();
+    Base base;
+    Gate gateOut;
     PlayerTank player1;
     int scoreP1;
     PlayerTank player2;
@@ -87,4 +95,5 @@ public:
     vector<Stone> stones;
     vector<Ice> ices;
     vector<Explosion> explosions;
+    unique_ptr<Boss> currentBoss;
 };
