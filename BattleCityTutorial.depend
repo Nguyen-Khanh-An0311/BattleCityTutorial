@@ -5,7 +5,7 @@
 	"Game.h"
 	"Statistics.h"
 
-1745548463 c:\users\admin\documents\dev\battlecitytutorial\game.h
+1745597124 c:\users\admin\documents\dev\battlecitytutorial\game.h
 	<bits/stdc++.h>
 	<memory>
 	<iostream>
@@ -35,7 +35,7 @@
 	"Statistics.h"
 	<SDL_image.h>
 
-1745551279 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
+1745602915 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
 	"Game.h"
 
 1745469224 c:\users\admin\documents\dev\battlecitytutorial\playertank.h
@@ -51,7 +51,7 @@
 	"EnemyTank.h"
 	"Map.h"
 
-1745469224 source:c:\users\admin\documents\dev\battlecitytutorial\playertank.cpp
+1745603760 source:c:\users\admin\documents\dev\battlecitytutorial\playertank.cpp
 	"PlayerTank.h"
 
 1745152614 source:c:\users\admin\documents\dev\battlecitytutorial\bullet.cpp
@@ -75,7 +75,7 @@
 	"PlayerTank.h"
 	"Base.h"
 
-1745505567 source:c:\users\admin\documents\dev\battlecitytutorial\enemytank.cpp
+1745603106 source:c:\users\admin\documents\dev\battlecitytutorial\enemytank.cpp
 	"EnemyTank.h"
 
 1742440092 c:\users\admin\documents\dev\battlecitytutorial\statistics.h
@@ -109,14 +109,15 @@
 1744563966 source:c:\users\admin\documents\dev\battlecitytutorial\map.cpp
 	"Map.h"
 
-1745552252 source:c:\users\admin\documents\dev\battlecitytutorial\boss.cpp
+1745603239 source:c:\users\admin\documents\dev\battlecitytutorial\boss.cpp
 	"Boss.h"
 
-1745554612 c:\users\admin\documents\dev\battlecitytutorial\boss.h
+1745602200 c:\users\admin\documents\dev\battlecitytutorial\boss.h
 	<bits/stdc++.h>
 	<SDL.h>
 	<SDL_image.h>
 	"Statistics.h"
+	"Effect.h"
 
 1744556335 c:\users\admin\documents\dev\battlecitytutorial\water.h
 	<iostream>
@@ -464,11 +465,18 @@
 1745477972 source:c:\users\admin\documents\dev\battlecitytutorial\base.cpp
 	"Base.h"
 
-1745487229 c:\users\admin\documents\dev\battlecitytutorial\gate.h
+1745605651 c:\users\admin\documents\dev\battlecitytutorial\gate.h
 	<bits/stdc++.h>
 	"SDL.h"
 	"SDL_image.h"
 	"Statistics.h"
 
 1745482235 source:c:\users\admin\documents\dev\battlecitytutorial\gate.cpp
+
+1745602429 c:\users\admin\documents\dev\battlecitytutorial\effect.h
+	<bits/stdc++.h>
+	<SDL.h>
+	<SDL_image.h>
+	"PlayerTank.h"
+	"Statistics.h"
 

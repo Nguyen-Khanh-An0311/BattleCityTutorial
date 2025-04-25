@@ -1,8 +1,9 @@
 #include "Boss.h"
 
 FireBoss::FireBoss(int x, int y, SDL_Renderer* renderer) : Boss(x, y) {
-        // Load ảnh riêng
     texture = IMG_LoadTexture(renderer, "Image//fire_monster_chosen.png");
+    fireTexture = IMG_LoadTexture(renderer, "Image//flame.png");
+    //fireZone = FireZone((MAP_WIDTH - 1)*TILE_SIZE, (MAP_HEIGHT-3) * TILE_SIZE, fireTexture);
     name = "FireBoss";
 }
 void FireBoss::update() {
@@ -27,20 +28,33 @@ void FireBoss::render(SDL_Renderer* renderer) {
             lastFrameTime = now;
         }
 
-        SDL_Rect srcRect = { currentFrame * FRAME_WIDTH, 0, FRAME_WIDTH, FRAME_HEIGHT };
+        SDL_Rect srcRect = {
+            currentFrame * FRAME_WIDTH, //x góc trái trên
+            0, //y góc trái trên
+            FRAME_WIDTH, //CR frame
+            FRAME_HEIGHT //CC frame
+        };
         SDL_RenderCopy(renderer, texture, &srcRect, &destRect);
 
-                // Vẽ các vùng lửa
+        // Vẽ các vùng lửa
         for (const auto& zone : fireZones) {
             zone->render(renderer);
         }
 }
 
+bool FireBoss::checkCollision(PlayerTank& player) {
+    for(int i=0; i < fireZones.size(); i++){
+        if(SDL_HasIntersection(&player.rect, &fireZones[i]->rect))
+            return true;
+    }
+    return false;
+}
+
 void FireBoss::spawnFireZone() {
-    for(int i=0; i<30; i++){
-        int x = rand() % ((MAP_WIDTH-2) * TILE_SIZE);
-        int y = rand() % ((MAP_HEIGHT-2) *TILE_SIZE);
-        fireZones.push_back(make_unique<FireZone>(x, y);
+    for(int i=0; i<15; i++){
+        int x = rand() % ((MAP_WIDTH - 5) * TILE_SIZE);
+        int y = rand() % ((MAP_HEIGHT - 5) *TILE_SIZE);
+        fireZones.push_back(make_unique<FireZone>(x, y, fireTexture));
     }
 }
 

@@ -6,7 +6,7 @@ PlayerTank::PlayerTank(int startX, int startY, SDL_Renderer* renderer, const cha
         RemainingLives = 3;
         x = startX;
         y = startY;
-        rect = {x, y, TILE_SIZE, TILE_SIZE};
+        rect = {x, y, TILE_SIZE , TILE_SIZE};
         angle = 0;
         //tankTexture = IMG_LoadTexture(renderer, imageLink);
         // Load ảnh từ file vào surface

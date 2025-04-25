@@ -39,6 +39,7 @@
 		<Unit filename="Bullet.h" />
 		<Unit filename="Bush.cpp" />
 		<Unit filename="Bush.h" />
+		<Unit filename="Effect.h" />
 		<Unit filename="EnemyTank.cpp" />
 		<Unit filename="EnemyTank.h" />
 		<Unit filename="Explosion.cpp" />

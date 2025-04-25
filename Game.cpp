@@ -230,8 +230,7 @@ void Game::handleEvents() {
 }
 void Game::update() {
     player1.updateBullets();
-    if(currentBoss->active) currentBoss->update();
-            if (gateOut.active) {
+        if (gateOut.active) {
                 SDL_Rect gateRect = gateOut.getRect();
                 if(mode == PVE){
                     if (SDL_HasIntersection(&player1.rect, &gateRect)) {
@@ -248,6 +247,7 @@ void Game::update() {
                     }
                 }
             }
+    if(currentBoss && currentBoss->active) currentBoss->update();
     for (auto& enemy : enemies) { // cap nhat dan của dich
         enemy.move(walls, renderer,stones, bushs, waters, base);
         enemy.updateBullets();
@@ -323,6 +323,14 @@ void Game::update() {
                 }
             }
         }
+    if(currentBoss && currentBoss->active){ // dính chiêu của boss
+        if(currentBoss->checkCollision(player1)){
+            player1.RemainingLives -= 1;
+        }
+        if(player1.RemainingLives == 0){
+            player1.active = false;
+        }
+    }
 
     if(mode == GameMode::PVE){
         if (!player1.active) {
@@ -377,6 +385,14 @@ void Game::update() {
                     }
                 }
             }
+        if(currentBoss && currentBoss->active){
+            if(currentBoss->checkCollision(player2)){
+                player2.RemainingLives -= 1;
+            }
+            if(player2.RemainingLives == 0){
+                player1.active = false;
+            }
+        }
 
         //xet thua cuoc
         if(!player1.active && !player2.active){
@@ -421,7 +437,7 @@ void Game::render(){
             renderLevel();
             //renderHeart();
             renderRemainingLive(mode);
-            if(currentBoss->active) currentBoss->render(renderer);
+            if(currentBoss && currentBoss->active) currentBoss->render(renderer);
             base.render(renderer);
 
 
@@ -815,7 +831,6 @@ void Game::initMode(GameMode mode){
     player2.imgLink = "Image//player2.png";
     player1 = PlayerTank(TILE_SIZE*10 - 1, MAP_HEIGHT * TILE_SIZE - 1, renderer, player1.imgLink);
     base = Base((MAP_WIDTH / 2)*TILE_SIZE, (MAP_HEIGHT - 1)*TILE_SIZE, renderer);
-    spawnBoss(level);
     string filename;
 
     if(mode == GameMode::PVP){
@@ -824,6 +839,7 @@ void Game::initMode(GameMode mode){
         }
         filename = "gameMaps//" + to_string(level) + ".txt";
         gameMap.loadFromFile(filename, renderer);
+        spawnBoss(level);
         player2 = PlayerTank(TILE_SIZE*15, MAP_HEIGHT * TILE_SIZE - 1, renderer, player2.imgLink);
         walls = gameMap.walls;
         waters = gameMap.waters;
@@ -841,6 +857,7 @@ void Game::initMode(GameMode mode){
             level = 0;
         }
         filename = "gameMaps//" + to_string(level) + ".txt";
+        spawnBoss(level);
         gameMap.loadFromFile(filename, renderer);
         walls = gameMap.walls;
         waters = gameMap.waters;
@@ -906,7 +923,14 @@ void Game::spawnEnemies() {
 }
 
 void Game::spawnBoss(int level){
-    currentBoss = make_unique<FireBoss>((MAP_WIDTH/2) * TILE_SIZE, (MAP_HEIGHT/2) * TILE_SIZE, renderer);
+    switch(level){
+        case 1:
+            currentBoss = make_unique<FireBoss>((MAP_WIDTH/2) * TILE_SIZE, (MAP_HEIGHT/2) * TILE_SIZE, renderer);
+            break;
+        default:
+            currentBoss = NULL;
+            return;
+    }
 }
 
 Game::~Game(){

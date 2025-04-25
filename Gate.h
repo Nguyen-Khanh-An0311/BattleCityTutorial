@@ -5,12 +5,18 @@
 #include "SDL_image.h"
 #include "Statistics.h"
 
+const int GATE_FRAME_WIDTH = 160;
+const int GATE_FRAME_HEIGHT = 125;
+const int GATE_FRAME_COUNT = 4;
+const Uint32 GATE_FRAME_DURATION = 150;
+
 class Gate {
 public:
     int x, y;
     bool active = false;
     SDL_Texture* texture;
-
+    int currentFrame = 0;
+    Uint32 lastFrameTime = SDL_GetTicks();
     Gate(){}
 
     Gate(SDL_Renderer* renderer) {
@@ -24,9 +30,20 @@ public:
     }
 
     void render(SDL_Renderer* renderer) {
-        if (!active) return;
-        SDL_Rect dst = { x, y, TILE_SIZE * 2, TILE_SIZE * 2 };
-        SDL_RenderCopy(renderer, texture, NULL, &dst);
+        Uint32 now = SDL_GetTicks();
+        if (now - lastFrameTime >= GATE_FRAME_DURATION) {
+            currentFrame = (currentFrame + 1) % FRAME_COUNT;
+            lastFrameTime = now;
+        }
+
+        SDL_Rect srcRect = {
+            currentFrame * GATE_FRAME_WIDTH, //x góc trái trên
+            0, //y góc trái trên
+            GATE_FRAME_WIDTH, //CR frame
+            GATE_FRAME_HEIGHT //CC frame
+        };
+        SDL_Rect destRect = {x, y, TILE_SIZE * 4, TILE_SIZE * 4};
+        SDL_RenderCopy(renderer, texture, &srcRect, &destRect);
     }
 
     SDL_Rect getRect() {

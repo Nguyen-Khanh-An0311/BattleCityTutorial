@@ -7,7 +7,7 @@ EnemyTank::EnemyTank(int startX, int startY, SDL_Renderer* renderer) {
         y = startY;
         angle = 0;
         rect = {x, y, TILE_SIZE, TILE_SIZE};
-        tankTexture = IMG_LoadTexture(renderer, "Image//enemy_up.png");
+        tankTexture = IMG_LoadTexture(renderer, "Image//enemy.png");
         dirX = 0;
         dirY = 1;
         active = true;
@@ -31,10 +31,10 @@ void EnemyTank::move(const vector<Wall>& walls, SDL_Renderer* renderer,
     }
 
     // Cập nhật hướng và góc
-    if (dirX > 0) angle = 90;
-    else if (dirX < 0) angle = 270;
-    else if (dirY > 0) angle = 180;
-    else angle = 0;
+    if (dirX > 0) angle = 270;
+    else if (dirX < 0) angle = 90;
+    else if (dirY > 0) angle = 0;
+    else angle = 180;
 
     // Tính vị trí mới
     int newX = x + dirX;
