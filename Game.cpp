@@ -60,7 +60,7 @@ Game::Game(){
             } else {
                 Mix_PlayMusic(backgroundMusic, 1);
             }
-            Mix_VolumeMusic(10);
+            Mix_VolumeMusic(2);
 
             menuTexture = IMG_LoadTexture(renderer, "Image//menu.jpg");
             levelTexture = IMG_LoadTexture(renderer, "Image//level_flag.png");
@@ -230,7 +230,7 @@ void Game::handleEvents() {
 }
 void Game::update() {
     player1.updateBullets();
-    currentBoss->update();
+    if(currentBoss->active) currentBoss->update();
             if (gateOut.active) {
                 SDL_Rect gateRect = gateOut.getRect();
                 if(mode == PVE){
@@ -815,7 +815,7 @@ void Game::initMode(GameMode mode){
     player2.imgLink = "Image//player2.png";
     player1 = PlayerTank(TILE_SIZE*10 - 1, MAP_HEIGHT * TILE_SIZE - 1, renderer, player1.imgLink);
     base = Base((MAP_WIDTH / 2)*TILE_SIZE, (MAP_HEIGHT - 1)*TILE_SIZE, renderer);
-    spawnBoss();
+    spawnBoss(level);
     string filename;
 
     if(mode == GameMode::PVP){
@@ -850,7 +850,6 @@ void Game::initMode(GameMode mode){
         spawnHearts();
         spawnEnemies();
     }
-    spawnBoss();
     state = PLAYING;
 }
 
@@ -906,15 +905,7 @@ void Game::spawnEnemies() {
     }
 }
 
-void Game::spawnBoss(){
-    /*switch (level) {
-        case 0:
-            currentBoss = make_unique<FireBoss>((MAP_WIDTH/2)*TILE_SIZE, (MAP_HEIGHT/2)*TILE_SIZE, renderer);
-        case 1:
-            currentBoss = make_unique<FireBoss>((MAP_WIDTH/2)*TILE_SIZE, (MAP_HEIGHT/2)*TILE_SIZE, renderer); break; // khởi tại cho unique_ptr
-        default:
-            return;
-    }*/
+void Game::spawnBoss(int level){
     currentBoss = make_unique<FireBoss>((MAP_WIDTH/2) * TILE_SIZE, (MAP_HEIGHT/2) * TILE_SIZE, renderer);
 }
 

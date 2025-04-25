@@ -77,7 +77,8 @@ public:
     void generateWalls();
     void spawnEnemies();
     void spawnHearts();
-    void spawnBoss();
+    bool bossSpawn = true;
+    void spawnBoss(int);
     Base base;
     Gate gateOut;
     PlayerTank player1;
