@@ -5,7 +5,7 @@
 	"Game.h"
 	"Statistics.h"
 
-1745597124 c:\users\admin\documents\dev\battlecitytutorial\game.h
+1745684520 c:\users\admin\documents\dev\battlecitytutorial\game.h
 	<bits/stdc++.h>
 	<memory>
 	<iostream>
@@ -35,7 +35,7 @@
 	"Statistics.h"
 	<SDL_image.h>
 
-1745602915 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
+1745680194 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
 	"Game.h"
 
 1745469224 c:\users\admin\documents\dev\battlecitytutorial\playertank.h
@@ -75,7 +75,7 @@
 	"PlayerTank.h"
 	"Base.h"
 
-1745603106 source:c:\users\admin\documents\dev\battlecitytutorial\enemytank.cpp
+1745681979 source:c:\users\admin\documents\dev\battlecitytutorial\enemytank.cpp
 	"EnemyTank.h"
 
 1742440092 c:\users\admin\documents\dev\battlecitytutorial\statistics.h
@@ -109,15 +109,20 @@
 1744563966 source:c:\users\admin\documents\dev\battlecitytutorial\map.cpp
 	"Map.h"
 
-1745603239 source:c:\users\admin\documents\dev\battlecitytutorial\boss.cpp
+1745686680 source:c:\users\admin\documents\dev\battlecitytutorial\boss.cpp
 	"Boss.h"
 
-1745602200 c:\users\admin\documents\dev\battlecitytutorial\boss.h
+1745686766 c:\users\admin\documents\dev\battlecitytutorial\boss.h
 	<bits/stdc++.h>
 	<SDL.h>
 	<SDL_image.h>
+	<SDL_mixer.h>
 	"Statistics.h"
 	"Effect.h"
+	"Boss_Juior.h"
+	"Wall.h"
+	"Stone.h"
+	"PlayerTank.h"
 
 1744556335 c:\users\admin\documents\dev\battlecitytutorial\water.h
 	<iostream>
@@ -443,7 +448,7 @@
 1744556357 source:c:\users\admin\documents_old\dev\battlecitytutorial\water.cpp
 	"Water.h"
 
-1745152736 source:c:\users\admin\documents\dev\battlecitytutorial\ice.cpp
+1745679328 source:c:\users\admin\documents\dev\battlecitytutorial\ice.cpp
 	"Ice.h"
 
 1745238703 source:c:\users\admin\documents\dev\battlecitytutorial\explosion.cpp
@@ -465,7 +470,7 @@
 1745477972 source:c:\users\admin\documents\dev\battlecitytutorial\base.cpp
 	"Base.h"
 
-1745605651 c:\users\admin\documents\dev\battlecitytutorial\gate.h
+1745635301 c:\users\admin\documents\dev\battlecitytutorial\gate.h
 	<bits/stdc++.h>
 	"SDL.h"
 	"SDL_image.h"
@@ -473,10 +478,25 @@
 
 1745482235 source:c:\users\admin\documents\dev\battlecitytutorial\gate.cpp
 
-1745602429 c:\users\admin\documents\dev\battlecitytutorial\effect.h
+1745634017 c:\users\admin\documents\dev\battlecitytutorial\effect.h
 	<bits/stdc++.h>
 	<SDL.h>
 	<SDL_image.h>
 	"PlayerTank.h"
 	"Statistics.h"
+
+1745686586 source:c:\users\admin\documents\dev\battlecitytutorial\boss_juior.cpp
+	"Boss_Juior.h"
+
+1745686577 c:\users\admin\documents\dev\battlecitytutorial\boss_juior.h
+	<iostream>
+	<SDL_image.h>
+	<vector>
+	<algorithm>
+	"Bullet.h"
+	"Wall.h"
+	"Statistics.h"
+	"Map.h"
+	"PlayerTank.h"
+	"Base.h"
 

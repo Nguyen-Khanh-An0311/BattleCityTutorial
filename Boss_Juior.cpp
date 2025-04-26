@@ -1,23 +1,22 @@
-#include "EnemyTank.h"
+#include "Boss_Juior.h"
 
-EnemyTank::EnemyTank(int startX, int startY, SDL_Renderer* renderer) {
+/*BossJR::BossJR(int startX, int startY, SDL_Renderer* tex) {
         moveDelay = 10; // Delay for movement
-        shootDelay = 5; // Delay for shooting
         x = startX;
         y = startY;
         angle = 0;
         rect = {x, y, TILE_SIZE, TILE_SIZE};
-        tankTexture = IMG_LoadTexture(renderer, "Image//enemy.png");
+        bossJRTexture = text;
         dirX = 0;
         dirY = 1;
         active = true;
     }
 
-void EnemyTank::move(const vector<Wall>& walls, SDL_Renderer* renderer,
+void BossJR::move(const vector<Wall>& walls, SDL_Renderer* renderer,
                      vector<Stone>& stones, vector<Bush>& bushs, vector<Water>& waters,
                      Base base) {
     if (--moveDelay > 0) return;
-    moveDelay = 10;
+    moveDelay = 50;
 
 
     if (abs(base.x - x) > abs(base.y - y)) {
@@ -73,27 +72,24 @@ void EnemyTank::move(const vector<Wall>& walls, SDL_Renderer* renderer,
 }
 
 
-void EnemyTank::shoot(SDL_Renderer* renderer) {
-    if (--shootDelay > 0) return;
-    shootDelay = 5;
-    bullets.push_back(Bullet(x + TILE_SIZE / 2 - 5, y + TILE_SIZE / 2 - 5,
-                             this->dirX, this->dirY, renderer));
-}
+void BossJR::render(SDL_Renderer* renderer) {
+        Uint32 now = SDL_GetTicks();
+        if (now - lastFrameTime >= BJR_FRAME_DURATION) {
+            currentFrame = (currentFrame + 1) % F_FRAME_COUNT;
+            lastFrameTime = now;
+        }
 
-void EnemyTank::updateBullets() {
-    for (auto &bullet : bullets) {
-        bullet.move();
-    }
-    bullets.erase(std::remove_if(bullets.begin(), bullets.end(),
-                 [](Bullet &b) { return !b.active; }), bullets.end());
-}
+        SDL_Rect srcRect = {
+            currentFrame * F_FRAME_WIDTH, //x góc trái trên
+            0, //y góc trái trên
+            F_FRAME_WIDTH, //CR frame
+            F_FRAME_HEIGHT //CC frame
+        };
+        SDL_RenderCopy(renderer, bossJRTexture, &srcRect, &rect);
 
-void EnemyTank::render(SDL_Renderer* renderer) {
-    //SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-    //SDL_RenderFillRect(renderer, &rect);
-    SDL_RenderCopyEx(renderer, tankTexture, nullptr, &rect, angle, nullptr, SDL_FLIP_NONE);
-    for (auto &bullet : bullets) {
-        bullet.render(renderer);
-    }
-}
+        // Vẽ các vùng lửa
+        for (const auto& zone : fireZones) {
+            zone->render(renderer);
+        }
+}*/
 

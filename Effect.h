@@ -20,7 +20,7 @@ public:
     int currentFrame = 0;
     Uint32 lastFrameTime = -10000;
     Uint32 spawnTime;
-    Uint32 duration = 3000; // Effect tồn tại trong 10 giây
+    Uint32 duration = 5000; // Effect tồn tại trong 10 giây
 
     Effect(){}
     Effect(int x, int y) : x(x), y(y) {}

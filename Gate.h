@@ -15,6 +15,7 @@ public:
     int x, y;
     bool active = false;
     SDL_Texture* texture;
+    SDL_Rect destRect;
     int currentFrame = 0;
     Uint32 lastFrameTime = SDL_GetTicks();
     Gate(){}
@@ -26,6 +27,7 @@ public:
     void spawn(int x_, int y_) {
         x = x_; // ví dụ tọa độ trung tâm map
         y = y_;
+        destRect = {x, y, TILE_SIZE * 4, TILE_SIZE * 4};
         active = true;
     }
 
@@ -42,12 +44,11 @@ public:
             GATE_FRAME_WIDTH, //CR frame
             GATE_FRAME_HEIGHT //CC frame
         };
-        SDL_Rect destRect = {x, y, TILE_SIZE * 4, TILE_SIZE * 4};
         SDL_RenderCopy(renderer, texture, &srcRect, &destRect);
     }
 
     SDL_Rect getRect() {
-        return { x, y, TILE_SIZE, TILE_SIZE };
+        return destRect;
     }
 };
 

@@ -16,6 +16,7 @@ Game::Game(){
                 running = false;
                 return;
             }
+            Mix_AllocateChannels(32);
 
             if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
                 cout << "SDL_image không thể khởi tạo! IMG_Error: " << IMG_GetError() << std::endl;
@@ -165,20 +166,23 @@ void Game::handleEvents() {
             }
         }*/
     SDL_Event event;
-    while (SDL_PollEvent(&event)) {
+    while (SDL_PollEvent(&event)) { //bắt trạng thái phím đg chờ
         if (event.type == SDL_QUIT) {
             running = false;
         } else if (event.type == SDL_KEYDOWN) {
             switch (event.key.keysym.sym) {
-                case SDL_SCANCODE_LCTRL:
+                case SDLK_LCTRL:
                     player1.shoot(renderer);
+                    Mix_PlayChannel(-1, shootSound, 0);
                     if (Mix_PlayChannel(-1, shootSound, 0) == -1) {
                         cerr << "Failed to play sound: " << Mix_GetError() << endl;
                     }
                     break;
-                case SDL_SCANCODE_SPACE:
+                case SDLK_SPACE:
                     if(mode == PVP){
                         player2.shoot(renderer);
+                        Mix_PlayChannel(-1, shootSound, 0);
+
                     }
                     break;
 
@@ -190,7 +194,7 @@ void Game::handleEvents() {
     }
 
     // Xử lý giữ phím để di chuyển mượt hơn
-    const Uint8* keystates = SDL_GetKeyboardState(NULL);
+    const Uint8* keystates = SDL_GetKeyboardState(NULL); //liên tục lấy trạng thai phím
 
     // Player 1
                 if (keystates[SDL_SCANCODE_W]) {
@@ -204,9 +208,6 @@ void Game::handleEvents() {
                 }
                 else if (keystates[SDL_SCANCODE_D]) {
                     player1.move(5, 0, walls, hearts, enemies, stones, bushs, waters);
-                }
-                else if (keystates[SDL_SCANCODE_LCTRL]) {
-                    player1.shoot(renderer);
                 }
 
     // Player 2
@@ -223,15 +224,15 @@ void Game::handleEvents() {
                     else if (keystates[SDL_SCANCODE_RIGHT]) {
                         player2.move(5, 0, walls, hearts, enemies, stones, bushs, waters);
                     }
-                    else if (keystates[SDL_SCANCODE_SPACE]) {
-                        player2.shoot(renderer);
-                    }
-    }
+                }
 }
 void Game::update() {
+    if((currentBoss && !currentBoss->active) || (!currentBoss &&enemies.empty())){
+        gateOut.spawn((MAP_WIDTH/2)*TILE_SIZE, (MAP_HEIGHT/2)*TILE_SIZE);
+    }
     player1.updateBullets();
         if (gateOut.active) {
-                SDL_Rect gateRect = gateOut.getRect();
+            SDL_Rect gateRect = gateOut.getRect();
                 if(mode == PVE){
                     if (SDL_HasIntersection(&player1.rect, &gateRect)) {
                         gateOut.active = false;
@@ -323,6 +324,17 @@ void Game::update() {
                 }
             }
         }
+    for (auto& bullet : player1.bullets) { // player 1 bắn boss
+        if (currentBoss && currentBoss->active && SDL_HasIntersection(&currentBoss->destRect, &bullet.rect)) {
+            explosions.emplace_back(renderer, bullet.x, bullet.y);
+            currentBoss->RemainingLives -= 1;
+            bullet.active = false;
+            if(currentBoss->RemainingLives == 0){
+                return;
+            }
+        }
+    }
+
     if(currentBoss && currentBoss->active){ // dính chiêu của boss
         if(currentBoss->checkCollision(player1)){
             player1.RemainingLives -= 1;
@@ -385,12 +397,22 @@ void Game::update() {
                     }
                 }
             }
-        if(currentBoss && currentBoss->active){
+        if(currentBoss && currentBoss->active){ // p2 dinh lua
             if(currentBoss->checkCollision(player2)){
                 player2.RemainingLives -= 1;
             }
             if(player2.RemainingLives == 0){
                 player1.active = false;
+            }
+        }
+        for (auto& bullet : player2.bullets) { // player 2 bắn boss
+            if (currentBoss && currentBoss->active && SDL_HasIntersection(&currentBoss->destRect, &bullet.rect)) {
+                explosions.emplace_back(renderer, bullet.x, bullet.y);
+                currentBoss->RemainingLives -= 1;
+                bullet.active = false;
+                if(currentBoss->RemainingLives == 0){
+                    return;
+                }
             }
         }
 
@@ -399,11 +421,6 @@ void Game::update() {
             state = SHOW_WINNER;
             return;
         }
-    }
-
-    //xet thang cuoc
-    if(enemies.empty()){
-        gateOut.spawn((MAP_WIDTH/2)*TILE_SIZE, (MAP_HEIGHT/2)*TILE_SIZE);
     }
 
     enemies.erase(std::remove_if(enemies.begin(), enemies.end(),
@@ -437,11 +454,16 @@ void Game::render(){
             renderLevel();
             //renderHeart();
             renderRemainingLive(mode);
-            if(currentBoss && currentBoss->active) currentBoss->render(renderer);
+            if (currentBoss) {
+                if (currentBoss->RemainingLives > 0) {
+                    currentBoss->render(renderer); // render bình thường
+                } else {
+                    currentBoss->Die(renderer);    // chết thì render animation chết
+                }
+            }
+
             base.render(renderer);
-
-
-                player1.render(renderer);
+            player1.render(renderer);
 
                 if(mode == GameMode::PVP){
                     renderScore();
@@ -548,7 +570,7 @@ void Game::renderHeart(){
 void Game::renderWinner(){
     SDL_Color color = {255, 255, 0}; // Vàng rực rỡ
     SDL_Surface* textSurface;
-    if(enemies.empty() && base.active){
+    if(base.active && player1.active && player2.active){
         textSurface = TTF_RenderText_Blended(font, "YOU WIN!!!", color);
     }
     else {
@@ -618,7 +640,6 @@ void Game::renderRemainingLive(GameMode mode){
     SDL_FreeSurface(textSurface2);
     SDL_DestroyTexture(textTexture2);
 }
-
 
 void Game::showMenu() {
     if(state != MENU) return;
@@ -822,7 +843,7 @@ void Game::initMode(GameMode mode){
     gameMap.stones.clear();
     gameMap.ices.clear();
     gateOut.active = false;
-    if(level == 2){
+    if(level == 4){
         state = SHOW_WINNER;
         return;
     }
@@ -847,7 +868,7 @@ void Game::initMode(GameMode mode){
         stones = gameMap.stones;
         ices = gameMap.ices;
         spawnHearts();
-        spawnEnemies();
+        if(!currentBoss) spawnEnemies();
     }
     else{
         if(state == WIN){
@@ -865,7 +886,7 @@ void Game::initMode(GameMode mode){
         stones = gameMap.stones;
         ices = gameMap.ices;
         spawnHearts();
-        spawnEnemies();
+        if(!currentBoss) spawnEnemies();
     }
     state = PLAYING;
 }
@@ -924,8 +945,11 @@ void Game::spawnEnemies() {
 
 void Game::spawnBoss(int level){
     switch(level){
-        case 1:
+        case 3:
             currentBoss = make_unique<FireBoss>((MAP_WIDTH/2) * TILE_SIZE, (MAP_HEIGHT/2) * TILE_SIZE, renderer);
+            break;
+        case 4:
+            currentBoss = make_unique<IceBoss>((MAP_WIDTH/2) * TILE_SIZE, (MAP_HEIGHT/2) * TILE_SIZE, renderer);
             break;
         default:
             currentBoss = NULL;

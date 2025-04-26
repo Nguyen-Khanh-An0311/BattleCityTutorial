@@ -97,5 +97,4 @@ public:
     vector<Ice> ices;
     vector<Explosion> explosions;
     unique_ptr<Boss> currentBoss;
-    vector<unique_ptr<FireZone>> fireZones;
 };

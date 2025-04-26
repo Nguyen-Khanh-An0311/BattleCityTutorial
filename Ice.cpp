@@ -8,5 +8,5 @@ Ice::Ice(int startX, int startY, SDL_Renderer* renderer){
 }
 
 void Ice::render(SDL_Renderer* renderer) {
-        SDL_RenderCopy(renderer, iceTexture, nullptr, &rect);
+    SDL_RenderCopy(renderer, iceTexture, nullptr, &rect);
 }
