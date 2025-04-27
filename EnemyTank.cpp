@@ -1,24 +1,34 @@
 #include "EnemyTank.h"
 
+EnemyTank::EnemyTank(){}
 EnemyTank::EnemyTank(int startX, int startY, SDL_Renderer* renderer) {
         moveDelay = 10; // Delay for movement
         shootDelay = 5; // Delay for shooting
         x = startX;
         y = startY;
         angle = 0;
-        rect = {x, y, TILE_SIZE, TILE_SIZE};
+        rect = {x, y, TILE_SIZE , TILE_SIZE };
         tankTexture = IMG_LoadTexture(renderer, "Image//enemy.png");
         dirX = 0;
         dirY = 1;
         active = true;
     }
 
+bool EnemyTank::isBlocked(SDL_Rect rect, vector<Stone>& stones, vector<Water>& waters) {
+    for (auto& s : stones) {
+        if (SDL_HasIntersection(&rect, &s.rect)) return true;
+    }
+    for (auto& wa : waters) {
+        if (SDL_HasIntersection(&rect, &wa.rect)) return true;
+    }
+    return false;
+}
+
 void EnemyTank::move(const vector<Wall>& walls, SDL_Renderer* renderer,
                      vector<Stone>& stones, vector<Bush>& bushs, vector<Water>& waters,
                      Base base) {
-    if (--moveDelay > 0) return;
-    moveDelay = 10;
-
+    //if(--moveDelay > 0) return;
+    //moveDelay = 10;
 
     if (abs(base.x - x) > abs(base.y - y)) {
         // Ưu tiên trục ngang
@@ -30,16 +40,39 @@ void EnemyTank::move(const vector<Wall>& walls, SDL_Renderer* renderer,
         dirX = 0;
     }
 
-    // Cập nhật hướng và góc
-    if (dirX > 0) angle = 270;
-    else if (dirX < 0) angle = 90;
-    else if (dirY > 0) angle = 0;
-    else angle = 180;
-
     // Tính vị trí mới
     int newX = x + dirX;
     int newY = y + dirY;
     SDL_Rect newRect = { newX, newY, TILE_SIZE, TILE_SIZE };
+    if (isBlocked(newRect, stones, waters)) {
+        bool found = false;
+        // Bị chắn bởi đá hoặc gì đó, thử hướng khác
+        const int directions[4][2] = { {20,0}, {-20,0}, {0,20}, {0,-20} };
+        for (auto& d : directions) {
+            SDL_Rect tryRect = { x + d[0], y + d[1], TILE_SIZE, TILE_SIZE };
+            if (!isBlocked(tryRect, stones, waters)) {
+                dirX = d[0];
+                dirY = d[1];
+                newX = x + dirX;
+                newY = y + dirY;
+                newRect = {newX, newY, TILE_SIZE, TILE_SIZE};
+                found = true;
+                break;
+            }
+        }
+        if(!found) {
+            dirX = 0;
+            dirY = 0;
+            newX = x;
+            newY = y;
+            newRect = {newX, newY, TILE_SIZE, TILE_SIZE};
+        }
+    }
+    if (dirX > 0) angle = 270;
+    else if (dirX < 0) angle = 90;
+    else if (dirY > 0) angle = 0;
+    else if (dirY < 0) angle = 180;
+
 
     // Kiểm tra va chạm tường
     for (int i = 0; i < walls.size(); ++i) {
@@ -48,29 +81,17 @@ void EnemyTank::move(const vector<Wall>& walls, SDL_Renderer* renderer,
         }
     }
 
-    // Kiểm tra va chạm đá
-    for (int i = 0; i < stones.size(); ++i) {
-        if (SDL_HasIntersection(&newRect, &stones[i].rect)) {
-            return;
-        }
-    }
-
-    // Kiểm tra va chạm nước
-    for (int i = 0; i < waters.size(); ++i) {
-        if (SDL_HasIntersection(&newRect, &waters[i].rect)) {
-            return;
-        }
-    }
 
     // Nếu hợp lệ, cập nhật vị trí
-    if (newX >= 0 && newX + TILE_SIZE <= SCREEN_WIDTH &&
-        newY >= 0 && newY + TILE_SIZE <= SCREEN_HEIGHT) {
+    if (newX >= TILE_SIZE && newX + TILE_SIZE <= SCREEN_WIDTH &&
+        newY >= TILE_SIZE && newY + TILE_SIZE <= SCREEN_HEIGHT) {
         x = newX;
         y = newY;
         rect.x = x;
         rect.y = y;
     }
 }
+
 
 
 void EnemyTank::shoot(SDL_Renderer* renderer) {
@@ -89,8 +110,6 @@ void EnemyTank::updateBullets() {
 }
 
 void EnemyTank::render(SDL_Renderer* renderer) {
-    //SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-    //SDL_RenderFillRect(renderer, &rect);
     SDL_RenderCopyEx(renderer, tankTexture, nullptr, &rect, angle, nullptr, SDL_FLIP_NONE);
     for (auto &bullet : bullets) {
         bullet.render(renderer);

@@ -14,7 +14,7 @@ Bullet::Bullet(int startX, int startY, int dirX, int dirY, SDL_Renderer* rendere
         else angle = 270;
 
         active = true;
-        rect = {x, y, 20, 20};// Square shape bullet
+        rect = {x, y, 30, 30};// Square shape bullet
         bulletTexture = IMG_LoadTexture(renderer, "Image//bullet.png");
 }
 

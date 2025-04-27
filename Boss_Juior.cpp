@@ -73,7 +73,7 @@ void BossJR::move(const vector<Wall>& walls, SDL_Renderer* renderer,
 
 
 void BossJR::render(SDL_Renderer* renderer) {
-        Uint32 now = SDL_GetTicks();
+        /*Uint32 now = SDL_GetTicks();
         if (now - lastFrameTime >= BJR_FRAME_DURATION) {
             currentFrame = (currentFrame + 1) % F_FRAME_COUNT;
             lastFrameTime = now;
@@ -91,5 +91,8 @@ void BossJR::render(SDL_Renderer* renderer) {
         for (const auto& zone : fireZones) {
             zone->render(renderer);
         }
+    if (active) {
+        SDL_RenderCopyEx(renderer, bossJRTexture, nullptr, &rect, angle, nullptr, SDL_FLIP_NONE);
+    }
 }*/
 

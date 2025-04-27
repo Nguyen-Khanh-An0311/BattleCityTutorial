@@ -227,6 +227,7 @@ void Game::handleEvents() {
                 }
 }
 void Game::update() {
+    if(currentBoss) enemies = currentBoss->enemiesFromHole;
     if((currentBoss && !currentBoss->active) || (!currentBoss &&enemies.empty())){
         gateOut.spawn((MAP_WIDTH/2)*TILE_SIZE, (MAP_HEIGHT/2)*TILE_SIZE);
     }
@@ -249,6 +250,7 @@ void Game::update() {
                 }
             }
     if(currentBoss && currentBoss->active) currentBoss->update();
+
     for (auto& enemy : enemies) { // cap nhat dan của dich
         enemy.move(walls, renderer,stones, bushs, waters, base);
         enemy.updateBullets();
@@ -268,6 +270,18 @@ void Game::update() {
             }
         }
     }
+    for (auto& enemy : enemies) { // dan dich ban tuong
+        for (auto& bullet : enemy.bullets) {
+            for (auto& stone : stones) {
+                if (SDL_HasIntersection(&bullet.rect, &stone.rect)) {
+                    explosions.emplace_back(renderer, bullet.x, bullet.y);
+                    bullet.active = false;
+                    break;
+                }
+            }
+        }
+    }
+
 
     for (auto& enemy : enemies) { // dan dich ban tru
         for (auto& bullet : enemy.bullets) {
@@ -570,7 +584,7 @@ void Game::renderHeart(){
 void Game::renderWinner(){
     SDL_Color color = {255, 255, 0}; // Vàng rực rỡ
     SDL_Surface* textSurface;
-    if(base.active && player1.active && player2.active){
+    if(base.active && !currentBoss->active){
         textSurface = TTF_RenderText_Blended(font, "YOU WIN!!!", color);
     }
     else {
@@ -922,7 +936,7 @@ void Game::spawnEnemies() {
         int ex, ey;
         bool validPosition = false;
         while (!validPosition) {
-            ex = (rand() % (MAP_WIDTH / 2) + 1) * TILE_SIZE;
+            ex = (rand() % MAP_WIDTH) * TILE_SIZE;
             ey = (rand() % (MAP_HEIGHT / 2) + 1) * TILE_SIZE;
             validPosition = true;
             if( (player1.x == ex && player1.y == ey) ||(mode == GameMode::PVP && (player2.x == ex && player2.y == ey))){
@@ -945,11 +959,11 @@ void Game::spawnEnemies() {
 
 void Game::spawnBoss(int level){
     switch(level){
-        case 3:
-            currentBoss = make_unique<FireBoss>((MAP_WIDTH/2) * TILE_SIZE, (MAP_HEIGHT/2) * TILE_SIZE, renderer);
+        case 0:
+            currentBoss = make_unique<FireBoss>((MAP_WIDTH-5) * TILE_SIZE, 5 * TILE_SIZE, renderer);
             break;
         case 4:
-            currentBoss = make_unique<IceBoss>((MAP_WIDTH/2) * TILE_SIZE, (MAP_HEIGHT/2) * TILE_SIZE, renderer);
+            currentBoss = make_unique<IceBoss>(3 * TILE_SIZE, 5 * TILE_SIZE, renderer);
             break;
         default:
             currentBoss = NULL;

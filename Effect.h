@@ -5,12 +5,22 @@
 #include <SDL_image.h>
 #include "PlayerTank.h"
 #include "Statistics.h"
+#include "EnemyTank.h"
 using namespace std;
 
 const int FIRE_FRAME_WIDTH = 80;
 const int FIRE_FRAME_HEIGHT = 266;
 const int FIRE_FRAME_COUNT = 18;
+
+const int ICE_FRAME_WIDTH = 113;
+const int ICE_FRAME_HEIGHT = 113;
+const int ICE_FRAME_COUNT = 7;
 const Uint32 FIRE_FRAME_DURATION = 100;
+
+const int HOLE_FRAME_WIDTH = 270;
+const int HOLE_FRAME_HEIGHT = 250;
+const int HOLE_FRAME_COUNT = 7;
+const Uint32 HOLE_FRAME_DURATION = 100;
 
 class Effect{
 public:
@@ -58,6 +68,93 @@ public:
 
     bool isExpired() {
         return SDL_GetTicks() - spawnTime > duration;
+    }
+};
+
+class IceZone : public Effect {
+public:
+    IceZone(){}
+    IceZone(int x, int y, SDL_Texture* tex) : Effect(x, y) {
+        texture = tex;
+        spawnTime = SDL_GetTicks();
+        rect = {
+            x,                       // canh giữa theo chiều ngang
+            y,
+            TILE_SIZE * 2,
+            TILE_SIZE * 2
+        };
+    }
+    bool isExpired() {
+        return SDL_GetTicks() - spawnTime > duration;
+    }
+
+    void update(){}
+
+    void render(SDL_Renderer* renderer) {
+        Uint32 now = SDL_GetTicks();
+        if (now - lastFrameTime >= FIRE_FRAME_DURATION) {
+            currentFrame = (currentFrame + 1) % ICE_FRAME_COUNT;
+            lastFrameTime = now;
+        }
+
+        SDL_Rect srcRect = { currentFrame * ICE_FRAME_WIDTH, 0, ICE_FRAME_WIDTH, ICE_FRAME_HEIGHT };
+        SDL_RenderCopy(renderer, texture, &srcRect, &rect);
+    }
+};
+
+class Hole{
+public:
+    int x, y;
+    SDL_Rect rect;
+    SDL_Texture* texture;
+    int currentFrame = 0;
+    Uint32 lastFrameTime = -10000;
+    Uint32 spawnTime;
+    Uint32 duration = 10000; // Effect tồn tại trong 10 giây
+    Uint32 lastEnemyTime;
+    vector<EnemyTank> enemies;
+
+    Hole(){}
+    Hole(int x, int y, SDL_Texture* tex){
+        lastEnemyTime = 0;
+        texture = tex;
+        spawnTime = SDL_GetTicks();
+        rect = {
+            x,
+            y,
+            TILE_SIZE * 4,
+            TILE_SIZE * 4
+        };
+    }
+    bool isExpired() {
+        return SDL_GetTicks() - spawnTime > duration;
+    }
+    void update(){}
+    void render(SDL_Renderer* renderer) {
+        //if(!isExpired()){
+            /*Uint32 now = SDL_GetTicks();
+            if (now - lastFrameTime >= HOLE_FRAME_DURATION) {
+                currentFrame = (currentFrame + 1) % HOLE_FRAME_COUNT;
+                lastFrameTime = now;
+            }
+
+            SDL_Rect srcRect = { currentFrame * HOLE_FRAME_WIDTH, 0, HOLE_FRAME_WIDTH, HOLE_FRAME_HEIGHT };
+            SDL_RenderCopy(renderer, texture, &srcRect, &rect);*/
+        //}
+
+        for(auto& enemy : enemies){
+            enemy.render(renderer);
+        }
+    }
+    void spawnEnemies(SDL_Renderer* renderer){
+        if(!isExpired()){
+            Uint32 currentTime = SDL_GetTicks();
+            if (currentTime - lastEnemyTime >= 1000) {
+                enemies.clear();
+                enemies.push_back(EnemyTank(rect.x, rect.y, renderer));
+                lastEnemyTime = currentTime;
+            }
+        }
     }
 };
 

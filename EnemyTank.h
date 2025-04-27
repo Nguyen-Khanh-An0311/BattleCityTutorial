@@ -21,12 +21,17 @@ public:
     int dirX, dirY;
     int angle;
     int moveDelay, shootDelay;
+    bool isMoving = true;
+    int moveFrames = 0;
+
     SDL_Rect rect;
     SDL_Texture* tankTexture;
     bool active;
     vector<Bullet> bullets;
 
+    EnemyTank();
     EnemyTank(int, int, SDL_Renderer*);
+    bool isBlocked(SDL_Rect rect, vector<Stone>&, vector<Water>&);
     void move(const vector<Wall>&, SDL_Renderer*,vector<Stone>&, vector<Bush>&, vector<Water>&, Base);
     void shoot(SDL_Renderer*);
     void updateBullets();
