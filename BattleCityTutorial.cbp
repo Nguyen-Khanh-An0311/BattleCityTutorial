@@ -31,12 +31,12 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="AudioManager.h" />
 		<Unit filename="Base.cpp" />
 		<Unit filename="Base.h" />
 		<Unit filename="Boss.cpp" />
 		<Unit filename="Boss.h" />
 		<Unit filename="Boss_Juior.cpp" />
-		<Unit filename="Boss_Juior.h" />
 		<Unit filename="Bullet.cpp" />
 		<Unit filename="Bullet.h" />
 		<Unit filename="Bush.cpp" />

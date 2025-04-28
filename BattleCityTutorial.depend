@@ -35,7 +35,7 @@
 	"Statistics.h"
 	<SDL_image.h>
 
-1745775760 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
+1745864020 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
 	"Game.h"
 
 1745469224 c:\users\admin\documents\dev\battlecitytutorial\playertank.h
@@ -75,7 +75,7 @@
 	"PlayerTank.h"
 	"Base.h"
 
-1745774532 source:c:\users\admin\documents\dev\battlecitytutorial\enemytank.cpp
+1745861561 source:c:\users\admin\documents\dev\battlecitytutorial\enemytank.cpp
 	"EnemyTank.h"
 
 1742440092 c:\users\admin\documents\dev\battlecitytutorial\statistics.h
@@ -109,10 +109,10 @@
 1744563966 source:c:\users\admin\documents\dev\battlecitytutorial\map.cpp
 	"Map.h"
 
-1745775588 source:c:\users\admin\documents\dev\battlecitytutorial\boss.cpp
+1745863975 source:c:\users\admin\documents\dev\battlecitytutorial\boss.cpp
 	"Boss.h"
 
-1745775633 c:\users\admin\documents\dev\battlecitytutorial\boss.h
+1745864133 c:\users\admin\documents\dev\battlecitytutorial\boss.h
 	<bits/stdc++.h>
 	<SDL.h>
 	<SDL_image.h>
@@ -461,7 +461,7 @@
 	<SDL_mixer.h>
 	"Statistics.h"
 
-1745465820 c:\users\admin\documents\dev\battlecitytutorial\base.h
+1745837213 c:\users\admin\documents\dev\battlecitytutorial\base.h
 	<bits/stdc++.h>
 	"SDL.h"
 	"SDL_image.h"
@@ -478,7 +478,7 @@
 
 1745482235 source:c:\users\admin\documents\dev\battlecitytutorial\gate.cpp
 
-1745775832 c:\users\admin\documents\dev\battlecitytutorial\effect.h
+1745862268 c:\users\admin\documents\dev\battlecitytutorial\effect.h
 	<bits/stdc++.h>
 	<SDL.h>
 	<SDL_image.h>

@@ -108,11 +108,12 @@ public:
     SDL_Rect rect;
     SDL_Texture* texture;
     int currentFrame = 0;
-    Uint32 lastFrameTime = -10000;
+    Uint32 lastFrameTime = 0;
     Uint32 spawnTime;
     Uint32 duration = 10000; // Effect tồn tại trong 10 giây
     Uint32 lastEnemyTime;
     vector<EnemyTank> enemies;
+    EnemyTank enemy;
 
     Hole(){}
     Hole(int x, int y, SDL_Texture* tex){
@@ -131,27 +132,25 @@ public:
     }
     void update(){}
     void render(SDL_Renderer* renderer) {
-        //if(!isExpired()){
-            /*Uint32 now = SDL_GetTicks();
+        if(!isExpired()){
+            Uint32 now = SDL_GetTicks();
             if (now - lastFrameTime >= HOLE_FRAME_DURATION) {
                 currentFrame = (currentFrame + 1) % HOLE_FRAME_COUNT;
                 lastFrameTime = now;
             }
 
             SDL_Rect srcRect = { currentFrame * HOLE_FRAME_WIDTH, 0, HOLE_FRAME_WIDTH, HOLE_FRAME_HEIGHT };
-            SDL_RenderCopy(renderer, texture, &srcRect, &rect);*/
-        //}
-
-        for(auto& enemy : enemies){
-            enemy.render(renderer);
+            SDL_RenderCopy(renderer, texture, &srcRect, &rect);
         }
     }
     void spawnEnemies(SDL_Renderer* renderer){
         if(!isExpired()){
             Uint32 currentTime = SDL_GetTicks();
-            if (currentTime - lastEnemyTime >= 1000) {
+            if (currentTime - lastEnemyTime >= 2000) {
                 enemies.clear();
-                enemies.push_back(EnemyTank(rect.x, rect.y, renderer));
+                EnemyTank enemy(rect.x, rect.y, renderer);
+                enemies.push_back(enemy);
+                //enemy = EnemyTank(rect.x, rect.y, renderer);
                 lastEnemyTime = currentTime;
             }
         }

@@ -19,11 +19,13 @@ void FireBoss::update() {
             spawnFireZone();
             lastFireTime = currentTime;
         }
-        if (currentTime - lastOpenTime >= holeInterval){
+        if (!hole && currentTime - lastOpenTime >= holeInterval){
             hole = spawnHole();
+        }
+        if(hole && hole->isExpired()){
+            hole = NULL;
             lastOpenTime = currentTime;
         }
-
 
         // Cập nhật và loại bỏ các vùng lửa đã hết thời gian
         fireZones.erase(std::remove_if(fireZones.begin(), fireZones.end(),
@@ -33,8 +35,8 @@ void FireBoss::update() {
     return;
 }
 void FireBoss::render(SDL_Renderer* renderer) {
-        Mix_PlayChannel(-1, bossSound, -1);
-        Mix_VolumeChunk(bossSound, MIX_MAX_VOLUME / 4);
+        Mix_PlayChannel(0, bossSound, -1);
+        Mix_VolumeChunk(bossSound, MIX_MAX_VOLUME/4);
         Uint32 now = SDL_GetTicks();
         if (now - lastFrameTime >= FRAME_DURATION) {
             currentFrame = (currentFrame + 1) % FRAME_COUNT;
@@ -54,12 +56,16 @@ void FireBoss::render(SDL_Renderer* renderer) {
             zone->render(renderer);
         }
         // Vẽ hole
-        hole.spawnEnemies(renderer);
-        enemiesFromHole = hole.enemies;
-        hole.render(renderer);
+        if(hole && !hole->isExpired()){
+            hole->render(renderer);
+            hole->spawnEnemies(renderer);
+            enemiesFromHole.clear();
+            enemiesFromHole.insert(enemiesFromHole.end(), hole->enemies.begin(), hole->enemies.end());
+            hole->enemies.clear();
+        }
 }
 bool FireBoss::checkCollision(PlayerTank& player) {
-    for(int i=0; i < fireZones.size(); i++){
+    for(size_t i=0; i < fireZones.size(); i++){
         if(SDL_HasIntersection(&player.rect, &fireZones[i]->rect))
             return true;
     }
@@ -72,8 +78,8 @@ void FireBoss::spawnFireZone() {
         fireZones.push_back(make_unique<FireZone>(x, y, fireTexture));
     }
 }
-Hole FireBoss::spawnHole(){
-    Hole hole ((MAP_WIDTH/2 + 1) * TILE_SIZE, (MAP_HEIGHT/2 - 2) * TILE_SIZE, holeTexture);
+Hole* FireBoss::spawnHole(){
+    Hole* hole = new Hole((MAP_WIDTH/2 + 1) * TILE_SIZE, (MAP_HEIGHT/2 - 2) * TILE_SIZE, holeTexture);
     return hole;
 }
 void FireBoss::Die(SDL_Renderer* renderer) {
@@ -190,7 +196,7 @@ void IceBoss::spawnIceZone(){
     }
 }
 bool IceBoss::checkCollision(PlayerTank& player){
-    for(int i=0; i < iceZones.size(); i++){
+    for(size_t i=0; i < iceZones.size(); i++){
         if(SDL_HasIntersection(&player.rect, &iceZones[i]->rect))
             return true;
     }

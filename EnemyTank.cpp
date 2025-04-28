@@ -2,8 +2,8 @@
 
 EnemyTank::EnemyTank(){}
 EnemyTank::EnemyTank(int startX, int startY, SDL_Renderer* renderer) {
-        moveDelay = 10; // Delay for movement
-        shootDelay = 5; // Delay for shooting
+        moveDelay = 20; // Delay for movement
+        shootDelay = 10; // Delay for shooting
         x = startX;
         y = startY;
         angle = 0;
@@ -27,8 +27,8 @@ bool EnemyTank::isBlocked(SDL_Rect rect, vector<Stone>& stones, vector<Water>& w
 void EnemyTank::move(const vector<Wall>& walls, SDL_Renderer* renderer,
                      vector<Stone>& stones, vector<Bush>& bushs, vector<Water>& waters,
                      Base base) {
-    //if(--moveDelay > 0) return;
-    //moveDelay = 10;
+    if(--moveDelay > 0) return;
+    moveDelay = 20;
 
     if (abs(base.x - x) > abs(base.y - y)) {
         // Ưu tiên trục ngang
@@ -96,7 +96,7 @@ void EnemyTank::move(const vector<Wall>& walls, SDL_Renderer* renderer,
 
 void EnemyTank::shoot(SDL_Renderer* renderer) {
     if (--shootDelay > 0) return;
-    shootDelay = 5;
+    shootDelay = 10;
     bullets.push_back(Bullet(x + TILE_SIZE / 2 - 5, y + TILE_SIZE / 2 - 5,
                              this->dirX, this->dirY, renderer));
 }

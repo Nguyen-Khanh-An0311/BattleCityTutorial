@@ -2,7 +2,7 @@
 #define BASE_H_INCLUDED
 
 #include <bits/stdc++.h>
-#include "SDL.h";
+#include "SDL.h"
 #include "SDL_image.h"
 #include "Statistics.h"
 

@@ -227,8 +227,12 @@ void Game::handleEvents() {
                 }
 }
 void Game::update() {
-    if(currentBoss) enemies = currentBoss->enemiesFromHole;
+    if(currentBoss){
+        enemies.insert(enemies.begin(), currentBoss->enemiesFromHole.begin(), currentBoss->enemiesFromHole.end());
+    }
+
     if((currentBoss && !currentBoss->active) || (!currentBoss &&enemies.empty())){
+        //Mix_HaltChannel(1);
         gateOut.spawn((MAP_WIDTH/2)*TILE_SIZE, (MAP_HEIGHT/2)*TILE_SIZE);
     }
     player1.updateBullets();
@@ -468,13 +472,9 @@ void Game::render(){
             renderLevel();
             //renderHeart();
             renderRemainingLive(mode);
-            if (currentBoss) {
-                if (currentBoss->RemainingLives > 0) {
-                    currentBoss->render(renderer); // render bình thường
-                } else {
-                    currentBoss->Die(renderer);    // chết thì render animation chết
+            for (auto& enemy : enemies) {
+                enemy.render(renderer);
                 }
-            }
 
             base.render(renderer);
             player1.render(renderer);
@@ -484,8 +484,6 @@ void Game::render(){
                     SDL_RenderCopy(renderer, RML2, nullptr, &rect2);
                     player2.render(renderer);
                 }
-
-
                 for (int i=0; i < heartNumber; i++){
                     hearts[i].render(renderer);
                 }
@@ -507,9 +505,12 @@ void Game::render(){
                 for(int i=0; i<ices.size(); i++){
                     ices[i].render(renderer);
                 }
-
-                for (auto& enemy : enemies) {
-                    enemy.render(renderer);
+                if (currentBoss) {
+                    if (currentBoss->RemainingLives > 0) {
+                        currentBoss->render(renderer); // render bình thường
+                    } else {
+                        currentBoss->Die(renderer);    // chết thì render animation chết
+                    }
                 }
                 for (auto it = explosions.begin(); it != explosions.end();) {
                     if (it->isFinished()) {

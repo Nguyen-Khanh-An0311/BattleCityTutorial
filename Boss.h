@@ -33,7 +33,7 @@ public:
     //hiển thị
     int currentFrame = 0;
     Uint32 lastFrameTime = SDL_GetTicks();
-    SDL_Rect destRect = {x, y, TILE_SIZE * 5.5, TILE_SIZE * 5.5 };
+    SDL_Rect destRect = {x, y, TILE_SIZE * 5, TILE_SIZE * 5 };
 
     virtual void update() = 0;
     virtual void render(SDL_Renderer* renderer) = 0;
@@ -42,6 +42,7 @@ public:
     virtual bool checkCollision(PlayerTank&) = 0;
 
     vector<EnemyTank> enemiesFromHole;
+    //EnemyTank enemyFromHole;
 
     SDL_Texture* bossDie;
     bool isDying = false;
@@ -68,8 +69,8 @@ public:
     //hiện cổng
     Uint32 holeInterval = 15000; // khoảng nghỉ
     Uint32 lastOpenTime = 0;
-    Hole hole;
-    Hole spawnHole();
+    Hole* hole = NULL;
+    Hole* spawnHole();
 
     //render, update
     void update() override;
