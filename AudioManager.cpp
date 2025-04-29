@@ -3,10 +3,10 @@
 unordered_map<string , Mix_Chunk*> AudioManager::sounds;
 
 void AudioManager::Init() {
-        //sounds["background"] = Mix_LoadWAV("assets/background.wav");
-        sounds["fireboss"] = Mix_LoadWAV("Sound//bossSound.wav");
-        sounds["shoot"] = Mix_LoadWAV("Sound//fireSound.wav");
-        sounds["explosion"] = Mix_LoadWAV("Sound//explosionSound.wav");
+        sounds["background"] = Mix_LoadWAV("Sound//background.wav"); //0
+        sounds["fireboss"] = Mix_LoadWAV("Sound//bossSound.wav"); //1
+        sounds["shoot"] = Mix_LoadWAV("Sound//fireSound.wav"); //3
+        sounds["explosion"] = Mix_LoadWAV("Sound//explosionSound.wav"); //4
 }
 
 void AudioManager::CleanUp(){

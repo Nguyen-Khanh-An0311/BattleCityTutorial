@@ -72,9 +72,6 @@ Game::Game(){
 
 
             //shootSound = Mix_LoadWAV("Sound//fireSound.wav");
-            if (shootSound == nullptr) {
-                cout << "Failed to load shoot sound! SDL_mixer Error: " << Mix_GetError() << endl;
-            }
         }
 
 
@@ -98,6 +95,7 @@ SDL_Texture* Game::loadTexture(const string& path, SDL_Renderer* renderer) {
 
 void Game::run() {
             if(running){
+                updateSoundState();
                 switch(state){
                     case PAUSE:
                         renderPauseMenu();
@@ -182,13 +180,13 @@ void Game::handleEvents() {
                     if (Mix_PlayChannel(-1, shootSound, 0) == -1) {
                         cerr << "Failed to play sound: " << Mix_GetError() << endl;
                     }*/
-                    AudioManager::PlaySound(-1, "shoot", 0);
+                    AudioManager::PlaySound(3, "shoot", 0);
                     break;
                 case SDLK_SPACE:
                     if(mode == PVP){
                         player2.shoot(renderer);
                         //Mix_PlayChannel(-1, shootSound, 0);
-                        AudioManager::PlaySound(-1, "shoot", 0);
+                        AudioManager::PlaySound(3, "shoot", 0);
                     }
                     break;
 
@@ -450,6 +448,23 @@ void Game::update() {
     enemies.erase(std::remove_if(enemies.begin(), enemies.end(),
     [](EnemyTank& e) { return !e.active; }), enemies.end());
 }
+void Game::updateSoundState(){
+        switch (state) {
+            case MENU:
+                Mix_HaltChannel(-1);
+                if(!Mix_Playing(0)){
+                    AudioManager::PlaySound(0, "background", -1);
+                }
+            case PAUSE:
+                //Phát nền, dừng các âm khác
+                Mix_HaltChannel(-1);
+                break;
+            case PLAYING:
+                //Dừng tiếng nền
+                Mix_HaltChannel(0);
+                break;
+        }
+}
 void Game::render(){
         SDL_SetRenderDrawColor(renderer, 192, 192, 192, 255); //chọn màu
         SDL_RenderClear(renderer); // tô toàn bộ màu vừa chọn
@@ -516,7 +531,6 @@ void Game::render(){
                         currentBoss->render(renderer); // render bình thường
                     } else { // chết thì render animation chết, tắt âm thanh
                         currentBoss->Die(renderer);
-                        if(currentBoss->name == "FireBoss") Mix_HaltChannel(0);
                     }
                 }
                 for (auto it = explosions.begin(); it != explosions.end();) {
@@ -524,7 +538,7 @@ void Game::render(){
                         it = explosions.erase(it);
                     } else {
                         if(it->soundPlay){
-                            Mix_PlayChannel(-1, it->explosionSound, 0);
+                            AudioManager::PlaySound(4, "explosion", 0);
                             it->soundPlay = false;
                         }
                         it->render(renderer);
@@ -590,6 +604,7 @@ void Game::renderHeart(){
     if(mode == PVP) SDL_RenderCopy(renderer, RML2, nullptr, &rect2);
 }
 void Game::renderWinner(){
+    //Mix_HaltChannel(-1);
     SDL_Color color = {255, 255, 0}; // Vàng rực rỡ
     SDL_Surface* textSurface;
     if(base.active && !currentBoss->active){
@@ -969,10 +984,10 @@ void Game::spawnEnemies() {
 
 void Game::spawnBoss(int level){
     switch(level){
-        case 0:
+        case 1:
             //currentBoss = make_unique<FireBoss>((MAP_WIDTH-5) * TILE_SIZE, 5 * TILE_SIZE, renderer);
             currentBoss = new FireBoss((MAP_WIDTH-5) * TILE_SIZE, 5 * TILE_SIZE, renderer);
-            AudioManager::PlaySound(0, "fireboss", -1);
+            AudioManager::PlaySound(1, "fireboss", -1);
             break;
         case 4:
             //currentBoss = make_unique<IceBoss>(3 * TILE_SIZE, 5 * TILE_SIZE, renderer);
@@ -992,6 +1007,7 @@ void Game::renderPauseMenu(){
     SDL_Color yellow = {255, 255, 0};
 
     while (inPauseMenu) {
+        Mix_HaltChannel(-1);
         SDL_RenderClear(renderer);
 
         vector<string> options = { "Continue", "MENU", "EXIT" };

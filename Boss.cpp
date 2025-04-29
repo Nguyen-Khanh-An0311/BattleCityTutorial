@@ -5,7 +5,7 @@
 FireBoss::FireBoss(int x, int y, SDL_Renderer* renderer) : Boss(x, y) {
     texture = IMG_LoadTexture(renderer, "Image//fire_monster_chosen.png");
     fireTexture = IMG_LoadTexture(renderer, "Image//flame.png");
-    fireSound = Mix_LoadWAV("Sound//flameSound.wav");
+    //fireSound = Mix_LoadWAV("Sound//flameSound.wav");
     bossDie = IMG_LoadTexture(renderer, "Image//fire_boss_die.png");
     holeTexture = IMG_LoadTexture(renderer, "Image//hole.jpg");
     lastFireTime = SDL_GetTicks();
@@ -15,8 +15,6 @@ FireBoss::FireBoss(int x, int y, SDL_Renderer* renderer) : Boss(x, y) {
 void FireBoss::update() {
         Uint32 currentTime = SDL_GetTicks();
         if (currentTime - lastFireTime >= fireInterval) {
-            Mix_PlayChannel(-1, fireSound, 0);
-            Mix_VolumeChunk(fireSound, MIX_MAX_VOLUME / 4);
             fireZones.clear();
             spawnFireZone();
             lastFireTime = currentTime;
@@ -108,6 +106,8 @@ void FireBoss::Die(SDL_Renderer* renderer) {
         FRAME_HEIGHT
     };
     SDL_RenderCopy(renderer, bossDie, &srcRect, &destRect);
+    Mix_HaltChannel(1);
+    Mix_FreeChunk(AudioManager::sounds["fireboss"]);
 }
 
 IceBoss::IceBoss(int x, int y, SDL_Renderer* renderer) : Boss(x, y) {

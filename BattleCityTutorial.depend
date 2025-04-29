@@ -5,7 +5,7 @@
 	"Game.h"
 	"Statistics.h"
 
-1745912641 c:\users\admin\documents\dev\battlecitytutorial\game.h
+1745948476 c:\users\admin\documents\dev\battlecitytutorial\game.h
 	<bits/stdc++.h>
 	<memory>
 	<iostream>
@@ -36,7 +36,7 @@
 	"Statistics.h"
 	<SDL_image.h>
 
-1745912001 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
+1745950527 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
 	"Game.h"
 
 1745469224 c:\users\admin\documents\dev\battlecitytutorial\playertank.h
@@ -110,7 +110,7 @@
 1744563966 source:c:\users\admin\documents\dev\battlecitytutorial\map.cpp
 	"Map.h"
 
-1745911841 source:c:\users\admin\documents\dev\battlecitytutorial\boss.cpp
+1745950612 source:c:\users\admin\documents\dev\battlecitytutorial\boss.cpp
 	"Boss.h"
 
 1745901420 c:\users\admin\documents\dev\battlecitytutorial\boss.h
@@ -497,6 +497,6 @@
 	<SDL_mixer.h>
 	<bits/stdc++.h>
 
-1745910670 source:c:\users\admin\documents\dev\battlecitytutorial\audiomanager.cpp
+1745951155 source:c:\users\admin\documents\dev\battlecitytutorial\audiomanager.cpp
 	"AudioManager.h"
 

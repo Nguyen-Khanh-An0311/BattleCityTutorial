@@ -2,44 +2,19 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="AudioManager.cpp" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="593" topLine="0" />
-		</Cursor>
-	</File>
 	<File name="PlayerTank.h" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="2" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="493" topLine="1" />
 		</Cursor>
 	</File>
-	<File name="Wall.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="5" zoom_2="0">
+	<File name="PlayerTank.cpp" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="165" topLine="0" />
+			<Cursor1 position="261" topLine="42" />
 		</Cursor>
 	</File>
-	<File name="Boss.h" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
+	<File name="Bush.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="628" topLine="18" />
-		</Cursor>
-	</File>
-	<File name="Base.cpp" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="2" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="244" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="Ice.cpp" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="324" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="Water.cpp" open="0" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="214" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="Explosion.h" open="0" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="334" topLine="0" />
+			<Cursor1 position="246" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="Stone.h" open="0" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -47,9 +22,65 @@
 			<Cursor1 position="0" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="Bullet.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
+	<File name="Boss_Juior.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="2" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="243" topLine="0" />
+			<Cursor1 position="2813" topLine="56" />
+		</Cursor>
+	</File>
+	<File name="Wall.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="530" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="Bullet.cpp" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="5" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="376" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="Explosion.cpp" open="1" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="310" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="Boss.h" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1969" topLine="51" />
+		</Cursor>
+	</File>
+	<File name="Game.cpp" open="1" top="1" tabpos="5" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="18148" topLine="6" />
+		</Cursor>
+		<Folding>
+			<Collapse line="3" />
+			<Collapse line="77" />
+			<Collapse line="95" />
+			<Collapse line="119" />
+			<Collapse line="232" />
+			<Collapse line="556" />
+			<Collapse line="572" />
+			<Collapse line="595" />
+			<Collapse line="605" />
+			<Collapse line="656" />
+			<Collapse line="680" />
+			<Collapse line="748" />
+			<Collapse line="820" />
+			<Collapse line="873" />
+			<Collapse line="932" />
+			<Collapse line="957" />
+			<Collapse line="984" />
+			<Collapse line="1001" />
+			<Collapse line="1069" />
+		</Folding>
+	</File>
+	<File name="Map.h" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="505" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="Base.cpp" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="2" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="244" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="Map.cpp" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
@@ -60,24 +91,9 @@
 			<Collapse line="43" />
 		</Folding>
 	</File>
-	<File name="Heart.cpp" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
+	<File name="AudioManager.h" open="1" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="223" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="Bush.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="246" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="Base.h" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="2" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="94" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="Bush.cpp" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="210" topLine="0" />
+			<Cursor1 position="303" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="EnemyTank.h" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
@@ -85,14 +101,9 @@
 			<Cursor1 position="601" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="AudioManager.h" open="1" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
+	<File name="main.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="303" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="Map.h" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="505" topLine="0" />
+			<Cursor1 position="189" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="EnemyTank.cpp" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
@@ -100,14 +111,50 @@
 			<Cursor1 position="631" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="Wall.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
+	<File name="Gate.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="530" topLine="0" />
+			<Cursor1 position="1344" topLine="32" />
 		</Cursor>
 	</File>
-	<File name="Explosion.cpp" open="1" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
+	<File name="Water.cpp" open="0" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="307" topLine="0" />
+			<Cursor1 position="214" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="Wall.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="5" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="165" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="Bullet.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="243" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="Ice.cpp" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="324" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="Boss.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3664" topLine="90" />
+		</Cursor>
+		<Folding>
+			<Collapse line="64" />
+			<Collapse line="155" />
+			<Collapse line="182" />
+			<Collapse line="197" />
+		</Folding>
+	</File>
+	<File name="Explosion.h" open="0" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="334" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="Bush.cpp" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="210" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="Renderer.h" open="0" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="6" zoom_2="0">
@@ -115,37 +162,14 @@
 			<Cursor1 position="99" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="Game.cpp" open="1" top="1" tabpos="5" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
+	<File name="Heart.cpp" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="40451" topLine="209" />
-		</Cursor>
-		<Folding>
-			<Collapse line="3" />
-			<Collapse line="80" />
-			<Collapse line="234" />
-			<Collapse line="452" />
-			<Collapse line="542" />
-			<Collapse line="558" />
-			<Collapse line="581" />
-			<Collapse line="591" />
-			<Collapse line="641" />
-			<Collapse line="665" />
-			<Collapse line="733" />
-			<Collapse line="805" />
-			<Collapse line="858" />
-			<Collapse line="917" />
-			<Collapse line="942" />
-			<Collapse line="969" />
-		</Folding>
-	</File>
-	<File name="Water.h" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="54" topLine="0" />
+			<Cursor1 position="223" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="Gate.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
+	<File name="Base.h" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="2" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1344" topLine="32" />
+			<Cursor1 position="94" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="Stone.cpp" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="6" zoom_2="0">
@@ -153,54 +177,33 @@
 			<Cursor1 position="214" topLine="0" />
 		</Cursor>
 	</File>
+	<File name="AudioManager.cpp" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="406" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="Game.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1114" topLine="72" />
+		</Cursor>
+	</File>
 	<File name="Heart.h" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="24" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="main.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="189" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="Boss.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2375" topLine="45" />
-		</Cursor>
-		<Folding>
-			<Collapse line="66" />
-			<Collapse line="155" />
-			<Collapse line="182" />
-			<Collapse line="197" />
-		</Folding>
-	</File>
-	<File name="PlayerTank.cpp" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="261" topLine="42" />
-		</Cursor>
-	</File>
-	<File name="Game.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2194" topLine="79" />
-		</Cursor>
-	</File>
-	<File name="Boss_Juior.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="2" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2813" topLine="56" />
-		</Cursor>
-	</File>
-	<File name="Bullet.cpp" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="5" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="376" topLine="0" />
-		</Cursor>
-	</File>
 	<File name="Effect.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="2" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="4374" topLine="86" />
+			<Cursor1 position="4326" topLine="0" />
 		</Cursor>
 		<Folding>
 			<Collapse line="24" />
 			<Collapse line="73" />
 		</Folding>
+	</File>
+	<File name="Water.h" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="54" topLine="0" />
+		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

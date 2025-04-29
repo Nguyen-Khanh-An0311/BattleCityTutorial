@@ -54,6 +54,7 @@ public:
 
     //update
     void update();
+    void updateSoundState();
 
     //render
     void render();
