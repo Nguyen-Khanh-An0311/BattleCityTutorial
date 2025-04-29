@@ -150,7 +150,6 @@ public:
                 enemies.clear();
                 EnemyTank enemy(rect.x, rect.y, renderer);
                 enemies.push_back(enemy);
-                //enemy = EnemyTank(rect.x, rect.y, renderer);
                 lastEnemyTime = currentTime;
             }
         }

@@ -10,6 +10,7 @@
 #include "Wall.h"
 #include "Stone.h"
 #include "PlayerTank.h"
+#include "AudioManager.h"
 using namespace std;
 
 const int FRAME_WIDTH = 64;
@@ -28,7 +29,9 @@ public:
     SDL_Texture* texture;
     Mix_Chunk* bossSound;
     Boss(){}
-    Boss(int x, int y) : x(x), y(y) {}
+    Boss(int x, int y) : x(x), y(y) {
+        AudioManager::Init();
+    }
 
     //hiển thị
     int currentFrame = 0;
@@ -63,12 +66,12 @@ public:
     //hiện lửa
     vector<unique_ptr<FireZone>> fireZones;
     Uint32 fireInterval = 10000; //khoảng nghỉ
-    Uint32 lastFireTime = 0;
+    Uint32 lastFireTime;
     void spawnFireZone();
 
     //hiện cổng
     Uint32 holeInterval = 15000; // khoảng nghỉ
-    Uint32 lastOpenTime = 0;
+    Uint32 lastOpenTime;
     Hole* hole = NULL;
     Hole* spawnHole();
 

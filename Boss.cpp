@@ -6,9 +6,10 @@ FireBoss::FireBoss(int x, int y, SDL_Renderer* renderer) : Boss(x, y) {
     texture = IMG_LoadTexture(renderer, "Image//fire_monster_chosen.png");
     fireTexture = IMG_LoadTexture(renderer, "Image//flame.png");
     fireSound = Mix_LoadWAV("Sound//flameSound.wav");
-    bossSound = Mix_LoadWAV("Sound//bossSound.wav");
     bossDie = IMG_LoadTexture(renderer, "Image//fire_boss_die.png");
     holeTexture = IMG_LoadTexture(renderer, "Image//hole.jpg");
+    lastFireTime = SDL_GetTicks();
+    lastOpenTime = SDL_GetTicks();
     name = "FireBoss";
 }
 void FireBoss::update() {
@@ -16,6 +17,7 @@ void FireBoss::update() {
         if (currentTime - lastFireTime >= fireInterval) {
             Mix_PlayChannel(-1, fireSound, 0);
             Mix_VolumeChunk(fireSound, MIX_MAX_VOLUME / 4);
+            fireZones.clear();
             spawnFireZone();
             lastFireTime = currentTime;
         }
@@ -35,8 +37,6 @@ void FireBoss::update() {
     return;
 }
 void FireBoss::render(SDL_Renderer* renderer) {
-        Mix_PlayChannel(0, bossSound, -1);
-        Mix_VolumeChunk(bossSound, MIX_MAX_VOLUME/4);
         Uint32 now = SDL_GetTicks();
         if (now - lastFrameTime >= FRAME_DURATION) {
             currentFrame = (currentFrame + 1) % FRAME_COUNT;

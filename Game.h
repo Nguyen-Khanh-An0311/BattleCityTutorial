@@ -16,10 +16,11 @@
 #include "Boss.h"
 #include "Base.h"
 #include "Gate.h"
+#include "AudioManager.h"
 using namespace std;
 
 
-enum GameState { PLAYING, WIN, GAME_OVER, MENU, EXIT, SHOW_WINNER };
+enum GameState { PLAYING, WIN, GAME_OVER, MENU, EXIT, SHOW_WINNER, PAUSE };
 enum GameMode {
     NONE,
     PVE,
@@ -96,5 +97,8 @@ public:
     vector<Stone> stones;
     vector<Ice> ices;
     vector<Explosion> explosions;
-    unique_ptr<Boss> currentBoss;
+    Boss* currentBoss;
+
+    //pause
+    void renderPauseMenu();
 };

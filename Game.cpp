@@ -17,6 +17,7 @@ Game::Game(){
                 return;
             }
             Mix_AllocateChannels(32);
+            AudioManager::Init();
 
             if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
                 cout << "SDL_image không thể khởi tạo! IMG_Error: " << IMG_GetError() << std::endl;
@@ -53,15 +54,16 @@ Game::Game(){
 
             base = Base((MAP_WIDTH / 2)*TILE_SIZE, (MAP_HEIGHT - 1)*TILE_SIZE, renderer);
             gateOut = Gate(renderer);
+            currentBoss = NULL;
 
-            backgroundMusic = Mix_LoadMUS("Sound//Soundtrack.mp3");
+            /*backgroundMusic = Mix_LoadMUS("Sound//Soundtrack.mp3");
             if (!backgroundMusic) {
                 cout << "Failed to load music! Error: " << Mix_GetError() << endl;
                 running = false;
             } else {
                 Mix_PlayMusic(backgroundMusic, 1);
             }
-            Mix_VolumeMusic(2);
+            Mix_VolumeMusic(2);*/
 
             menuTexture = IMG_LoadTexture(renderer, "Image//menu.jpg");
             levelTexture = IMG_LoadTexture(renderer, "Image//level_flag.png");
@@ -69,7 +71,7 @@ Game::Game(){
             RML2 = IMG_LoadTexture(renderer, "Image//heart.png");
 
 
-            shootSound = Mix_LoadWAV("Sound//fireSound.wav");
+            //shootSound = Mix_LoadWAV("Sound//fireSound.wav");
             if (shootSound == nullptr) {
                 cout << "Failed to load shoot sound! SDL_mixer Error: " << Mix_GetError() << endl;
             }
@@ -97,6 +99,9 @@ SDL_Texture* Game::loadTexture(const string& path, SDL_Renderer* renderer) {
 void Game::run() {
             if(running){
                 switch(state){
+                    case PAUSE:
+                        renderPauseMenu();
+                        break;
                     case MENU:
                         showMenu();
                         break;
@@ -173,21 +178,22 @@ void Game::handleEvents() {
             switch (event.key.keysym.sym) {
                 case SDLK_LCTRL:
                     player1.shoot(renderer);
-                    Mix_PlayChannel(-1, shootSound, 0);
+                    /*Mix_PlayChannel(-1, shootSound, 0);
                     if (Mix_PlayChannel(-1, shootSound, 0) == -1) {
                         cerr << "Failed to play sound: " << Mix_GetError() << endl;
-                    }
+                    }*/
+                    AudioManager::PlaySound(-1, "shoot", 0);
                     break;
                 case SDLK_SPACE:
                     if(mode == PVP){
                         player2.shoot(renderer);
-                        Mix_PlayChannel(-1, shootSound, 0);
-
+                        //Mix_PlayChannel(-1, shootSound, 0);
+                        AudioManager::PlaySound(-1, "shoot", 0);
                     }
                     break;
 
                 case SDLK_ESCAPE:
-                    state = MENU;
+                    state = PAUSE;
                     break;
             }
         }
@@ -229,10 +235,10 @@ void Game::handleEvents() {
 void Game::update() {
     if(currentBoss){
         enemies.insert(enemies.begin(), currentBoss->enemiesFromHole.begin(), currentBoss->enemiesFromHole.end());
+        currentBoss->enemiesFromHole.clear();
     }
 
     if((currentBoss && !currentBoss->active) || (!currentBoss &&enemies.empty())){
-        //Mix_HaltChannel(1);
         gateOut.spawn((MAP_WIDTH/2)*TILE_SIZE, (MAP_HEIGHT/2)*TILE_SIZE);
     }
     player1.updateBullets();
@@ -474,7 +480,7 @@ void Game::render(){
             renderRemainingLive(mode);
             for (auto& enemy : enemies) {
                 enemy.render(renderer);
-                }
+            }
 
             base.render(renderer);
             player1.render(renderer);
@@ -508,8 +514,9 @@ void Game::render(){
                 if (currentBoss) {
                     if (currentBoss->RemainingLives > 0) {
                         currentBoss->render(renderer); // render bình thường
-                    } else {
-                        currentBoss->Die(renderer);    // chết thì render animation chết
+                    } else { // chết thì render animation chết, tắt âm thanh
+                        currentBoss->Die(renderer);
+                        if(currentBoss->name == "FireBoss") Mix_HaltChannel(0);
                     }
                 }
                 for (auto it = explosions.begin(); it != explosions.end();) {
@@ -661,6 +668,7 @@ void Game::showMenu() {
     level = 0;
     scoreP1 = 0;
     scoreP2 = 0;
+    delete currentBoss;
     bool inMenu = true;
     int selectedOption = 0; // 0 = Start Game, 1 = Exit
     SDL_Event event;
@@ -838,7 +846,7 @@ void Game::renderInstruction(){
                     return;
                 } else if (event.type == SDL_KEYDOWN) {
                     switch (event.key.keysym.sym) {
-                        case SDLK_RETURN:
+                        case SDLK_ESCAPE:
                             renderInstruction = false;
                             showMenu();
                             break;
@@ -858,6 +866,7 @@ void Game::initMode(GameMode mode){
     gameMap.stones.clear();
     gameMap.ices.clear();
     gateOut.active = false;
+    currentBoss = NULL;
     if(level == 4){
         state = SHOW_WINNER;
         return;
@@ -876,7 +885,7 @@ void Game::initMode(GameMode mode){
         filename = "gameMaps//" + to_string(level) + ".txt";
         gameMap.loadFromFile(filename, renderer);
         spawnBoss(level);
-        player2 = PlayerTank(TILE_SIZE*15, MAP_HEIGHT * TILE_SIZE - 1, renderer, player2.imgLink);
+        player2 = PlayerTank(TILE_SIZE * 15, MAP_HEIGHT * TILE_SIZE - 1, renderer, player2.imgLink);
         walls = gameMap.walls;
         waters = gameMap.waters;
         bushs = gameMap.bushs;
@@ -961,10 +970,13 @@ void Game::spawnEnemies() {
 void Game::spawnBoss(int level){
     switch(level){
         case 0:
-            currentBoss = make_unique<FireBoss>((MAP_WIDTH-5) * TILE_SIZE, 5 * TILE_SIZE, renderer);
+            //currentBoss = make_unique<FireBoss>((MAP_WIDTH-5) * TILE_SIZE, 5 * TILE_SIZE, renderer);
+            currentBoss = new FireBoss((MAP_WIDTH-5) * TILE_SIZE, 5 * TILE_SIZE, renderer);
+            AudioManager::PlaySound(0, "fireboss", -1);
             break;
         case 4:
-            currentBoss = make_unique<IceBoss>(3 * TILE_SIZE, 5 * TILE_SIZE, renderer);
+            //currentBoss = make_unique<IceBoss>(3 * TILE_SIZE, 5 * TILE_SIZE, renderer);
+            currentBoss = new FireBoss(3 * TILE_SIZE, 5 * TILE_SIZE, renderer);
             break;
         default:
             currentBoss = NULL;
@@ -972,6 +984,73 @@ void Game::spawnBoss(int level){
     }
 }
 
+void Game::renderPauseMenu(){
+    bool inPauseMenu = true;
+    int selectedOption = 0; // 0: Continue, 1: Back to Menu, 2: Quit Game
+
+    SDL_Color white = {255, 255, 255};
+    SDL_Color yellow = {255, 255, 0};
+
+    while (inPauseMenu) {
+        SDL_RenderClear(renderer);
+
+        vector<string> options = { "Continue", "MENU", "EXIT" };
+        for (int i = 0; i < options.size(); ++i) {
+            SDL_Color color = (i == selectedOption) ? yellow : white;
+
+            SDL_Surface* surface = TTF_RenderText_Blended(font, options[i].c_str(), color);
+            SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+
+            SDL_Rect dstRect;
+            dstRect.x = SCREEN_WIDTH / 2 - surface->w / 2;
+            dstRect.y = 200 + i * 50;
+            dstRect.w = surface->w;
+            dstRect.h = surface->h;
+
+            SDL_RenderCopy(renderer, texture, nullptr, &dstRect);
+
+            SDL_FreeSurface(surface);
+            SDL_DestroyTexture(texture);
+        }
+
+        SDL_RenderPresent(renderer);
+
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                inPauseMenu = false;
+                running = false;
+                return;
+            }
+            else if (event.type == SDL_KEYDOWN) {
+                switch (event.key.keysym.sym) {
+                    case SDLK_UP:
+                        selectedOption = (selectedOption - 1 + options.size()) % options.size();
+                        break;
+                    case SDLK_DOWN:
+                        selectedOption = (selectedOption + 1) % options.size();
+                        break;
+                    case SDLK_RETURN:
+                        if (selectedOption == 0) {
+                            state = PLAYING;
+                            inPauseMenu = false;
+                        } else if (selectedOption == 1) {
+                            // Back to Menu
+                            state = MENU;
+                            inPauseMenu = false;
+                        } else if (selectedOption == 2) {
+                            // Quit Game
+                            running = false;
+                            inPauseMenu = false;
+                        }
+                        break;
+                }
+            }
+        }
+
+        SDL_Delay(16); // tránh dùng 100% CPU
+    }
+}
 Game::~Game(){
             SDL_DestroyTexture(menuTexture);
             IMG_Quit();

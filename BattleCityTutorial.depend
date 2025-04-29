@@ -5,7 +5,7 @@
 	"Game.h"
 	"Statistics.h"
 
-1745769710 c:\users\admin\documents\dev\battlecitytutorial\game.h
+1745912641 c:\users\admin\documents\dev\battlecitytutorial\game.h
 	<bits/stdc++.h>
 	<memory>
 	<iostream>
@@ -24,6 +24,7 @@
 	"Boss.h"
 	"Base.h"
 	"Gate.h"
+	"AudioManager.h"
 
 1745152736 source:c:\users\admin\documents\dev\battlecitytutorial\wall.cpp
 	"Wall.h"
@@ -35,7 +36,7 @@
 	"Statistics.h"
 	<SDL_image.h>
 
-1745864020 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
+1745912001 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
 	"Game.h"
 
 1745469224 c:\users\admin\documents\dev\battlecitytutorial\playertank.h
@@ -54,7 +55,7 @@
 1745729795 source:c:\users\admin\documents\dev\battlecitytutorial\playertank.cpp
 	"PlayerTank.h"
 
-1745727823 source:c:\users\admin\documents\dev\battlecitytutorial\bullet.cpp
+1745911906 source:c:\users\admin\documents\dev\battlecitytutorial\bullet.cpp
 	"Bullet.h"
 
 1744780817 c:\users\admin\documents\dev\battlecitytutorial\bullet.h
@@ -109,10 +110,10 @@
 1744563966 source:c:\users\admin\documents\dev\battlecitytutorial\map.cpp
 	"Map.h"
 
-1745863975 source:c:\users\admin\documents\dev\battlecitytutorial\boss.cpp
+1745911841 source:c:\users\admin\documents\dev\battlecitytutorial\boss.cpp
 	"Boss.h"
 
-1745864133 c:\users\admin\documents\dev\battlecitytutorial\boss.h
+1745901420 c:\users\admin\documents\dev\battlecitytutorial\boss.h
 	<bits/stdc++.h>
 	<SDL.h>
 	<SDL_image.h>
@@ -123,6 +124,7 @@
 	"Wall.h"
 	"Stone.h"
 	"PlayerTank.h"
+	"AudioManager.h"
 
 1744556335 c:\users\admin\documents\dev\battlecitytutorial\water.h
 	<iostream>
@@ -478,7 +480,7 @@
 
 1745482235 source:c:\users\admin\documents\dev\battlecitytutorial\gate.cpp
 
-1745862268 c:\users\admin\documents\dev\battlecitytutorial\effect.h
+1745911799 c:\users\admin\documents\dev\battlecitytutorial\effect.h
 	<bits/stdc++.h>
 	<SDL.h>
 	<SDL_image.h>
@@ -490,4 +492,11 @@
 	"Boss_Juior.h"
 
 1745771396 c:\users\admin\documents\dev\battlecitytutorial\boss_juior.h
+
+1745910658 c:\users\admin\documents\dev\battlecitytutorial\audiomanager.h
+	<SDL_mixer.h>
+	<bits/stdc++.h>
+
+1745910670 source:c:\users\admin\documents\dev\battlecitytutorial\audiomanager.cpp
+	"AudioManager.h"
 

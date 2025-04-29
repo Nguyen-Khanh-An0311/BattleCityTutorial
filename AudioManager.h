@@ -7,28 +7,17 @@ using namespace std;
 
 class AudioManager {
 public:
-    void Init(){  // Load âm thanh
-        //sounds["background"] = Mix_LoadWAV("assets/background.wav");
-        sounds["fireboss"] = Mix_LoadWAV("Sound//bossSound.wav");
-        sounds["shoot"] = Mix_LoadWAV("Sound//fireSound.wav");
-        sounds["explosion"] = Mix_LoadWAV("Sound//explosionSound.wav");
-    }
+    static void Init();// Load âm thanh
 
-    void CleanUp(){
-        for (auto& pair : sounds) {
-            Mix_FreeChunk(pair.second);
-        }
-        sounds.clear();
-    }      // Xoá âm thanh
 
-    void AudioManager::PlaySound(string id, int loop) {
-        Mix_PlayChannel(-1, sounds[id], loop);
-    } // phát âm
+    static void CleanUp();// Xoá âm thanh
 
-    void StopSound(string id){}               // dừng âm
+    static void PlaySound(int channel, string id, int loop);// phát âm
+
+    static void StopSound(string id){}               // dừng âm
     static void SetVolume(string id, int volume);    // chỉnh volume
 
-private:
+//private:
     static unordered_map<string, Mix_Chunk*> sounds;
 };
 
