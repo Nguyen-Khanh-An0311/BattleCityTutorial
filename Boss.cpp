@@ -2,7 +2,7 @@
 
 
 Hole* Boss::spawnHole(SDL_Texture* holeTexture){
-    Hole* hole = new Hole((MAP_WIDTH/2 + 1) * TILE_SIZE, (MAP_HEIGHT/2 - 2) * TILE_SIZE, holeTexture);
+    Hole* hole = new Hole(x - TILE_SIZE, y + TILE_SIZE * 2, holeTexture);
     return hole;
 }
 FireBoss::FireBoss(int x, int y, SDL_Renderer* renderer) : Boss(x, y, renderer) {
@@ -18,7 +18,7 @@ void FireBoss::update() {
         if (currentTime - lastFireTime >= fireInterval) {
             fireZones.clear();
             spawnFireZone();
-            //AudioManager::PlaySound(6, "flame", 1);
+            AudioManager::PlaySound(6, "flame", 1);
             lastFireTime = currentTime;
         }
         if (!hole && currentTime - lastOpenTime >= holeInterval){
@@ -105,16 +105,17 @@ void FireBoss::Die(SDL_Renderer* renderer) {
         FRAME_HEIGHT
     };
     SDL_RenderCopy(renderer, bossDie, &srcRect, &destRect);
-    /*Mix_HaltChannel(1);
-    Mix_FreeChunk(AudioManager::sounds["fireboss"]);*/
+    Mix_HaltChannel(1);
+    Mix_FreeChunk(AudioManager::sounds["fireboss"]);
 }
 
 IceBoss::IceBoss(int x, int y, SDL_Renderer* renderer) : Boss(x, y, renderer) {
     texture = IMG_LoadTexture(renderer, "Image//ice_monster_chosen.png");
     iceTexture = IMG_LoadTexture(renderer, "Image//ice_spike_no_border_fixed.png");
-    //bossSound = Mix_LoadWAV("Sound//bossSound.wav");
     bossDie = IMG_LoadTexture(renderer, "Image//ice_boss_die.png");
     holeTexture = IMG_LoadTexture(renderer, "Image//hole.jpg");
+    lastIceTime = SDL_GetTicks();
+    lastOpenTime = SDL_GetTicks();
     name = "IceBoss";
 }
 void IceBoss::update(){
@@ -122,8 +123,8 @@ void IceBoss::update(){
         if (currentTime - lastIceTime >= iceInterval) {
             iceZones.clear();
             spawnIceZone();
-            /*AudioManager::PlaySound(5, "ice", 2);
-            Mix_Volume(5, MIX_MAX_VOLUME);*/
+            AudioManager::PlaySound(5, "ice", 2);
+            Mix_Volume(5, MIX_MAX_VOLUME);
             lastIceTime = currentTime;
         }
         if (!hole && currentTime - lastOpenTime >= holeInterval){
@@ -194,8 +195,8 @@ void IceBoss::Die(SDL_Renderer* renderer){
         FRAME_HEIGHT
     };
     SDL_RenderCopy(renderer, bossDie, &srcRect, &destRect);
-    /*Mix_HaltChannel(2);
-    Mix_FreeChunk(AudioManager::sounds["iceboss"]);*/
+    Mix_HaltChannel(2);
+    Mix_FreeChunk(AudioManager::sounds["iceboss"]);
 }
 void IceBoss::spawnIceZone(){
     for(int i=0; i<15; i++){

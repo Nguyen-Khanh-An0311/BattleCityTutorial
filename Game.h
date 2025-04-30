@@ -87,7 +87,7 @@ public:
     int scoreP1;
     PlayerTank player2;
     int scoreP2;
-    int enemyNumber = 1;
+    int enemyNumber = 3;
     vector<EnemyTank> enemies;
     int heartNumber = 5;
     vector<Heart> hearts;

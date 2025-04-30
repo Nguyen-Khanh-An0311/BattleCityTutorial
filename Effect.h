@@ -17,10 +17,10 @@ const int ICE_FRAME_HEIGHT = 113;
 const int ICE_FRAME_COUNT = 7;
 const Uint32 FIRE_FRAME_DURATION = 100;
 
-const int HOLE_FRAME_WIDTH = 270;
-const int HOLE_FRAME_HEIGHT = 250;
-const int HOLE_FRAME_COUNT = 7;
-const Uint32 HOLE_FRAME_DURATION = 100;
+const int HOLE_FRAME_WIDTH = 73;
+const int HOLE_FRAME_HEIGHT = 150;
+const int HOLE_FRAME_COUNT = 4;
+const Uint32 HOLE_FRAME_DURATION = 1000;
 
 class Effect{
 public:
@@ -123,7 +123,7 @@ public:
         rect = {
             x,
             y,
-            TILE_SIZE * 4,
+            TILE_SIZE * 1.5,
             TILE_SIZE * 4
         };
     }
@@ -148,6 +148,7 @@ public:
             Uint32 currentTime = SDL_GetTicks();
             if (currentTime - lastEnemyTime >= 2000) {
                 enemies.clear();
+
                 EnemyTank enemy(rect.x, rect.y, renderer);
                 enemies.push_back(enemy);
                 lastEnemyTime = currentTime;

@@ -232,7 +232,7 @@ void Game::update() {
     player1.updateBullets();
     if (player1.cooldown > 0){
         player1.cooldown--;
-        cout << player1.cooldown << endl;
+        //cout << player1.cooldown << endl;
     }
 
         if (gateOut.active) {
@@ -449,17 +449,26 @@ void Game::update() {
 void Game::updateSoundState(){
         switch (state) {
             case MENU:
-                //Mix_HaltChannel(-1);
-                if(!Mix_Playing(0)){
+                Mix_HaltChannel(-1);
+                /*if(!Mix_Playing(0)){
                     AudioManager::PlaySound(0, "background", -1);
-                }
+                }*/
             case PAUSE:
-                //Phát nền, dừng các âm khác
-                //Mix_HaltChannel(-1);
+                Mix_HaltChannel(-1);
                 break;
             case PLAYING:
-                //Dừng tiếng nền
-                //Mix_HaltChannel(10);
+                if(currentBoss && currentBoss->active){
+                    if(currentBoss->name == "FireBoss") {
+                        if (!Mix_Playing(1)) {
+                            AudioManager::PlaySound(1,"fireboss", -1); // chỉ phát nếu chưa chạy
+                        }
+                    }
+                    else {
+                        if (!Mix_Playing(2)) {
+                            AudioManager::PlaySound(2,"iceboss", -1); // chỉ phát nếu chưa chạy
+                        }
+                    }
+                }
                 break;
         }
 }
@@ -536,7 +545,7 @@ void Game::render(){
                         it = explosions.erase(it);
                     } else {
                         if(it->soundPlay){
-                            //AudioManager::PlaySound(4, "explosion", 0);
+                            AudioManager::PlaySound(4, "explosion", 0);
                             it->soundPlay = false;
                         }
                         it->render(renderer);
@@ -692,7 +701,7 @@ void Game::showMenu() {
         // Vẽ menu
         SDL_RenderClear(renderer);// 👈 vẽ menu
         SDL_RenderCopy(renderer, menuTexture, nullptr, nullptr); // Hiển thị ảnh nền
-        SDL_RenderPresent(renderer);
+        //SDL_RenderPresent(renderer);
 
         // T?o các chuỗi menu
         string options[3] = {"Start Game", "Instruction", "Exit"};
@@ -755,7 +764,7 @@ void Game::ChooseMode(){
         // Vẽ nền menu
         SDL_RenderClear(renderer);// 👈 vẽ menu
         SDL_RenderCopy(renderer, menuTexture, nullptr, nullptr); // Hiển thị ảnh nền
-        SDL_RenderPresent(renderer);
+        //SDL_RenderPresent(renderer);
 
         // T?o các chu?i menu
         string options[3] = {"Player vs Emenies", "Player vs Player", "<-"};
@@ -980,16 +989,16 @@ void Game::spawnEnemies() {
 
 void Game::spawnBoss(int level){
     switch(level){
-        case 1:
+        case 3:
             //currentBoss = make_unique<FireBoss>((MAP_WIDTH-5) * TILE_SIZE, 5 * TILE_SIZE, renderer);
             currentBoss = new FireBoss((MAP_WIDTH-5) * TILE_SIZE, 5 * TILE_SIZE, renderer);
-            //AudioManager::PlaySound(1, "fireboss", -1);
+            AudioManager::PlaySound(1, "fireboss", -1);
             break;
-        case 0:
+        case 4:
             //currentBoss = make_unique<IceBoss>(3 * TILE_SIZE, 5 * TILE_SIZE, renderer);
             currentBoss = new IceBoss(3 * TILE_SIZE, 5 * TILE_SIZE, renderer);
-            /*AudioManager::PlaySound(2, "iceboss", -1);
-            Mix_Volume(2, MIX_MAX_VOLUME / 6);*/
+            AudioManager::PlaySound(2, "iceboss", -1);
+            Mix_Volume(2, MIX_MAX_VOLUME / 6);
             break;
         default:
             currentBoss = NULL;

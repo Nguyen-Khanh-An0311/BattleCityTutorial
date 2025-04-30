@@ -31,13 +31,13 @@ public:
     Boss(){}
     Boss(int x, int y , SDL_Renderer* renderer) : x(x), y(y) {
         holeTexture = IMG_LoadTexture(renderer, "Image//hole.jpg");
-        //AudioManager::Init();
+        AudioManager::Init();
     }
 
     //hiển thị
     int currentFrame = 0;
     Uint32 lastFrameTime = SDL_GetTicks();
-    SDL_Rect destRect = {x, y, TILE_SIZE * 5, TILE_SIZE * 5 };
+    SDL_Rect destRect = {x, y, TILE_SIZE * 6, TILE_SIZE * 6 };
 
     virtual void update() = 0;
     virtual void render(SDL_Renderer* renderer) = 0;
@@ -51,7 +51,7 @@ public:
     //Hole* spawnHole(SDL_Texture*);
     Hole* spawnHole(SDL_Texture* holeTexture);
     vector<EnemyTank> enemiesFromHole;
-    Uint32 holeInterval = 10000;
+    Uint32 holeInterval = 15000;
 
     SDL_Texture* bossDie;
     bool isDying = false;

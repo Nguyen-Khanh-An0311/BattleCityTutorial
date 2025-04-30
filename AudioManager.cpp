@@ -3,10 +3,10 @@
 unordered_map<string , Mix_Chunk*> AudioManager::sounds;
 
 void AudioManager::Init() {
-        sounds["background"] = Mix_LoadWAV("Sound//background.wav"); //0
+        /*sounds["background"] = Mix_LoadWAV("Sound//background.wav"); //0
         if (sounds["background"] == nullptr) {
             cout << "Failed to load bg sound effect! SDL_mixer Error: " << Mix_GetError() << endl;
-        }
+        }*/
         sounds["fireboss"] = Mix_LoadWAV("Sound//fireboss.wav"); //1
         if (sounds["fireboss"] == nullptr) {
             cout << "Failed to load fb sound effect! SDL_mixer Error: " << Mix_GetError() << endl;
