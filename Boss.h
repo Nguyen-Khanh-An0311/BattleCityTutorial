@@ -27,10 +27,11 @@ public:
     bool active = true;
     int RemainingLives = 10;
     SDL_Texture* texture;
-    Mix_Chunk* bossSound;
+    SDL_Texture* holeTexture;
     Boss(){}
-    Boss(int x, int y) : x(x), y(y) {
-        AudioManager::Init();
+    Boss(int x, int y , SDL_Renderer* renderer) : x(x), y(y) {
+        holeTexture = IMG_LoadTexture(renderer, "Image//hole.jpg");
+        //AudioManager::Init();
     }
 
     //hiển thị
@@ -44,8 +45,13 @@ public:
     //hiệu ứng
     virtual bool checkCollision(PlayerTank&) = 0;
 
+    //hiện cổng
+    Uint32 lastOpenTime;
+    Hole* hole = NULL;
+    //Hole* spawnHole(SDL_Texture*);
+    Hole* spawnHole(SDL_Texture* holeTexture);
     vector<EnemyTank> enemiesFromHole;
-    //EnemyTank enemyFromHole;
+    Uint32 holeInterval = 10000;
 
     SDL_Texture* bossDie;
     bool isDying = false;
@@ -60,7 +66,6 @@ class FireBoss : public Boss { //derived class
 public:
     FireBoss(int x, int y, SDL_Renderer* renderer);
     SDL_Texture* fireTexture;
-    SDL_Texture* holeTexture;
     Mix_Chunk* fireSound;
 
     //hiện lửa
@@ -69,15 +74,10 @@ public:
     Uint32 lastFireTime;
     void spawnFireZone();
 
-    //hiện cổng
-    Uint32 holeInterval = 15000; // khoảng nghỉ
-    Uint32 lastOpenTime;
-    Hole* hole = NULL;
-    Hole* spawnHole();
-
     //render, update
     void update() override;
     void render(SDL_Renderer* renderer) override ;
+
     // ktra va chạm
     bool checkCollision(PlayerTank& player) override;
 

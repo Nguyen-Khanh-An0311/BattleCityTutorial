@@ -57,22 +57,10 @@ Game::Game(){
             gateOut = Gate(renderer);
             currentBoss = NULL;
 
-            /*backgroundMusic = Mix_LoadMUS("Sound//Soundtrack.mp3");
-            if (!backgroundMusic) {
-                cout << "Failed to load music! Error: " << Mix_GetError() << endl;
-                running = false;
-            } else {
-                Mix_PlayMusic(backgroundMusic, 1);
-            }
-            Mix_VolumeMusic(2);*/
-
             menuTexture = IMG_LoadTexture(renderer, "Image//menu.jpg");
             levelTexture = IMG_LoadTexture(renderer, "Image//level_flag.png");
             RML1 = IMG_LoadTexture(renderer, "Image//heart.png");
             RML2 = IMG_LoadTexture(renderer, "Image//heart.png");
-
-
-            //shootSound = Mix_LoadWAV("Sound//fireSound.wav");
         }
 
 
@@ -461,17 +449,17 @@ void Game::update() {
 void Game::updateSoundState(){
         switch (state) {
             case MENU:
-                Mix_HaltChannel(-1);
+                //Mix_HaltChannel(-1);
                 if(!Mix_Playing(0)){
                     AudioManager::PlaySound(0, "background", -1);
                 }
             case PAUSE:
                 //Phát nền, dừng các âm khác
-                Mix_HaltChannel(-1);
+                //Mix_HaltChannel(-1);
                 break;
             case PLAYING:
                 //Dừng tiếng nền
-                Mix_HaltChannel(0);
+                //Mix_HaltChannel(10);
                 break;
         }
 }
@@ -548,7 +536,7 @@ void Game::render(){
                         it = explosions.erase(it);
                     } else {
                         if(it->soundPlay){
-                            AudioManager::PlaySound(4, "explosion", 0);
+                            //AudioManager::PlaySound(4, "explosion", 0);
                             it->soundPlay = false;
                         }
                         it->render(renderer);
@@ -992,14 +980,16 @@ void Game::spawnEnemies() {
 
 void Game::spawnBoss(int level){
     switch(level){
-        case 3:
+        case 1:
             //currentBoss = make_unique<FireBoss>((MAP_WIDTH-5) * TILE_SIZE, 5 * TILE_SIZE, renderer);
             currentBoss = new FireBoss((MAP_WIDTH-5) * TILE_SIZE, 5 * TILE_SIZE, renderer);
-            AudioManager::PlaySound(1, "fireboss", -1);
+            //AudioManager::PlaySound(1, "fireboss", -1);
             break;
-        case 4:
+        case 0:
             //currentBoss = make_unique<IceBoss>(3 * TILE_SIZE, 5 * TILE_SIZE, renderer);
-            currentBoss = new FireBoss(3 * TILE_SIZE, 5 * TILE_SIZE, renderer);
+            currentBoss = new IceBoss(3 * TILE_SIZE, 5 * TILE_SIZE, renderer);
+            /*AudioManager::PlaySound(2, "iceboss", -1);
+            Mix_Volume(2, MIX_MAX_VOLUME / 6);*/
             break;
         default:
             currentBoss = NULL;
