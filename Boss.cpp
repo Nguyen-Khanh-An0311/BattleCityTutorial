@@ -65,6 +65,7 @@ void FireBoss::render(SDL_Renderer* renderer) {
 bool FireBoss::checkCollision(PlayerTank& player) {
     for(size_t i=0; i < fireZones.size(); i++){
         if(SDL_HasIntersection(&player.rect, &fireZones[i]->rect))
+            //fireZones.erase(fireZones.begin() + i);
             return true;
     }
     return false;

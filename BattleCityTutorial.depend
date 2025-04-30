@@ -5,7 +5,7 @@
 	"Game.h"
 	"Statistics.h"
 
-1745948476 c:\users\admin\documents\dev\battlecitytutorial\game.h
+1745985249 c:\users\admin\documents\dev\battlecitytutorial\game.h
 	<bits/stdc++.h>
 	<memory>
 	<iostream>
@@ -36,10 +36,10 @@
 	"Statistics.h"
 	<SDL_image.h>
 
-1745950527 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
+1745986776 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
 	"Game.h"
 
-1745469224 c:\users\admin\documents\dev\battlecitytutorial\playertank.h
+1745978192 c:\users\admin\documents\dev\battlecitytutorial\playertank.h
 	<iostream>
 	<SDL.h>
 	<SDL_image.h>
@@ -52,7 +52,7 @@
 	"EnemyTank.h"
 	"Map.h"
 
-1745729795 source:c:\users\admin\documents\dev\battlecitytutorial\playertank.cpp
+1745983931 source:c:\users\admin\documents\dev\battlecitytutorial\playertank.cpp
 	"PlayerTank.h"
 
 1745911906 source:c:\users\admin\documents\dev\battlecitytutorial\bullet.cpp
@@ -64,7 +64,7 @@
 	<SDL_image.h>
 	"Statistics.h"
 
-1745774533 c:\users\admin\documents\dev\battlecitytutorial\enemytank.h
+1745982845 c:\users\admin\documents\dev\battlecitytutorial\enemytank.h
 	<iostream>
 	<SDL_image.h>
 	<vector>
@@ -76,7 +76,7 @@
 	"PlayerTank.h"
 	"Base.h"
 
-1745861561 source:c:\users\admin\documents\dev\battlecitytutorial\enemytank.cpp
+1745984837 source:c:\users\admin\documents\dev\battlecitytutorial\enemytank.cpp
 	"EnemyTank.h"
 
 1742440092 c:\users\admin\documents\dev\battlecitytutorial\statistics.h
@@ -110,7 +110,7 @@
 1744563966 source:c:\users\admin\documents\dev\battlecitytutorial\map.cpp
 	"Map.h"
 
-1745950612 source:c:\users\admin\documents\dev\battlecitytutorial\boss.cpp
+1745978021 source:c:\users\admin\documents\dev\battlecitytutorial\boss.cpp
 	"Boss.h"
 
 1745901420 c:\users\admin\documents\dev\battlecitytutorial\boss.h
@@ -497,6 +497,6 @@
 	<SDL_mixer.h>
 	<bits/stdc++.h>
 
-1745951155 source:c:\users\admin\documents\dev\battlecitytutorial\audiomanager.cpp
+1745986544 source:c:\users\admin\documents\dev\battlecitytutorial\audiomanager.cpp
 	"AudioManager.h"
 

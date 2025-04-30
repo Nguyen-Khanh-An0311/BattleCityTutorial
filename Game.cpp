@@ -19,6 +19,7 @@ Game::Game(){
             Mix_AllocateChannels(32);
             AudioManager::Init();
 
+
             if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
                 cout << "SDL_image không thể khởi tạo! IMG_Error: " << IMG_GetError() << std::endl;
                 running = false;
@@ -235,11 +236,17 @@ void Game::update() {
         enemies.insert(enemies.begin(), currentBoss->enemiesFromHole.begin(), currentBoss->enemiesFromHole.end());
         currentBoss->enemiesFromHole.clear();
     }
-
-    if((currentBoss && !currentBoss->active) || (!currentBoss &&enemies.empty())){
-        gateOut.spawn((MAP_WIDTH/2)*TILE_SIZE, (MAP_HEIGHT/2)*TILE_SIZE);
+    if(enemies.empty()){
+        if(!currentBoss || currentBoss && !currentBoss->active){
+            gateOut.spawn((MAP_WIDTH/2)*TILE_SIZE, (MAP_HEIGHT/2)*TILE_SIZE);
+        }
     }
     player1.updateBullets();
+    if (player1.cooldown > 0){
+        player1.cooldown--;
+        cout << player1.cooldown << endl;
+    }
+
         if (gateOut.active) {
             SDL_Rect gateRect = gateOut.getRect();
                 if(mode == PVE){
@@ -358,8 +365,9 @@ void Game::update() {
     }
 
     if(currentBoss && currentBoss->active){ // dính chiêu của boss
-        if(currentBoss->checkCollision(player1)){
+        if(player1.cooldown == 0 && currentBoss->checkCollision(player1)){
             player1.RemainingLives -= 1;
+            player1.cooldown = 120;
         }
         if(player1.RemainingLives == 0){
             player1.active = false;
@@ -374,6 +382,7 @@ void Game::update() {
     }
     else {
         player2.updateBullets();
+        if(player2.cooldown > 0) player2.cooldown--;
 
         for (auto& bullet : player2.bullets) { // dan nguoi choi 2 ban tuong
             for (auto& wall : walls) {
@@ -420,8 +429,9 @@ void Game::update() {
                 }
             }
         if(currentBoss && currentBoss->active){ // p2 dinh lua
-            if(currentBoss->checkCollision(player2)){
+            if(player2.cooldown == 0 && currentBoss->checkCollision(player2)){
                 player2.RemainingLives -= 1;
+                player2.cooldown = 120;
             }
             if(player2.RemainingLives == 0){
                 player1.active = false;
@@ -607,7 +617,7 @@ void Game::renderWinner(){
     //Mix_HaltChannel(-1);
     SDL_Color color = {255, 255, 0}; // Vàng rực rỡ
     SDL_Surface* textSurface;
-    if(base.active && !currentBoss->active){
+    if(base.active && !currentBoss->active && enemies.empty()){
         textSurface = TTF_RenderText_Blended(font, "YOU WIN!!!", color);
     }
     else {
@@ -957,23 +967,21 @@ void Game::spawnHearts(){
 }
 void Game::spawnEnemies() {
     enemies.clear();
-    for (int i = 0; i < enemyNumber; ++i) {
+    while(enemies.size() < enemyNumber){
         int ex, ey;
         bool validPosition = false;
         while (!validPosition) {
-            ex = (rand() % MAP_WIDTH) * TILE_SIZE;
-            ey = (rand() % (MAP_HEIGHT / 2) + 1) * TILE_SIZE;
+            ex = (2 + (rand() % (MAP_WIDTH - 1))) * TILE_SIZE;
+            ey = (2 + rand() % (MAP_HEIGHT / 2) ) * TILE_SIZE;
+            SDL_Rect enemyRect = { ex, ey, TILE_SIZE, TILE_SIZE };
             validPosition = true;
-            if( (player1.x == ex && player1.y == ey) ||(mode == GameMode::PVP && (player2.x == ex && player2.y == ey))){
-                validPosition = false;
-            }
             for (const auto& wall : walls) {
-                if (wall.active && wall.x == ex && wall.y == ey) {
+                if (wall.active && SDL_HasIntersection(&enemyRect, &wall.rect)) {
                     validPosition = false;
                 }
             }
             for (auto& stone : stones) {
-                if (stone.x == ex && stone.y == ey) {
+                if (SDL_HasIntersection(&enemyRect, &stone.rect)) {
                     validPosition = false;
                 }
             }
@@ -984,7 +992,7 @@ void Game::spawnEnemies() {
 
 void Game::spawnBoss(int level){
     switch(level){
-        case 1:
+        case 3:
             //currentBoss = make_unique<FireBoss>((MAP_WIDTH-5) * TILE_SIZE, 5 * TILE_SIZE, renderer);
             currentBoss = new FireBoss((MAP_WIDTH-5) * TILE_SIZE, 5 * TILE_SIZE, renderer);
             AudioManager::PlaySound(1, "fireboss", -1);
