@@ -51,7 +51,7 @@ void EnemyTank::move(vector<Wall>& walls, SDL_Renderer* renderer,
     // Tính vị trí mới
     int newX = x + dirX;
     int newY = y + dirY;
-    SDL_Rect newRect = { newX, newY, TILE_SIZE, TILE_SIZE };
+    SDL_Rect newRect = { newX, newY, TILE_SIZE, TILE_SIZE};
     /*if (isBlocked(newRect, stones, waters)) {
         bool found = false;
         // Bị chắn bởi đá hoặc gì đó, thử hướng khác

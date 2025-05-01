@@ -5,7 +5,7 @@
 	"Game.h"
 	"Statistics.h"
 
-1746039116 c:\users\admin\documents\dev\battlecitytutorial\game.h
+1746086953 c:\users\admin\documents\dev\battlecitytutorial\game.h
 	<bits/stdc++.h>
 	<memory>
 	<iostream>
@@ -36,10 +36,10 @@
 	"Statistics.h"
 	<SDL_image.h>
 
-1746039102 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
+1746087215 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
 	"Game.h"
 
-1745978192 c:\users\admin\documents\dev\battlecitytutorial\playertank.h
+1746081818 c:\users\admin\documents\dev\battlecitytutorial\playertank.h
 	<iostream>
 	<SDL.h>
 	<SDL_image.h>
@@ -52,7 +52,7 @@
 	"EnemyTank.h"
 	"Map.h"
 
-1746025959 source:c:\users\admin\documents\dev\battlecitytutorial\playertank.cpp
+1746081818 source:c:\users\admin\documents\dev\battlecitytutorial\playertank.cpp
 	"PlayerTank.h"
 
 1745911906 source:c:\users\admin\documents\dev\battlecitytutorial\bullet.cpp
@@ -76,7 +76,7 @@
 	"PlayerTank.h"
 	"Base.h"
 
-1746038405 source:c:\users\admin\documents\dev\battlecitytutorial\enemytank.cpp
+1746066888 source:c:\users\admin\documents\dev\battlecitytutorial\enemytank.cpp
 	"EnemyTank.h"
 
 1742440092 c:\users\admin\documents\dev\battlecitytutorial\statistics.h

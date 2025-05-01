@@ -27,6 +27,7 @@ PlayerTank::PlayerTank(int startX, int startY, SDL_Renderer* renderer, const cha
         dirX = 0;
         dirY = -1; // Default direction up
         cooldown = 0;
+        score = 0;
         active = true;
     }
 

@@ -29,6 +29,7 @@ Game::Game(){
             }
 
             font = TTF_OpenFont("Font//prstartk.ttf", 30);
+            fontLarge = TTF_OpenFont("Font//prstartk.ttf", 35);
             fontScore = TTF_OpenFont("Font//prstartk.ttf", 80);
             if (!font) {
                 cout << "Failed to load font: " << TTF_GetError() << std::endl;
@@ -57,8 +58,9 @@ Game::Game(){
             gateOut = Gate(renderer);
             currentBoss = NULL;
 
-            menuTexture = IMG_LoadTexture(renderer, "Image//menu.jpg");
+            menuTexture = IMG_LoadTexture(renderer, "Image//logo.jpg");
             levelTexture = IMG_LoadTexture(renderer, "Image//level_flag.png");
+            enemyTexture = IMG_LoadTexture(renderer, "Image//enemy.png");
             RML1 = IMG_LoadTexture(renderer, "Image//heart.png");
             RML2 = IMG_LoadTexture(renderer, "Image//heart.png");
         }
@@ -317,10 +319,20 @@ void Game::update() {
             }
         }
     }
+    for (auto& bullet : player1.bullets) { // dan nguoi choi 1 ban nuoc
+        for (auto& water : waters) {
+            if (SDL_HasIntersection(&bullet.rect, &water.rect)) {
+                //explosions.emplace_back(renderer, bullet.x, bullet.y);
+                bullet.active = false;
+                break;
+            }
+        }
+    }
 
     for (auto& bullet : player1.bullets) { // dan nguoi choi 1 ban dich
         for (auto& enemy : enemies) {
             if (enemy.active && SDL_HasIntersection(&bullet.rect, &enemy.rect)) {
+                player1.score++;
                 explosions.emplace_back(renderer, enemy.x, enemy.y);
                 enemy.active = false;
                 bullet.active = false;
@@ -391,11 +403,20 @@ void Game::update() {
                 }
             }
         }
-
+        for (auto& bullet : player2.bullets) { // dan nguoi choi 2 ban nuoc
+            for (auto& water : waters) {
+                if (SDL_HasIntersection(&bullet.rect, &water.rect)) {
+                    explosions.emplace_back(renderer, bullet.x, bullet.y);
+                    bullet.active = false;
+                    break;
+                }
+            }
+        }
         for (auto& bullet : player2.bullets) { // dan nguoi choi 2 ban dich
             for (auto& enemy : enemies) {
                 if (enemy.active && SDL_HasIntersection(&bullet.rect, &enemy.rect)) {
-                    explosions.emplace_back(renderer, enemy.x, enemy.y);
+                    player2.score++;
+                    //explosions.emplace_back(renderer, enemy.x, enemy.y);
                     enemy.active = false;
                     bullet.active = false;
                 }
@@ -500,6 +521,7 @@ void Game::render(){
             renderLevel();
             //renderHeart();
             renderRemainingLive(mode);
+            renderScore();
             for (auto& enemy : enemies) {
                 enemy.render(renderer);
             }
@@ -559,8 +581,6 @@ void Game::render(){
             SDL_RenderPresent(renderer); // hiển thị tất cả, phải có
     }
 
-
-
 void Game::renderLevel(){
     SDL_Color white = {0, 0, 0};
 
@@ -578,27 +598,33 @@ void Game::renderLevel(){
     SDL_DestroyTexture(textTexture1);
 }
 void Game::renderScore(){
+    SDL_Rect rect1;
+    SDL_Rect rect2;
+    rect1 = {TILE_SIZE * 32.25, TILE_SIZE * 10, TILE_SIZE , TILE_SIZE };
+    rect2 = {TILE_SIZE * 32.25, TILE_SIZE * 11, TILE_SIZE , TILE_SIZE };
+    SDL_RenderCopy(renderer, enemyTexture, nullptr, &rect1); // Hiển thị ảnh nền
+    if(mode == PVP) SDL_RenderCopy(renderer,enemyTexture , nullptr, &rect2);
     SDL_Color white = {0, 0, 0};
 
-    string p1 = to_string(scoreP1) + "-" + to_string(scoreP2);
-    //string p2 = to_string(scoreP2);
+    string p1 = "P1: " + to_string(player1.score);
+    string p2 = "P1: " + to_string(player2.score);
 
-    SDL_Surface* textSurface1 = TTF_RenderText_Blended(fontScore, p1.c_str(), white);
+    SDL_Surface* textSurface1 = TTF_RenderText_Blended(font, p1.c_str(), white);
     SDL_Texture* textTexture1 = SDL_CreateTextureFromSurface(renderer, textSurface1);
-    SDL_Rect dstRect1 = {TILE_SIZE * 29, TILE_SIZE * 28, textSurface1->w, textSurface1->h}; // tuỳ chỉnh vị trí
+    SDL_Rect dstRect1 = {TILE_SIZE * 28, TILE_SIZE * 10, textSurface1->w, textSurface1->h}; // tuỳ chỉnh vị trí
 
-    /*SDL_Surface* textSurface2 = TTF_RenderText_Blended(font, p2.c_str(), white);
+    SDL_Surface* textSurface2 = TTF_RenderText_Blended(font, p2.c_str(), white);
     SDL_Texture* textTexture2 = SDL_CreateTextureFromSurface(renderer, textSurface2);
     SDL_Rect dstRect2 = {TILE_SIZE * 28, TILE_SIZE * 11, textSurface2->w, textSurface2->h}; // tuỳ chỉnh vị trí*/
 
     SDL_RenderCopy(renderer, textTexture1, NULL, &dstRect1);
-    //SDL_RenderCopy(renderer, textTexture2, NULL, &dstRect2);
+    if(mode == PVP) SDL_RenderCopy(renderer, textTexture2, NULL, &dstRect2);
 
     // Clean up
     SDL_FreeSurface(textSurface1);
     SDL_DestroyTexture(textTexture1);
-    /*SDL_FreeSurface(textSurface2);
-    SDL_DestroyTexture(textTexture2);*/
+    SDL_FreeSurface(textSurface2);
+    SDL_DestroyTexture(textTexture2);
 }
 void Game::renderHeart(){
     SDL_Rect rect1;
@@ -614,15 +640,17 @@ void Game::renderWinner(){
     //Mix_HaltChannel(-1);
     SDL_Color color = {255, 255, 0}; // Vàng rực rỡ
     SDL_Surface* textSurface;
+    SDL_Surface* textMVP;
     if(base.active && !currentBoss->active && enemies.empty()){
         textSurface = TTF_RenderText_Blended(font, "YOU WIN!!!", color);
     }
     else {
         textSurface = TTF_RenderText_Blended(font, "GAME OVER!!!", color);
     }
-
     SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
-
+    /*if(mode == PVE){
+        textMVP = TTF_RenderText_Blended(font, player1.score > player2.score ? "MVP: Player 1" : "MVP: Player 2", color);
+    }*/
     int textW = textSurface->w;
     int textH = textSurface->h;
     SDL_FreeSurface(textSurface);
@@ -696,6 +724,10 @@ void Game::showMenu() {
     SDL_Event event;
     SDL_Color white = {255, 255, 255};
     SDL_Color yellow = {255, 255, 0};
+    int highlightAlpha = 128;
+    bool alphaIncreasing = true;
+    Uint32 lastTime = SDL_GetTicks();
+    int lineSpacing = 40;
 
     while (inMenu) {
         // Vẽ menu
@@ -703,16 +735,69 @@ void Game::showMenu() {
         SDL_RenderCopy(renderer, menuTexture, nullptr, nullptr); // Hiển thị ảnh nền
         //SDL_RenderPresent(renderer);
 
+        Uint32 currentTime = SDL_GetTicks();
+        if (currentTime > lastTime + 30) { // cập nhật mỗi ~30ms
+            if (alphaIncreasing) {
+                highlightAlpha += 8;
+                if (highlightAlpha >= 192) {
+                    highlightAlpha = 192;
+                    alphaIncreasing = false;
+                }
+            } else {
+                highlightAlpha -= 8;
+                if (highlightAlpha <= 64) {
+                    highlightAlpha = 64;
+                    alphaIncreasing = true;
+                }
+            }
+            lastTime = currentTime;
+        }
+
         // T?o các chuỗi menu
         string options[3] = {"Start Game", "Instruction", "Exit"};
+        int totalMenuHeight = 0;
+        for (int i = 0; i < 3; ++i) {
+            TTF_Font* currentFont = (i == selectedOption) ? fontLarge : font;
+            int w, h;
+            TTF_SizeText(currentFont, options[i].c_str(), &w, &h);
+            totalMenuHeight += h + lineSpacing;
+        }
+        totalMenuHeight -= lineSpacing; // không tính khoảng sau dòng cuối
+        int yOffset = (SCREEN_HEIGHT - totalMenuHeight) / 2 + 200;
+
         for (int i = 0; i < 3; ++i) {
             SDL_Color color = (i == selectedOption) ? yellow : white;
-            SDL_Surface* surface = TTF_RenderText_Blended(font, options[i].c_str(), color);
+            TTF_Font* currentFont = (i == selectedOption) ? fontLarge : font;
+
+            SDL_Surface* surface = TTF_RenderText_Blended(currentFont, options[i].c_str(), color);
             SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-            SDL_Rect dstRect = { SCREEN_WIDTH / 2 - surface->w / 2, 200 + i * 50, surface->w, surface->h };
+            //SDL_Rect dstRect = { SCREEN_WIDTH / 2 - surface->w / 2, 200 + i * 50, surface->w, surface->h };
+            SDL_Rect dstRect = {
+                SCREEN_WIDTH / 2 - surface->w / 2,
+                yOffset,
+                surface->w,
+                surface->h
+            };
+
+            // Highlight động cho lựa chọn đang được chọn
+            if (i == selectedOption) {
+                SDL_Rect highlightRect = {
+                    dstRect.x - 10,
+                    dstRect.y - 5,
+                    dstRect.w + 20,
+                    dstRect.h + 10
+                };
+                SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+                SDL_SetRenderDrawColor(renderer, 119, 139, 153, highlightAlpha);
+                SDL_RenderFillRect(renderer, &highlightRect);
+            }
+
             SDL_RenderCopy(renderer, texture, NULL, &dstRect);
             SDL_FreeSurface(surface);
             SDL_DestroyTexture(texture);
+
+            yOffset += dstRect.h + lineSpacing;
+
         }
 
         SDL_RenderPresent(renderer);
@@ -760,22 +845,73 @@ void Game::ChooseMode(){
     SDL_Event event;
     SDL_Color white = {255, 255, 255};
     SDL_Color yellow = {255, 255, 0};
+    int highlightAlpha = 128;
+    bool alphaIncreasing = true;
+    Uint32 lastTime = SDL_GetTicks();
+    int lineSpacing = 40;
     while (inChooseMode) {
         // Vẽ nền menu
         SDL_RenderClear(renderer);// 👈 vẽ menu
         SDL_RenderCopy(renderer, menuTexture, nullptr, nullptr); // Hiển thị ảnh nền
         //SDL_RenderPresent(renderer);
 
+        Uint32 currentTime = SDL_GetTicks();
+        if (currentTime > lastTime + 30) { // cập nhật mỗi ~30ms
+            if (alphaIncreasing) {
+                highlightAlpha += 8;
+                if (highlightAlpha >= 192) {
+                    highlightAlpha = 192;
+                    alphaIncreasing = false;
+                }
+            } else {
+                highlightAlpha -= 8;
+                if (highlightAlpha <= 64) {
+                    highlightAlpha = 64;
+                    alphaIncreasing = true;
+                }
+            }
+            lastTime = currentTime;
+        }
+
         // T?o các chu?i menu
         string options[3] = {"Player vs Emenies", "Player vs Player", "<-"};
+        int totalMenuHeight = 0;
+        for (int i = 0; i < 3; ++i) {
+            TTF_Font* currentFont = (i == selectedMode) ? fontLarge : font;
+            int w, h;
+            TTF_SizeText(currentFont, options[i].c_str(), &w, &h);
+            totalMenuHeight += h + lineSpacing;
+        }
+        totalMenuHeight -= lineSpacing; // không tính khoảng sau dòng cuối
+        int yOffset = (SCREEN_HEIGHT - totalMenuHeight) / 2 + 200;
+
         for (int i = 0; i < 3; ++i) {
             SDL_Color color = (i == selectedMode) ? yellow : white;
             SDL_Surface* surface = TTF_RenderText_Blended(font, options[i].c_str(), color);
             SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-            SDL_Rect dstRect = { SCREEN_WIDTH / 2 - surface->w / 2, 200 + i * 50, surface->w, surface->h };
+            SDL_Rect dstRect = {
+                SCREEN_WIDTH / 2 - surface->w / 2,
+                yOffset,
+                surface->w,
+                surface->h
+            };
+
+            if (i == selectedMode) {
+                SDL_Rect highlightRect = {
+                    dstRect.x - 10,
+                    dstRect.y - 5,
+                    dstRect.w + 20,
+                    dstRect.h + 10
+                };
+                SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+                SDL_SetRenderDrawColor(renderer, 119, 139, 153, highlightAlpha);
+                SDL_RenderFillRect(renderer, &highlightRect);
+            }
+
             SDL_RenderCopy(renderer, texture, NULL, &dstRect);
             SDL_FreeSurface(surface);
             SDL_DestroyTexture(texture);
+            yOffset += dstRect.h + lineSpacing;
         }
 
         SDL_RenderPresent(renderer);
@@ -1008,32 +1144,84 @@ void Game::spawnBoss(int level){
 
 void Game::renderPauseMenu(){
     bool inPauseMenu = true;
-    int selectedOption = 0; // 0: Continue, 1: Back to Menu, 2: Quit Game
-
+    int selectedOption = 0; // 0 = Start Game, 1 = Exit
+    SDL_Event event;
     SDL_Color white = {255, 255, 255};
     SDL_Color yellow = {255, 255, 0};
+    int highlightAlpha = 128;
+    bool alphaIncreasing = true;
+    Uint32 lastTime = SDL_GetTicks();
+    int lineSpacing = 40;
 
     while (inPauseMenu) {
-        Mix_HaltChannel(-1);
-        SDL_RenderClear(renderer);
+        // Vẽ menu
+        SDL_RenderClear(renderer);// 👈 vẽ menu
+        SDL_RenderCopy(renderer, menuTexture, nullptr, nullptr); // Hiển thị ảnh nền
+        //SDL_RenderPresent(renderer);
 
-        vector<string> options = { "Continue", "MENU", "EXIT" };
-        for (int i = 0; i < options.size(); ++i) {
+        Uint32 currentTime = SDL_GetTicks();
+        if (currentTime > lastTime + 30) { // cập nhật mỗi ~30ms
+            if (alphaIncreasing) {
+                highlightAlpha += 8;
+                if (highlightAlpha >= 192) {
+                    highlightAlpha = 192;
+                    alphaIncreasing = false;
+                }
+            } else {
+                highlightAlpha -= 8;
+                if (highlightAlpha <= 64) {
+                    highlightAlpha = 64;
+                    alphaIncreasing = true;
+                }
+            }
+            lastTime = currentTime;
+        }
+
+        // T?o các chuỗi menu
+        string options[3] = {"Continue", "MENU", "Exit"};
+        int totalMenuHeight = 0;
+        for (int i = 0; i < 3; ++i) {
+            TTF_Font* currentFont = (i == selectedOption) ? fontLarge : font;
+            int w, h;
+            TTF_SizeText(currentFont, options[i].c_str(), &w, &h);
+            totalMenuHeight += h + lineSpacing;
+        }
+        totalMenuHeight -= lineSpacing; // không tính khoảng sau dòng cuối
+        int yOffset = (SCREEN_HEIGHT - totalMenuHeight) / 2 + 200;
+
+        for (int i = 0; i < 3; ++i) {
             SDL_Color color = (i == selectedOption) ? yellow : white;
+            TTF_Font* currentFont = (i == selectedOption) ? fontLarge : font;
 
-            SDL_Surface* surface = TTF_RenderText_Blended(font, options[i].c_str(), color);
+            SDL_Surface* surface = TTF_RenderText_Blended(currentFont, options[i].c_str(), color);
             SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+            //SDL_Rect dstRect = { SCREEN_WIDTH / 2 - surface->w / 2, 200 + i * 50, surface->w, surface->h };
+            SDL_Rect dstRect = {
+                SCREEN_WIDTH / 2 - surface->w / 2,
+                yOffset,
+                surface->w,
+                surface->h
+            };
 
-            SDL_Rect dstRect;
-            dstRect.x = SCREEN_WIDTH / 2 - surface->w / 2;
-            dstRect.y = 200 + i * 50;
-            dstRect.w = surface->w;
-            dstRect.h = surface->h;
+            // Highlight động cho lựa chọn đang được chọn
+            if (i == selectedOption) {
+                SDL_Rect highlightRect = {
+                    dstRect.x - 10,
+                    dstRect.y - 5,
+                    dstRect.w + 20,
+                    dstRect.h + 10
+                };
+                SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+                SDL_SetRenderDrawColor(renderer, 119, 139, 153, highlightAlpha);
+                SDL_RenderFillRect(renderer, &highlightRect);
+            }
 
-            SDL_RenderCopy(renderer, texture, nullptr, &dstRect);
-
+            SDL_RenderCopy(renderer, texture, NULL, &dstRect);
             SDL_FreeSurface(surface);
             SDL_DestroyTexture(texture);
+
+            yOffset += dstRect.h + lineSpacing;
+
         }
 
         SDL_RenderPresent(renderer);
@@ -1048,10 +1236,10 @@ void Game::renderPauseMenu(){
             else if (event.type == SDL_KEYDOWN) {
                 switch (event.key.keysym.sym) {
                     case SDLK_UP:
-                        selectedOption = (selectedOption - 1 + options.size()) % options.size();
+                        selectedOption = (selectedOption - 1 + 3) % 3;
                         break;
                     case SDLK_DOWN:
-                        selectedOption = (selectedOption + 1) % options.size();
+                        selectedOption = (selectedOption + 1) % 3;
                         break;
                     case SDLK_RETURN:
                         if (selectedOption == 0) {

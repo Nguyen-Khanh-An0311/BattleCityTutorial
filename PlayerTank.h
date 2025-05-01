@@ -28,6 +28,7 @@ public:
     int dirX, dirY;
     int RemainingLives;
     int cooldown;
+    int score;
     bool active;
     vector<Bullet> bullets;
 

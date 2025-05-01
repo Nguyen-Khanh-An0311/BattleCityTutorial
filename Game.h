@@ -69,7 +69,9 @@ public:
     SDL_Texture* levelTexture;
     SDL_Texture* RML1;
     SDL_Texture* RML2;
+    SDL_Texture* enemyTexture;
     TTF_Font* font;
+    TTF_Font* fontLarge;
     TTF_Font* fontScore;
     Mix_Music* backgroundMusic;
     Mix_Chunk* shootSound;
