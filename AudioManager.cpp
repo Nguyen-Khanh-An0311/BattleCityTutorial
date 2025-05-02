@@ -27,7 +27,7 @@ void AudioManager::Init() {
         if (sounds["ice"] == nullptr) {
             cout << "Failed to load ice sound effect! SDL_mixer Error: " << Mix_GetError() << endl;
         }
-        sounds["flame"] = Mix_LoadWAV("Sound//flame.wav"); // 6
+        sounds["flame"] = Mix_LoadWAV("Sound//flameSound.wav"); // 6
         if (sounds["flame"] == nullptr) {
             cout << "Failed to load fl sound effect! SDL_mixer Error: " << Mix_GetError() << endl;
         }
@@ -43,7 +43,7 @@ void AudioManager::CleanUp(){
 void AudioManager::PlaySound(int channel, string id, int loop){
     Mix_PlayChannel(channel, sounds[id], loop);
     if (Mix_PlayChannel(channel, sounds[id], loop) == -1) {
-        cout << "Failed to play sound! SDL_mixer Error: " << Mix_GetError() << endl;
+        cout << "Failed to play sound! SDL_mixer Error: " << Mix_GetError() << id << endl;
     }
 }
 

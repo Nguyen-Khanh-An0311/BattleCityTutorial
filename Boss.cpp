@@ -18,7 +18,7 @@ void FireBoss::update() {
         if (currentTime - lastFireTime >= fireInterval) {
             fireZones.clear();
             spawnFireZone();
-            AudioManager::PlaySound(6, "flame", 1);
+            AudioManager::PlaySound(6, "flame", 0);
             lastFireTime = currentTime;
         }
         if (!hole && currentTime - lastOpenTime >= holeInterval){
@@ -61,6 +61,7 @@ void FireBoss::render(SDL_Renderer* renderer) {
             hole->spawnEnemies(renderer);
             enemiesFromHole.clear();
             enemiesFromHole.insert(enemiesFromHole.end(), hole->enemies.begin(), hole->enemies.end());
+            //enemiesFromHole = hole->enemies;
             hole->enemies.clear();
         }
 }
@@ -80,6 +81,7 @@ void FireBoss::spawnFireZone() {
     }
 }
 void FireBoss::Die(SDL_Renderer* renderer) {
+    Mix_HaltChannel(1);
     if (!isDying) {
         // lần đầu chết
         isDying = true;
@@ -105,13 +107,11 @@ void FireBoss::Die(SDL_Renderer* renderer) {
         FRAME_HEIGHT
     };
     SDL_RenderCopy(renderer, bossDie, &srcRect, &destRect);
-    Mix_HaltChannel(1);
-    Mix_FreeChunk(AudioManager::sounds["fireboss"]);
 }
 
 IceBoss::IceBoss(int x, int y, SDL_Renderer* renderer) : Boss(x, y, renderer) {
     texture = IMG_LoadTexture(renderer, "Image//ice_monster_chosen.png");
-    iceTexture = IMG_LoadTexture(renderer, "Image//ice_spike_no_border_fixed.png");
+    iceTexture = IMG_LoadTexture(renderer, "Image//ice_spike_no_border_fixed_2.png");
     bossDie = IMG_LoadTexture(renderer, "Image//ice_boss_die.png");
     holeTexture = IMG_LoadTexture(renderer, "Image//hole.jpg");
     lastIceTime = SDL_GetTicks();
@@ -170,7 +170,8 @@ void IceBoss::render(SDL_Renderer* renderer) {
         }
 }
 void IceBoss::Die(SDL_Renderer* renderer){
-        if (!isDying) {
+    Mix_HaltChannel(2);
+    if (!isDying) {
         // lần đầu chết
         isDying = true;
         currentFrame_die = 0;
@@ -195,8 +196,6 @@ void IceBoss::Die(SDL_Renderer* renderer){
         FRAME_HEIGHT
     };
     SDL_RenderCopy(renderer, bossDie, &srcRect, &destRect);
-    Mix_HaltChannel(2);
-    Mix_FreeChunk(AudioManager::sounds["iceboss"]);
 }
 void IceBoss::spawnIceZone(){
     for(int i=0; i<15; i++){

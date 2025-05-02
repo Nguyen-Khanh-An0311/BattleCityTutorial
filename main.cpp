@@ -4,8 +4,8 @@
 #include "Statistics.h"
 
 const int TILE_SIZE = 35;
-const int SCREEN_WIDTH = TILE_SIZE*37;
-const int SCREEN_HEIGHT = TILE_SIZE*32;
+const int SCREEN_WIDTH = TILE_SIZE * 37;
+const int SCREEN_HEIGHT = TILE_SIZE * 28;
 const int MAP_WIDTH = 25;
 const int MAP_HEIGHT = 26;
 

@@ -30,7 +30,7 @@ Game::Game(){
 
             font = TTF_OpenFont("Font//prstartk.ttf", 30);
             fontLarge = TTF_OpenFont("Font//prstartk.ttf", 35);
-            fontScore = TTF_OpenFont("Font//prstartk.ttf", 80);
+            fontScore = TTF_OpenFont("Font//prstartk.ttf", 60);
             if (!font) {
                 cout << "Failed to load font: " << TTF_GetError() << std::endl;
             }
@@ -59,10 +59,11 @@ Game::Game(){
             currentBoss = NULL;
 
             menuTexture = IMG_LoadTexture(renderer, "Image//logo.jpg");
-            levelTexture = IMG_LoadTexture(renderer, "Image//level_flag.png");
+            levelTexture = IMG_LoadTexture(renderer, "Image//flag.jpg");
             enemyTexture = IMG_LoadTexture(renderer, "Image//enemy.png");
             RML1 = IMG_LoadTexture(renderer, "Image//heart.png");
             RML2 = IMG_LoadTexture(renderer, "Image//heart.png");
+            skullTexture = IMG_LoadTexture(renderer, "Image//skull.jpg");
         }
 
 
@@ -227,7 +228,7 @@ void Game::update() {
         currentBoss->enemiesFromHole.clear();
     }
     if(enemies.empty()){
-        if(!currentBoss || currentBoss && !currentBoss->active){
+        if(!currentBoss || (currentBoss && !currentBoss->active)){
             gateOut.spawn((MAP_WIDTH/2)*TILE_SIZE, (MAP_HEIGHT/2)*TILE_SIZE);
         }
     }
@@ -346,10 +347,12 @@ void Game::update() {
                 if (SDL_HasIntersection(&bullet.rect, &player1.rect)) {
                     explosions.emplace_back(renderer, player1.x, player1.y);
                     bullet.active = false;
-                    player1.RemainingLives -= 1;
+                    player1.RemainingLives = max(player1.RemainingLives - 1, 0);
                 }
                 if(player1.RemainingLives == 0){
                     player1.active = false;
+                    player1.feat++;
+                    if(mode == PVP && player2.active) spawnPlayer1();
                 }
             }
         }
@@ -371,6 +374,8 @@ void Game::update() {
         }
         if(player1.RemainingLives == 0){
             player1.active = false;
+            player1.feat++;
+            if(mode == PVP && player2.active) spawnPlayer1();
         }
     }
 
@@ -416,7 +421,7 @@ void Game::update() {
             for (auto& enemy : enemies) {
                 if (enemy.active && SDL_HasIntersection(&bullet.rect, &enemy.rect)) {
                     player2.score++;
-                    //explosions.emplace_back(renderer, enemy.x, enemy.y);
+                    explosions.emplace_back(renderer, enemy.x, enemy.y);
                     enemy.active = false;
                     bullet.active = false;
                 }
@@ -433,7 +438,9 @@ void Game::update() {
                     }
                     else if(player2.RemainingLives == 0){
                         player2.active = false;
-                        return;
+                        player2.feat++;
+                        if(mode == PVP && player1.active) spawnPlayer2();
+                        //return;
                     }
                 }
             }
@@ -443,7 +450,9 @@ void Game::update() {
                 player2.cooldown = 120;
             }
             if(player2.RemainingLives == 0){
-                player1.active = false;
+                player2.active = false;
+                player2.feat++;
+                if(mode == PVP && player1.active) spawnPlayer2();
             }
         }
         for (auto& bullet : player2.bullets) { // player 2 bắn boss
@@ -519,9 +528,7 @@ void Game::render(){
             SDL_RenderCopy(renderer, RML1, nullptr, &rect1); // Hiển thị ảnh nền
 
             renderLevel();
-            //renderHeart();
-            renderRemainingLive(mode);
-            renderScore();
+            renderKPI();
             for (auto& enemy : enemies) {
                 enemy.render(renderer);
             }
@@ -530,7 +537,7 @@ void Game::render(){
             player1.render(renderer);
 
                 if(mode == GameMode::PVP){
-                    renderScore();
+                    renderKPI();
                     SDL_RenderCopy(renderer, RML2, nullptr, &rect2);
                     player2.render(renderer);
                 }
@@ -588,7 +595,7 @@ void Game::renderLevel(){
 
     SDL_Surface* textSurface1 = TTF_RenderText_Blended(fontScore, p1.c_str(), white);
     SDL_Texture* textTexture1 = SDL_CreateTextureFromSurface(renderer, textSurface1);
-    SDL_Rect dstRect1 = {TILE_SIZE * 31, TILE_SIZE * 2, textSurface1->w, textSurface1->h}; // tuỳ chỉnh vị trí
+    SDL_Rect dstRect1 = {TILE_SIZE * 31.5, TILE_SIZE * 5.5, textSurface1->w, textSurface1->h}; // tuỳ chỉnh vị trí
 
 
     SDL_RenderCopy(renderer, textTexture1, NULL, &dstRect1);
@@ -597,25 +604,45 @@ void Game::renderLevel(){
     SDL_FreeSurface(textSurface1);
     SDL_DestroyTexture(textTexture1);
 }
-void Game::renderScore(){
+void Game::renderKPI(){
+    SDL_Rect rect01;
+    SDL_Rect rect02;
     SDL_Rect rect1;
     SDL_Rect rect2;
-    rect1 = {TILE_SIZE * 32.25, TILE_SIZE * 10, TILE_SIZE , TILE_SIZE };
-    rect2 = {TILE_SIZE * 32.25, TILE_SIZE * 11, TILE_SIZE , TILE_SIZE };
-    SDL_RenderCopy(renderer, enemyTexture, nullptr, &rect1); // Hiển thị ảnh nền
-    if(mode == PVP) SDL_RenderCopy(renderer,enemyTexture , nullptr, &rect2);
+    SDL_Rect rect3;
+    SDL_Rect rect4;
+    SDL_Rect rect5;
+    SDL_Rect rect6;
+    rect01 = {TILE_SIZE * 28.20, TILE_SIZE * 9.80, TILE_SIZE + 3 , TILE_SIZE + 3 };
+    rect02 = {TILE_SIZE * 28.20, TILE_SIZE * 10.80, TILE_SIZE + 3 , TILE_SIZE + 3 };
+    rect1 = {TILE_SIZE * 31, TILE_SIZE * 10, TILE_SIZE - 3 , TILE_SIZE - 3 };
+    rect2 = {TILE_SIZE * 31, TILE_SIZE * 11, TILE_SIZE - 3 , TILE_SIZE - 3 };
+    rect3 = {TILE_SIZE * 33.25, TILE_SIZE * 9.75, TILE_SIZE * 1.35 , TILE_SIZE * 1.35 };
+    rect4 = {TILE_SIZE * 33.25, TILE_SIZE * 10.75, TILE_SIZE * 1.35 , TILE_SIZE * 1.35 };
+    rect5 = {TILE_SIZE * 35.75, TILE_SIZE * 9.70, TILE_SIZE * 1.45 , TILE_SIZE * 1.45 };
+    rect6 = {TILE_SIZE * 35.75, TILE_SIZE * 10.70, TILE_SIZE * 1.45 , TILE_SIZE * 1.45 };
+    SDL_RenderCopy(renderer, player1.tankTexture , nullptr, &rect01);
+    SDL_RenderCopy(renderer, enemyTexture, nullptr, &rect1);
+    SDL_RenderCopy(renderer, RML1, nullptr, &rect3);
+    SDL_RenderCopy(renderer, skullTexture, nullptr, &rect5);
+    if(mode == PVP){
+        SDL_RenderCopy(renderer, player2.tankTexture , nullptr, &rect02);
+        SDL_RenderCopy(renderer,enemyTexture , nullptr, &rect2);
+        SDL_RenderCopy(renderer, RML1, nullptr, &rect4);
+        SDL_RenderCopy(renderer, skullTexture, nullptr, &rect6);
+    }
     SDL_Color white = {0, 0, 0};
 
-    string p1 = "P1: " + to_string(player1.score);
-    string p2 = "P1: " + to_string(player2.score);
+    string p1 = ":" + to_string(player1.score) + " /" + to_string(player1.RemainingLives) + " /" + to_string(player1.feat);
+    string p2 = ":" + to_string(player2.score)+ " /" + to_string(player2.RemainingLives) + " /" + to_string(player2.feat);
 
     SDL_Surface* textSurface1 = TTF_RenderText_Blended(font, p1.c_str(), white);
     SDL_Texture* textTexture1 = SDL_CreateTextureFromSurface(renderer, textSurface1);
-    SDL_Rect dstRect1 = {TILE_SIZE * 28, TILE_SIZE * 10, textSurface1->w, textSurface1->h}; // tuỳ chỉnh vị trí
+    SDL_Rect dstRect1 = {TILE_SIZE * 29.30, TILE_SIZE * 10, textSurface1->w, textSurface1->h}; // tuỳ chỉnh vị trí
 
     SDL_Surface* textSurface2 = TTF_RenderText_Blended(font, p2.c_str(), white);
     SDL_Texture* textTexture2 = SDL_CreateTextureFromSurface(renderer, textSurface2);
-    SDL_Rect dstRect2 = {TILE_SIZE * 28, TILE_SIZE * 11, textSurface2->w, textSurface2->h}; // tuỳ chỉnh vị trí*/
+    SDL_Rect dstRect2 = {TILE_SIZE * 29.30, TILE_SIZE * 11, textSurface2->w, textSurface2->h}; // tuỳ chỉnh vị trí*/
 
     SDL_RenderCopy(renderer, textTexture1, NULL, &dstRect1);
     if(mode == PVP) SDL_RenderCopy(renderer, textTexture2, NULL, &dstRect2);
@@ -626,26 +653,22 @@ void Game::renderScore(){
     SDL_FreeSurface(textSurface2);
     SDL_DestroyTexture(textTexture2);
 }
-void Game::renderHeart(){
-    SDL_Rect rect1;
-    SDL_Rect rect2;
-    rect1 = {TILE_SIZE * 5, TILE_SIZE * 27.75, TILE_SIZE * 1.5, TILE_SIZE * 1.5};
-    rect2 = {TILE_SIZE * 5, TILE_SIZE * 28.75, TILE_SIZE * 1.5, TILE_SIZE * 1.5};
-    RML1 = IMG_LoadTexture(renderer, "heart.png");
-    RML2 = IMG_LoadTexture(renderer, "heart.png");
-    SDL_RenderCopy(renderer, RML1, nullptr, &rect1); // Hiển thị ảnh nền
-    if(mode == PVP) SDL_RenderCopy(renderer, RML2, nullptr, &rect2);
-}
 void Game::renderWinner(){
     //Mix_HaltChannel(-1);
     SDL_Color color = {255, 255, 0}; // Vàng rực rỡ
     SDL_Surface* textSurface;
     SDL_Surface* textMVP;
-    if(base.active && !currentBoss->active && enemies.empty()){
-        textSurface = TTF_RenderText_Blended(font, "YOU WIN!!!", color);
+    if(currentBoss){
+        if(base.active && !currentBoss->active && enemies.empty()){
+            textSurface = TTF_RenderText_Blended(font, "YOU WIN!!!", color);
+        }
+        else {
+            textSurface = TTF_RenderText_Blended(font, "GAME OVER!!!", color);
+        }
     }
-    else {
-        textSurface = TTF_RenderText_Blended(font, "GAME OVER!!!", color);
+    else{
+        if(base.active && enemies.empty()) textSurface = TTF_RenderText_Blended(font, "YOU WIN!!!", color);
+        else textSurface = TTF_RenderText_Blended(font, "GAME OVER!!!", color);
     }
     SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
     /*if(mode == PVE){
@@ -689,35 +712,12 @@ void Game::renderWinner(){
     // Hiển thị thêm vài giây nếu muốn
     SDL_Delay(2000);
 }
-void Game::renderRemainingLive(GameMode mode){
-    SDL_Color white = {0, 0, 0};
-
-    string p1 = "P1: " + to_string(player1.RemainingLives);
-    string p2 = "P2: " + to_string(player2.RemainingLives);
-
-    SDL_Surface* textSurface1 = TTF_RenderText_Blended(font, p1.c_str(), white);
-    SDL_Texture* textTexture1 = SDL_CreateTextureFromSurface(renderer, textSurface1);
-    SDL_Rect dstRect1 = {TILE_SIZE * 1, TILE_SIZE * 28, textSurface1->w, textSurface1->h}; // tuỳ chỉnh vị trí
-
-    SDL_Surface* textSurface2 = TTF_RenderText_Blended(font, p2.c_str(), white);
-    SDL_Texture* textTexture2 = SDL_CreateTextureFromSurface(renderer, textSurface2);
-    SDL_Rect dstRect2 = {TILE_SIZE * 1, TILE_SIZE * 29, textSurface2->w, textSurface2->h}; // tuỳ chỉnh vị trí
-
-    SDL_RenderCopy(renderer, textTexture1, NULL, &dstRect1);
-    if(mode == GameMode::PVP) SDL_RenderCopy(renderer, textTexture2, NULL, &dstRect2);
-
-    // Clean up
-    SDL_FreeSurface(textSurface1);
-    SDL_DestroyTexture(textTexture1);
-    SDL_FreeSurface(textSurface2);
-    SDL_DestroyTexture(textTexture2);
-}
 
 void Game::showMenu() {
     if(state != MENU) return;
     level = 0;
-    scoreP1 = 0;
-    scoreP2 = 0;
+    player1.feat = 0; player1.score = 0;
+    player2.feat = 0; player2.score = 0;
     delete currentBoss;
     bool inMenu = true;
     int selectedOption = 0; // 0 = Start Game, 1 = Exit
@@ -1030,9 +1030,7 @@ void Game::initMode(GameMode mode){
         return;
     }
 
-    player1.imgLink = "Image//player1.png";
-    player2.imgLink = "Image//player2.png";
-    player1 = PlayerTank(TILE_SIZE*10 - 1, MAP_HEIGHT * TILE_SIZE - 1, renderer, player1.imgLink);
+    spawnPlayer1();
     base = Base((MAP_WIDTH / 2)*TILE_SIZE, (MAP_HEIGHT - 1)*TILE_SIZE, renderer);
     string filename;
 
@@ -1043,7 +1041,7 @@ void Game::initMode(GameMode mode){
         filename = "gameMaps//" + to_string(level) + ".txt";
         gameMap.loadFromFile(filename, renderer);
         spawnBoss(level);
-        player2 = PlayerTank(TILE_SIZE * 15, MAP_HEIGHT * TILE_SIZE - 1, renderer, player2.imgLink);
+        spawnPlayer2();
         walls = gameMap.walls;
         waters = gameMap.waters;
         bushs = gameMap.bushs;
@@ -1071,6 +1069,16 @@ void Game::initMode(GameMode mode){
         if(!currentBoss) spawnEnemies();
     }
     state = PLAYING;
+}
+void Game::spawnPlayer1(){
+    player1.imgLink = "Image//player1.png";
+    player1.spawnLink = "Image//spawn.png";
+    player1.init(TILE_SIZE*10 - 1, MAP_HEIGHT * TILE_SIZE - 1, renderer, player1.imgLink, player1.spawnLink);
+}
+void Game::spawnPlayer2(){
+    player2.imgLink = "Image//player2.png";
+    player2.spawnLink = "Image//spawn.png";
+    player2.init(TILE_SIZE * 15, MAP_HEIGHT * TILE_SIZE - 1, renderer, player2.imgLink, player2.spawnLink);
 }
 
 void Game::spawnHearts(){
@@ -1100,6 +1108,8 @@ void Game::spawnHearts(){
 }
 void Game::spawnEnemies() {
     enemies.clear();
+    if(mode == PVE) enemyNumber = 4;
+    else enemyNumber = 6;
     while(enemies.size() < enemyNumber){
         int ex, ey;
         bool validPosition = false;
@@ -1118,7 +1128,18 @@ void Game::spawnEnemies() {
                     validPosition = false;
                 }
             }
+            for (auto& water : waters) {
+                if (SDL_HasIntersection(&enemyRect, &water.rect)) {
+                    validPosition = false;
+                }
+            }
+            for (auto& ice : ices) {
+                if (SDL_HasIntersection(&enemyRect, &ice.rect)) {
+                    validPosition = false;
+                }
+            }
         }
+        //EnemyTank enemy; enemy.init(ex, ey, renderer);
         enemies.push_back(EnemyTank(ex, ey, renderer));
     }
 }
@@ -1132,7 +1153,7 @@ void Game::spawnBoss(int level){
             break;
         case 4:
             //currentBoss = make_unique<IceBoss>(3 * TILE_SIZE, 5 * TILE_SIZE, renderer);
-            currentBoss = new IceBoss(3 * TILE_SIZE, 5 * TILE_SIZE, renderer);
+            currentBoss = new IceBoss((MAP_WIDTH-5) * TILE_SIZE, 5 * TILE_SIZE, renderer);
             AudioManager::PlaySound(2, "iceboss", -1);
             Mix_Volume(2, MIX_MAX_VOLUME / 6);
             break;

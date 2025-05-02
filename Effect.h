@@ -20,7 +20,7 @@ const Uint32 FIRE_FRAME_DURATION = 100;
 const int HOLE_FRAME_WIDTH = 73;
 const int HOLE_FRAME_HEIGHT = 150;
 const int HOLE_FRAME_COUNT = 4;
-const Uint32 HOLE_FRAME_DURATION = 1000;
+const Uint32 HOLE_FRAME_DURATION = 100;
 
 class Effect{
 public:
@@ -30,7 +30,7 @@ public:
     int currentFrame = 0;
     Uint32 lastFrameTime = -10000;
     Uint32 spawnTime;
-    Uint32 duration = 5000; // Effect tồn tại trong 10 giây
+    Uint32 duration = 4000; // Effect tồn tại trong 10 giây
 
     Effect(){}
     Effect(int x, int y) : x(x), y(y) {}
@@ -148,9 +148,11 @@ public:
             Uint32 currentTime = SDL_GetTicks();
             if (currentTime - lastEnemyTime >= 2000) {
                 enemies.clear();
-
-                EnemyTank enemy(rect.x, rect.y, renderer);
-                enemies.push_back(enemy);
+                int ex = (2 + (rand() % (MAP_WIDTH - 1))) * TILE_SIZE;
+                int ey = (2 + rand() % (MAP_HEIGHT / 2) ) * TILE_SIZE;
+                //EnemyTank enemy; enemy.init(ex, ey, renderer);
+                //EnemyTank(ex, ey, renderer);
+                enemies.push_back(EnemyTank(ex, ey, renderer));
                 lastEnemyTime = currentTime;
             }
         }

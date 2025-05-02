@@ -60,7 +60,7 @@ public:
     void render();
     void renderMenu();
     void renderLevel();
-    void renderScore();
+    void renderKPI();
     void renderWinner();
     void renderHeart();
     void renderRemainingLive(GameMode);
@@ -70,6 +70,7 @@ public:
     SDL_Texture* RML1;
     SDL_Texture* RML2;
     SDL_Texture* enemyTexture;
+    SDL_Texture* skullTexture;
     TTF_Font* font;
     TTF_Font* fontLarge;
     TTF_Font* fontScore;
@@ -77,6 +78,8 @@ public:
     Mix_Chunk* shootSound;
 
     //init
+    void spawnPlayer1();
+    void spawnPlayer2();
     void initMode(GameMode);
     void generateWalls();
     void spawnEnemies();
@@ -86,10 +89,10 @@ public:
     Base base;
     Gate gateOut;
     PlayerTank player1;
-    int scoreP1;
     PlayerTank player2;
-    int scoreP2;
-    int enemyNumber = 3;
+    int P1dead;
+    int P2dead;
+    int enemyNumber;
     vector<EnemyTank> enemies;
     int heartNumber = 5;
     vector<Heart> hearts;

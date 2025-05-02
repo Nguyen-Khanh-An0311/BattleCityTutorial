@@ -70,7 +70,7 @@ public:
 
     //hiện lửa
     vector<unique_ptr<FireZone>> fireZones;
-    Uint32 fireInterval = 10000; //khoảng nghỉ
+    Uint32 fireInterval = 7000; //khoảng nghỉ
     Uint32 lastFireTime;
     void spawnFireZone();
 

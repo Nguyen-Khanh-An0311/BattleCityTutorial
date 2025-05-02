@@ -17,23 +17,43 @@ using namespace std;
 
 class EnemyTank;
 
+const int SPAWN_FRAME_WIDTH = 32;
+const int SPAWN_FRAME_HEIGHT = 32;
+const int SPAWN_FRAME_COUNT = 10;
+const Uint32 SPAWN_FRAME_DURATION = 100;
+
 class PlayerTank{
 public:
     int x,y;
     SDL_Rect rect;
     int angle;
     const char* imgLink;
+    const char* spawnLink;
     SDL_Texture* tankTexture;
+    SDL_Texture* spawnTexture;
 
     int dirX, dirY;
     int RemainingLives;
     int cooldown;
-    int score;
+    int score = 0;
+    int feat = 0;
     bool active;
     vector<Bullet> bullets;
 
     PlayerTank(int, int, SDL_Renderer*, const char*);
     PlayerTank();
+    void init(int , int , SDL_Renderer* , const char*, const char*);
+
+    //spawn
+    Uint32 spawnStartTime;
+    const Uint32 SPAWN_DURATION = 3000;
+    Uint32 lastFrameTime;
+    int currentFrame;
+    bool doneSpawn();
+
+    Uint32 lastShotTime = 0;
+    int shootDelay = 150; // đơn vị: milliseconds (ms)
+
 
     void move(int, int, const vector<Wall>&, vector<Heart>&, vector<EnemyTank>&, vector<Stone>&, vector<Bush>&, vector<Water>&);
     void shoot(SDL_Renderer*);
