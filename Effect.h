@@ -22,6 +22,11 @@ const int HOLE_FRAME_HEIGHT = 150;
 const int HOLE_FRAME_COUNT = 4;
 const Uint32 HOLE_FRAME_DURATION = 100;
 
+const int SHIELD_FRAME_WIDTH = 160;
+const int SHIELD_FRAME_HEIGHT = 160;
+const int SHIELD_FRAME_COUNT = 5;
+const Uint32 SHIELD_FRAME_DURATION = 1000;
+
 class Effect{
 public:
     int x, y;
@@ -113,7 +118,6 @@ public:
     Uint32 duration = 10000; // Effect tồn tại trong 10 giây
     Uint32 lastEnemyTime;
     vector<EnemyTank> enemies;
-    EnemyTank enemy;
 
     Hole(){}
     Hole(int x, int y, SDL_Texture* tex){
@@ -159,4 +163,45 @@ public:
     }
 };
 
+class Shield{
+    public:
+        int x, y;
+        SDL_Rect rect;
+        SDL_Texture* texture;
+        int currentFrame = 0;
+        Uint32 lastFrameTime = 0;
+        Uint32 spawnTime;
+        Uint32 duration = 5000; // Effect tồn tại trong 10 giây
+        //Uint32 lastEnemyTime;
+        //vector<EnemyTank> enemies;
+
+        Shield(){}
+        Shield(int x, int y, SDL_Texture* tex){
+            texture = tex;
+            spawnTime = SDL_GetTicks();
+            rect = {
+                x,
+                y,
+                TILE_SIZE * 6,
+                TILE_SIZE * 6
+            };
+        }
+        bool isExpired() {
+            return SDL_GetTicks() - spawnTime > duration;
+        }
+        void update(){}
+        void render(SDL_Renderer* renderer) {
+            if(!isExpired()){
+                /*Uint32 now = SDL_GetTicks();
+                if (now - lastFrameTime >= SHIELD_FRAME_DURATION) {
+                    currentFrame = (currentFrame + 1) % SHIELD_FRAME_COUNT;
+                    lastFrameTime = now;
+                }
+
+                SDL_Rect srcRect = { currentFrame * SHIELD_FRAME_WIDTH, 0, SHIELD_FRAME_WIDTH, SHIELD_FRAME_HEIGHT };
+                SDL_RenderCopy(renderer, texture, &srcRect, &rect);*/
+                SDL_RenderCopy(renderer, texture, nullptr, &rect);
+            }
+        }
+};
 #endif // EFFECT_H_INCLUDED

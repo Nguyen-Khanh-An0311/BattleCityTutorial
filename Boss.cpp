@@ -5,6 +5,29 @@ Hole* Boss::spawnHole(SDL_Texture* holeTexture){
     Hole* hole = new Hole(x - TILE_SIZE, y + TILE_SIZE * 2, holeTexture);
     return hole;
 }
+Shield* Boss::spawnShield(SDL_Texture* shieldTexture){
+    Shield* shield = new Shield(x, y, shieldTexture);
+    return shield;
+}
+void Boss::renderHP(SDL_Renderer* renderer){
+    // Kích thước thanh máu
+    int barWidth = 200;
+    int barHeight = 10;
+    int x = destRect.x; //position.x + (position.w - barWidth) / 2;
+    int y = destRect.y - 15; // nằm phía trên boss
+
+    // Thanh nền (xám)
+    SDL_Rect bg = { x, y, barWidth, barHeight };
+    SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255);
+    SDL_RenderFillRect(renderer, &bg);
+
+    // Thanh máu (đỏ)
+    int hpWidth = static_cast<int>((double)RemainingLives / fullHP * barWidth);
+    SDL_Rect fg = { x, y, hpWidth, barHeight };
+    SDL_SetRenderDrawColor(renderer, 200, 0, 0, 255);
+    SDL_RenderFillRect(renderer, &fg);
+}
+
 FireBoss::FireBoss(int x, int y, SDL_Renderer* renderer) : Boss(x, y, renderer) {
     texture = IMG_LoadTexture(renderer, "Image//fire_monster_chosen.png");
     fireTexture = IMG_LoadTexture(renderer, "Image//flame.png");
@@ -28,6 +51,11 @@ void FireBoss::update() {
             hole = NULL;
             lastOpenTime = currentTime;
         }
+        if((!shield || (shield && shield->isExpired())) && ((int)RemainingLives % 2 == 0) && (RemainingLives != lastRemainingLives)){
+            shield = Boss::spawnShield(shieldTexture);
+            lastRemainingLives = RemainingLives;
+        }
+        if(shield && shield->isExpired()) shield = NULL;
 
         // Cập nhật và loại bỏ các vùng lửa đã hết thời gian
         fireZones.erase(std::remove_if(fireZones.begin(), fireZones.end(),
@@ -50,6 +78,8 @@ void FireBoss::render(SDL_Renderer* renderer) {
             FRAME_HEIGHT //CC frame
         };
         SDL_RenderCopy(renderer, texture, &srcRect, &destRect);
+        renderHP(renderer);
+
 
         // Vẽ các vùng lửa
         for (const auto& zone : fireZones) {
@@ -64,7 +94,11 @@ void FireBoss::render(SDL_Renderer* renderer) {
             //enemiesFromHole = hole->enemies;
             hole->enemies.clear();
         }
+        if(shield && !shield->isExpired()){
+            shield->render(renderer);
+        }
 }
+
 bool FireBoss::checkCollision(PlayerTank& player) {
     for(size_t i=0; i < fireZones.size(); i++){
         if(SDL_HasIntersection(&player.rect, &fireZones[i]->rect))
@@ -134,6 +168,11 @@ void IceBoss::update(){
             hole = NULL;
             lastOpenTime = currentTime;
         }
+        if((!shield || (shield && shield->isExpired())) && ((int)RemainingLives % 2 == 0) && (RemainingLives != lastRemainingLives)){
+            shield = Boss::spawnShield(shieldTexture);
+            lastRemainingLives = RemainingLives;
+        }
+        if(shield && shield->isExpired()) shield = NULL;
 
         // Cập nhật và loại bỏ các vùng lửa đã hết thời gian
         iceZones.erase(std::remove_if(iceZones.begin(), iceZones.end(),
@@ -156,6 +195,7 @@ void IceBoss::render(SDL_Renderer* renderer) {
             FRAME_HEIGHT //CC frame
         };
         SDL_RenderCopy(renderer, texture, &srcRect, &destRect);
+        renderHP(renderer);
 
         // Vẽ các vùng băng
         for (const auto& zone : iceZones) {
@@ -167,6 +207,9 @@ void IceBoss::render(SDL_Renderer* renderer) {
             enemiesFromHole.clear();
             enemiesFromHole.insert(enemiesFromHole.end(), hole->enemies.begin(), hole->enemies.end());
             hole->enemies.clear();
+        }
+        if(shield && !shield->isExpired()){
+            shield->render(renderer);
         }
 }
 void IceBoss::Die(SDL_Renderer* renderer){

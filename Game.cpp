@@ -359,8 +359,10 @@ void Game::update() {
     for (auto& bullet : player1.bullets) { // player 1 bắn boss
         if (currentBoss && currentBoss->active && SDL_HasIntersection(&currentBoss->destRect, &bullet.rect)) {
             explosions.emplace_back(renderer, bullet.x, bullet.y);
-            currentBoss->RemainingLives -= 1;
             bullet.active = false;
+            if((currentBoss->shield && currentBoss->shield->isExpired()) || !currentBoss->shield){
+                currentBoss->RemainingLives = max((int)currentBoss->RemainingLives - 1, 0);
+            }
             if(currentBoss->RemainingLives == 0){
                 return;
             }
@@ -458,8 +460,10 @@ void Game::update() {
         for (auto& bullet : player2.bullets) { // player 2 bắn boss
             if (currentBoss && currentBoss->active && SDL_HasIntersection(&currentBoss->destRect, &bullet.rect)) {
                 explosions.emplace_back(renderer, bullet.x, bullet.y);
-                currentBoss->RemainingLives -= 1;
                 bullet.active = false;
+                if((currentBoss->shield && currentBoss->shield->isExpired()) || !currentBoss->shield){
+                    currentBoss->RemainingLives = max((int)currentBoss->RemainingLives-1 , 0);
+                }
                 if(currentBoss->RemainingLives == 0){
                     return;
                 }
@@ -605,6 +609,21 @@ void Game::renderLevel(){
     SDL_DestroyTexture(textTexture1);
 }
 void Game::renderKPI(){
+    SDL_Color white = {0, 0, 0};
+
+    string p1 = ":" + to_string(player1.score) + " / " + to_string(player1.feat);
+    string p2 = ":" + to_string(player2.score)+ " / " + to_string(player2.feat);
+
+    SDL_Surface* textSurface1 = TTF_RenderText_Blended(font, p1.c_str(), white);
+    SDL_Texture* textTexture1 = SDL_CreateTextureFromSurface(renderer, textSurface1);
+    SDL_Rect dstRect1 = {TILE_SIZE * 29.30, TILE_SIZE * 11, textSurface1->w, textSurface1->h}; // tuỳ chỉnh vị trí
+
+    SDL_Surface* textSurface2 = TTF_RenderText_Blended(font, p2.c_str(), white);
+    SDL_Texture* textTexture2 = SDL_CreateTextureFromSurface(renderer, textSurface2);
+    SDL_Rect dstRect2 = {TILE_SIZE * 29.30, TILE_SIZE * 12, textSurface2->w, textSurface2->h}; // tuỳ chỉnh vị trí*/
+
+    SDL_RenderCopy(renderer, textTexture1, NULL, &dstRect1);
+    if(mode == PVP) SDL_RenderCopy(renderer, textTexture2, NULL, &dstRect2);
     SDL_Rect rect01;
     SDL_Rect rect02;
     SDL_Rect rect1;
@@ -613,39 +632,21 @@ void Game::renderKPI(){
     SDL_Rect rect4;
     SDL_Rect rect5;
     SDL_Rect rect6;
-    rect01 = {TILE_SIZE * 28.20, TILE_SIZE * 9.80, TILE_SIZE + 3 , TILE_SIZE + 3 };
-    rect02 = {TILE_SIZE * 28.20, TILE_SIZE * 10.80, TILE_SIZE + 3 , TILE_SIZE + 3 };
-    rect1 = {TILE_SIZE * 31, TILE_SIZE * 10, TILE_SIZE - 3 , TILE_SIZE - 3 };
+    rect01 = {TILE_SIZE * 28.20, TILE_SIZE * 10.80, TILE_SIZE + 3 , TILE_SIZE + 3 };
+    rect02 = {TILE_SIZE * 28.20, TILE_SIZE * 11.80, TILE_SIZE + 3 , TILE_SIZE + 3 };
+    rect1 = {TILE_SIZE * 30, TILE_SIZE * 10, TILE_SIZE - 3 , TILE_SIZE - 3 };
     rect2 = {TILE_SIZE * 31, TILE_SIZE * 11, TILE_SIZE - 3 , TILE_SIZE - 3 };
-    rect3 = {TILE_SIZE * 33.25, TILE_SIZE * 9.75, TILE_SIZE * 1.35 , TILE_SIZE * 1.35 };
-    rect4 = {TILE_SIZE * 33.25, TILE_SIZE * 10.75, TILE_SIZE * 1.35 , TILE_SIZE * 1.35 };
-    rect5 = {TILE_SIZE * 35.75, TILE_SIZE * 9.70, TILE_SIZE * 1.45 , TILE_SIZE * 1.45 };
+    rect5 = {TILE_SIZE * 33, TILE_SIZE * 9.70, TILE_SIZE * 1.45 , TILE_SIZE * 1.45 };
     rect6 = {TILE_SIZE * 35.75, TILE_SIZE * 10.70, TILE_SIZE * 1.45 , TILE_SIZE * 1.45 };
     SDL_RenderCopy(renderer, player1.tankTexture , nullptr, &rect01);
     SDL_RenderCopy(renderer, enemyTexture, nullptr, &rect1);
-    SDL_RenderCopy(renderer, RML1, nullptr, &rect3);
     SDL_RenderCopy(renderer, skullTexture, nullptr, &rect5);
     if(mode == PVP){
         SDL_RenderCopy(renderer, player2.tankTexture , nullptr, &rect02);
-        SDL_RenderCopy(renderer,enemyTexture , nullptr, &rect2);
+        /*SDL_RenderCopy(renderer,enemyTexture , nullptr, &rect2);
         SDL_RenderCopy(renderer, RML1, nullptr, &rect4);
-        SDL_RenderCopy(renderer, skullTexture, nullptr, &rect6);
+        SDL_RenderCopy(renderer, skullTexture, nullptr, &rect6);*/
     }
-    SDL_Color white = {0, 0, 0};
-
-    string p1 = ":" + to_string(player1.score) + " /" + to_string(player1.RemainingLives) + " /" + to_string(player1.feat);
-    string p2 = ":" + to_string(player2.score)+ " /" + to_string(player2.RemainingLives) + " /" + to_string(player2.feat);
-
-    SDL_Surface* textSurface1 = TTF_RenderText_Blended(font, p1.c_str(), white);
-    SDL_Texture* textTexture1 = SDL_CreateTextureFromSurface(renderer, textSurface1);
-    SDL_Rect dstRect1 = {TILE_SIZE * 29.30, TILE_SIZE * 10, textSurface1->w, textSurface1->h}; // tuỳ chỉnh vị trí
-
-    SDL_Surface* textSurface2 = TTF_RenderText_Blended(font, p2.c_str(), white);
-    SDL_Texture* textTexture2 = SDL_CreateTextureFromSurface(renderer, textSurface2);
-    SDL_Rect dstRect2 = {TILE_SIZE * 29.30, TILE_SIZE * 11, textSurface2->w, textSurface2->h}; // tuỳ chỉnh vị trí*/
-
-    SDL_RenderCopy(renderer, textTexture1, NULL, &dstRect1);
-    if(mode == PVP) SDL_RenderCopy(renderer, textTexture2, NULL, &dstRect2);
 
     // Clean up
     SDL_FreeSurface(textSurface1);
@@ -654,7 +655,8 @@ void Game::renderKPI(){
     SDL_DestroyTexture(textTexture2);
 }
 void Game::renderWinner(){
-    //Mix_HaltChannel(-1);
+    Mix_HaltChannel(-1);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_Color color = {255, 255, 0}; // Vàng rực rỡ
     SDL_Surface* textSurface;
     SDL_Surface* textMVP;
@@ -1151,7 +1153,7 @@ void Game::spawnBoss(int level){
             currentBoss = new FireBoss((MAP_WIDTH-5) * TILE_SIZE, 5 * TILE_SIZE, renderer);
             AudioManager::PlaySound(1, "fireboss", -1);
             break;
-        case 4:
+        case 0:
             //currentBoss = make_unique<IceBoss>(3 * TILE_SIZE, 5 * TILE_SIZE, renderer);
             currentBoss = new IceBoss((MAP_WIDTH-5) * TILE_SIZE, 5 * TILE_SIZE, renderer);
             AudioManager::PlaySound(2, "iceboss", -1);

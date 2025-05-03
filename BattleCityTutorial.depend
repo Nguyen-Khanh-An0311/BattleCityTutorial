@@ -36,10 +36,10 @@
 	"Statistics.h"
 	<SDL_image.h>
 
-1746208571 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
+1746292769 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
 	"Game.h"
 
-1746206181 c:\users\admin\documents\dev\battlecitytutorial\playertank.h
+1746291654 c:\users\admin\documents\dev\battlecitytutorial\playertank.h
 	<iostream>
 	<SDL.h>
 	<SDL_image.h>
@@ -52,7 +52,7 @@
 	"EnemyTank.h"
 	"Map.h"
 
-1746206181 source:c:\users\admin\documents\dev\battlecitytutorial\playertank.cpp
+1746292037 source:c:\users\admin\documents\dev\battlecitytutorial\playertank.cpp
 	"PlayerTank.h"
 
 1745911906 source:c:\users\admin\documents\dev\battlecitytutorial\bullet.cpp
@@ -120,10 +120,10 @@
 1744563966 source:c:\users\admin\documents\dev\battlecitytutorial\map.cpp
 	"Map.h"
 
-1746208102 source:c:\users\admin\documents\dev\battlecitytutorial\boss.cpp
+1746291222 source:c:\users\admin\documents\dev\battlecitytutorial\boss.cpp
 	"Boss.h"
 
-1746207945 c:\users\admin\documents\dev\battlecitytutorial\boss.h
+1746294029 c:\users\admin\documents\dev\battlecitytutorial\boss.h
 	<bits/stdc++.h>
 	<SDL.h>
 	<SDL_image.h>
@@ -490,7 +490,7 @@
 
 1745482235 source:c:\users\admin\documents\dev\battlecitytutorial\gate.cpp
 
-1746207967 c:\users\admin\documents\dev\battlecitytutorial\effect.h
+1746293992 c:\users\admin\documents\dev\battlecitytutorial\effect.h
 	<bits/stdc++.h>
 	<SDL.h>
 	<SDL_image.h>
@@ -507,6 +507,6 @@
 	<SDL_mixer.h>
 	<bits/stdc++.h>
 
-1746208240 source:c:\users\admin\documents\dev\battlecitytutorial\audiomanager.cpp
+1746208790 source:c:\users\admin\documents\dev\battlecitytutorial\audiomanager.cpp
 	"AudioManager.h"
 

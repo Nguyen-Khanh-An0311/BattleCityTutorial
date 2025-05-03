@@ -25,12 +25,16 @@ public:
     int x, y;
     string name;
     bool active = true;
-    int RemainingLives = 10;
+    const double fullHP = 15;
+    double RemainingLives = fullHP;
+    double lastRemainingLives = RemainingLives;
     SDL_Texture* texture;
     SDL_Texture* holeTexture;
+    SDL_Texture* shieldTexture;
     Boss(){}
     Boss(int x, int y , SDL_Renderer* renderer) : x(x), y(y) {
         holeTexture = IMG_LoadTexture(renderer, "Image//hole.jpg");
+        shieldTexture = IMG_LoadTexture(renderer, "Image//shield.png");
         AudioManager::Init();
     }
 
@@ -45,6 +49,9 @@ public:
     //hiệu ứng
     virtual bool checkCollision(PlayerTank&) = 0;
 
+    //hiện máu
+    void renderHP(SDL_Renderer* renderer);
+
     //hiện cổng
     Uint32 lastOpenTime;
     Hole* hole = NULL;
@@ -52,6 +59,12 @@ public:
     Hole* spawnHole(SDL_Texture* holeTexture);
     vector<EnemyTank> enemiesFromHole;
     Uint32 holeInterval = 15000;
+
+    //hiện khiên
+    Shield* shield = NULL;
+    Shield* spawnShield(SDL_Texture* shieldTexture);
+    Uint32 lastOpenShieldTime;
+    Uint32 shieldInterval = 5000;
 
     SDL_Texture* bossDie;
     bool isDying = false;

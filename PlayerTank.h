@@ -33,6 +33,7 @@ public:
     SDL_Texture* spawnTexture;
 
     int dirX, dirY;
+    const int fullHP = 3;
     int RemainingLives;
     int cooldown;
     int score = 0;
@@ -60,6 +61,7 @@ public:
     void updateBullets();
 
     void render(SDL_Renderer*);
+    void renderHP(SDL_Renderer* renderer);
 };
 
 #endif // TEMP_H_INCLUDED
