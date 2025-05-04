@@ -63,7 +63,7 @@ Game::Game(){
             enemyTexture = IMG_LoadTexture(renderer, "Image//enemy.png");
             RML1 = IMG_LoadTexture(renderer, "Image//heart.png");
             RML2 = IMG_LoadTexture(renderer, "Image//heart.png");
-            skullTexture = IMG_LoadTexture(renderer, "Image//skull.jpg");
+            skullTexture = IMG_LoadTexture(renderer, "Image//skull.png");
         }
 
 
@@ -356,6 +356,11 @@ void Game::update() {
                 }
             }
         }
+    for (auto& bullet : player1.bullets){ //player 1 ban tru
+        if(SDL_HasIntersection(&bullet.rect, &base.rect)){
+            bullet.active = false;
+        }
+    }
     for (auto& bullet : player1.bullets) { // player 1 bắn boss
         if (currentBoss && currentBoss->active && SDL_HasIntersection(&currentBoss->destRect, &bullet.rect)) {
             explosions.emplace_back(renderer, bullet.x, bullet.y);
@@ -427,6 +432,11 @@ void Game::update() {
                     enemy.active = false;
                     bullet.active = false;
                 }
+            }
+        }
+        for (auto& bullet : player2.bullets){ //player 1 ban tru
+            if(SDL_HasIntersection(&bullet.rect, &base.rect)){
+                bullet.active = false;
             }
         }
 
@@ -611,41 +621,53 @@ void Game::renderLevel(){
 void Game::renderKPI(){
     SDL_Color white = {0, 0, 0};
 
-    string p1 = ":" + to_string(player1.score) + " / " + to_string(player1.feat);
-    string p2 = ":" + to_string(player2.score)+ " / " + to_string(player2.feat);
+    string p1 = ":" + to_string(player1.score);
+    string p1_1 =  "/" + to_string(player1.feat);
 
     SDL_Surface* textSurface1 = TTF_RenderText_Blended(font, p1.c_str(), white);
     SDL_Texture* textTexture1 = SDL_CreateTextureFromSurface(renderer, textSurface1);
     SDL_Rect dstRect1 = {TILE_SIZE * 29.30, TILE_SIZE * 11, textSurface1->w, textSurface1->h}; // tuỳ chỉnh vị trí
+    SDL_RenderCopy(renderer, textTexture1, NULL, &dstRect1);
 
+    SDL_Rect rect01 = {TILE_SIZE * 28.20, TILE_SIZE * 10.75, TILE_SIZE + 3 , TILE_SIZE + 3 };
+    SDL_RenderCopy(renderer, player1.tankTexture , nullptr, &rect01);
+
+    SDL_Rect rect1 = {dstRect1.x + TILE_SIZE * 2.25, TILE_SIZE * 11, TILE_SIZE - 3 , TILE_SIZE - 3 };
+    SDL_RenderCopy(renderer, enemyTexture, nullptr, &rect1);
+
+    SDL_Surface* textSurface1_1 = TTF_RenderText_Blended(font, p1_1.c_str(), white);
+    SDL_Texture* textTexture1_1 = SDL_CreateTextureFromSurface(renderer, textSurface1_1);
+    SDL_Rect dstRect1_1 = {rect1.x + TILE_SIZE * 1.25, TILE_SIZE * 11, textSurface1->w, textSurface1->h}; // tuỳ chỉnh vị trí
+    SDL_RenderCopy(renderer, textTexture1_1, NULL, &dstRect1_1);
+
+    SDL_Rect rect5 = {dstRect1_1.x + TILE_SIZE * 2.5, TILE_SIZE * 10.85, TILE_SIZE , TILE_SIZE};
+    SDL_RenderCopy(renderer, skullTexture, nullptr, &rect5);
+
+    string p2 = ":" + to_string(player2.score);
+    string p2_1 =  "/" + to_string(player2.feat);
     SDL_Surface* textSurface2 = TTF_RenderText_Blended(font, p2.c_str(), white);
     SDL_Texture* textTexture2 = SDL_CreateTextureFromSurface(renderer, textSurface2);
-    SDL_Rect dstRect2 = {TILE_SIZE * 29.30, TILE_SIZE * 12, textSurface2->w, textSurface2->h}; // tuỳ chỉnh vị trí*/
+    SDL_Rect dstRect2 = {TILE_SIZE * 29.30, TILE_SIZE * 12, textSurface2->w, textSurface2->h}; // tuỳ chỉnh vị trí
 
-    SDL_RenderCopy(renderer, textTexture1, NULL, &dstRect1);
-    if(mode == PVP) SDL_RenderCopy(renderer, textTexture2, NULL, &dstRect2);
-    SDL_Rect rect01;
-    SDL_Rect rect02;
-    SDL_Rect rect1;
-    SDL_Rect rect2;
-    SDL_Rect rect3;
-    SDL_Rect rect4;
-    SDL_Rect rect5;
-    SDL_Rect rect6;
-    rect01 = {TILE_SIZE * 28.20, TILE_SIZE * 10.80, TILE_SIZE + 3 , TILE_SIZE + 3 };
-    rect02 = {TILE_SIZE * 28.20, TILE_SIZE * 11.80, TILE_SIZE + 3 , TILE_SIZE + 3 };
-    rect1 = {TILE_SIZE * 30, TILE_SIZE * 10, TILE_SIZE - 3 , TILE_SIZE - 3 };
-    rect2 = {TILE_SIZE * 31, TILE_SIZE * 11, TILE_SIZE - 3 , TILE_SIZE - 3 };
-    rect5 = {TILE_SIZE * 33, TILE_SIZE * 9.70, TILE_SIZE * 1.45 , TILE_SIZE * 1.45 };
-    rect6 = {TILE_SIZE * 35.75, TILE_SIZE * 10.70, TILE_SIZE * 1.45 , TILE_SIZE * 1.45 };
-    SDL_RenderCopy(renderer, player1.tankTexture , nullptr, &rect01);
-    SDL_RenderCopy(renderer, enemyTexture, nullptr, &rect1);
-    SDL_RenderCopy(renderer, skullTexture, nullptr, &rect5);
+    SDL_Rect rect02 = {TILE_SIZE * 28.20, TILE_SIZE * 11.80, TILE_SIZE + 3 , TILE_SIZE + 3 };
+
+    SDL_Rect rect2 = {dstRect2.x + TILE_SIZE*2.25, TILE_SIZE * 12, TILE_SIZE - 3 , TILE_SIZE - 3 };
+
+    SDL_Surface* textSurface2_1 = TTF_RenderText_Blended(font, p2_1.c_str(), white);
+    SDL_Texture* textTexture2_1 = SDL_CreateTextureFromSurface(renderer, textSurface2_1);
+    SDL_Rect dstRect2_1 = {rect2.x + TILE_SIZE * 1.25, TILE_SIZE * 12, textSurface1->w, textSurface1->h}; // tuỳ chỉnh vị trí
+
+    SDL_Rect rect6 = {dstRect2_1.x + TILE_SIZE * 2.5, TILE_SIZE * 11.85, TILE_SIZE, TILE_SIZE};
+
+    /*SDL_Rect rect3;
+    SDL_Rect rect4;*/
     if(mode == PVP){
+        SDL_RenderCopy(renderer, textTexture2, NULL, &dstRect2);
         SDL_RenderCopy(renderer, player2.tankTexture , nullptr, &rect02);
-        /*SDL_RenderCopy(renderer,enemyTexture , nullptr, &rect2);
-        SDL_RenderCopy(renderer, RML1, nullptr, &rect4);
-        SDL_RenderCopy(renderer, skullTexture, nullptr, &rect6);*/
+        SDL_RenderCopy(renderer,enemyTexture , nullptr, &rect2);
+        SDL_RenderCopy(renderer, textTexture2_1, NULL, &dstRect2_1);
+        //SDL_RenderCopy(renderer, RML1, nullptr, &rect4);
+        SDL_RenderCopy(renderer, skullTexture, nullptr, &rect6);
     }
 
     // Clean up

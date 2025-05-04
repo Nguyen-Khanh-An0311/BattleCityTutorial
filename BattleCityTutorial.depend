@@ -36,7 +36,7 @@
 	"Statistics.h"
 	<SDL_image.h>
 
-1746292769 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
+1746333218 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
 	"Game.h"
 
 1746291654 c:\users\admin\documents\dev\battlecitytutorial\playertank.h
@@ -120,7 +120,7 @@
 1744563966 source:c:\users\admin\documents\dev\battlecitytutorial\map.cpp
 	"Map.h"
 
-1746291222 source:c:\users\admin\documents\dev\battlecitytutorial\boss.cpp
+1746331123 source:c:\users\admin\documents\dev\battlecitytutorial\boss.cpp
 	"Boss.h"
 
 1746294029 c:\users\admin\documents\dev\battlecitytutorial\boss.h
@@ -490,7 +490,7 @@
 
 1745482235 source:c:\users\admin\documents\dev\battlecitytutorial\gate.cpp
 
-1746293992 c:\users\admin\documents\dev\battlecitytutorial\effect.h
+1746330895 c:\users\admin\documents\dev\battlecitytutorial\effect.h
 	<bits/stdc++.h>
 	<SDL.h>
 	<SDL_image.h>

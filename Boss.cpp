@@ -6,7 +6,7 @@ Hole* Boss::spawnHole(SDL_Texture* holeTexture){
     return hole;
 }
 Shield* Boss::spawnShield(SDL_Texture* shieldTexture){
-    Shield* shield = new Shield(x, y, shieldTexture);
+    Shield* shield = new Shield(x - 22, y - 22, shieldTexture);
     return shield;
 }
 void Boss::renderHP(SDL_Renderer* renderer){
