@@ -36,7 +36,7 @@
 	"Statistics.h"
 	<SDL_image.h>
 
-1746333218 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
+1746333438 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
 	"Game.h"
 
 1746291654 c:\users\admin\documents\dev\battlecitytutorial\playertank.h
@@ -490,7 +490,7 @@
 
 1745482235 source:c:\users\admin\documents\dev\battlecitytutorial\gate.cpp
 
-1746330895 c:\users\admin\documents\dev\battlecitytutorial\effect.h
+1746333490 c:\users\admin\documents\dev\battlecitytutorial\effect.h
 	<bits/stdc++.h>
 	<SDL.h>
 	<SDL_image.h>

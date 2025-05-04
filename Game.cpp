@@ -166,7 +166,7 @@ void Game::handleEvents() {
             running = false;
         } else if (event.type == SDL_KEYDOWN) {
             switch (event.key.keysym.sym) {
-                case SDLK_LCTRL:
+                case SDLK_h:
                     player1.shoot(renderer);
                     /*Mix_PlayChannel(-1, shootSound, 0);
                     if (Mix_PlayChannel(-1, shootSound, 0) == -1) {
@@ -1170,12 +1170,12 @@ void Game::spawnEnemies() {
 
 void Game::spawnBoss(int level){
     switch(level){
-        case 3:
+        case 0:
             //currentBoss = make_unique<FireBoss>((MAP_WIDTH-5) * TILE_SIZE, 5 * TILE_SIZE, renderer);
             currentBoss = new FireBoss((MAP_WIDTH-5) * TILE_SIZE, 5 * TILE_SIZE, renderer);
             AudioManager::PlaySound(1, "fireboss", -1);
             break;
-        case 0:
+        case 4:
             //currentBoss = make_unique<IceBoss>(3 * TILE_SIZE, 5 * TILE_SIZE, renderer);
             currentBoss = new IceBoss((MAP_WIDTH-5) * TILE_SIZE, 5 * TILE_SIZE, renderer);
             AudioManager::PlaySound(2, "iceboss", -1);

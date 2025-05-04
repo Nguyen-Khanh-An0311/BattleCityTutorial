@@ -182,8 +182,8 @@ class Shield{
             rect = {
                 x,
                 y,
-                TILE_SIZE * 7,
-                TILE_SIZE * 7
+                TILE_SIZE * 8,
+                TILE_SIZE * 8
             };
         }
         bool isExpired() {
