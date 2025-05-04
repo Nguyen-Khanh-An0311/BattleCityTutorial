@@ -34,7 +34,7 @@ public:
     Boss(){}
     Boss(int x, int y , SDL_Renderer* renderer) : x(x), y(y) {
         holeTexture = IMG_LoadTexture(renderer, "Image//hole.jpg");
-        shieldTexture = IMG_LoadTexture(renderer, "Image//shield.png");
+        shieldTexture = IMG_LoadTexture(renderer, "Image//sprite_shield_fixed.png");
         AudioManager::Init();
     }
 
@@ -111,6 +111,7 @@ public:
     void update() override;
     void render(SDL_Renderer* renderer) override ;
 
+    bool hasStrongIntersection(const SDL_Rect&, const SDL_Rect&, float);
     bool checkCollision(PlayerTank& player) override;
 
     void Die(SDL_Renderer*) override;

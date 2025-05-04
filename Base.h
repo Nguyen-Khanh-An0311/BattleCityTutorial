@@ -10,6 +10,7 @@ class Base{
 public:
     int x,y;
     SDL_Texture* baseTexture;
+    SDL_Texture* baseDismantledTexture;
     SDL_Rect rect;
     bool active;
     Base();

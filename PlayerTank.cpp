@@ -27,6 +27,7 @@ PlayerTank::PlayerTank(int startX, int startY, SDL_Renderer* renderer, const cha
         dirX = 0;
         dirY = -1; // Default direction up
         cooldown = 0;
+        state = NORMAL;
         active = true;
     }
 
@@ -63,6 +64,7 @@ void PlayerTank::init(int startX, int startY, SDL_Renderer* renderer, const char
         spawnStartTime = SDL_GetTicks();
         lastFrameTime = 0;
         currentFrame = 0;
+        state = NORMAL;
         active = true;
 }
 
@@ -70,8 +72,13 @@ bool PlayerTank::doneSpawn(){
     return SDL_GetTicks() - spawnStartTime > SPAWN_DURATION;
 }
 
+bool PlayerTank::doneFrozen(){
+    cout << "doneFrozen called" << endl;
+    return SDL_GetTicks() - frozenTime > FROZEN_DURATION;
+}
+
 void PlayerTank::shoot(SDL_Renderer* renderer) {
-    if(doneSpawn() && SDL_GetTicks() - lastShotTime > shootDelay){
+    if(doneSpawn() && SDL_GetTicks() - lastShotTime > shootDelay && state != FROZEN){
         bullets.push_back(Bullet(x + TILE_SIZE / 2 - 5, y + TILE_SIZE / 2 - 5,
         this->dirX, this->dirY, renderer));
         lastShotTime = SDL_GetTicks();
@@ -79,7 +86,7 @@ void PlayerTank::shoot(SDL_Renderer* renderer) {
 }
 
 void PlayerTank::updateBullets() {
-    if(doneSpawn()){
+    if(doneSpawn() && state != FROZEN){
         for (auto &bullet : bullets) {
             bullet.move();
         }
@@ -90,7 +97,11 @@ void PlayerTank::updateBullets() {
 
 void PlayerTank::move(int dx, int dy, const vector<Wall>& walls, vector<Heart>& hearts, vector<EnemyTank>& enemies,
                       vector<Stone>& stones, vector<Bush>& bushs, vector<Water>& waters) {
-    if(doneSpawn()){
+    if(state == FROZEN && doneFrozen()){
+        state = NORMAL;
+        cout << "state = NORMAL";
+    }
+    if(doneSpawn() && state == NORMAL){
         if(active){
             int newX = x + dx;
             int newY = y + dy;

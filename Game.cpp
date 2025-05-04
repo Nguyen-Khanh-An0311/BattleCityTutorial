@@ -16,7 +16,6 @@ Game::Game(){
                 running = false;
                 return;
             }
-            Mix_AllocateChannels(32);
             AudioManager::Init();
 
 
@@ -494,9 +493,7 @@ void Game::updateSoundState(){
         switch (state) {
             case MENU:
                 Mix_HaltChannel(-1);
-                /*if(!Mix_Playing(0)){
-                    AudioManager::PlaySound(0, "background", -1);
-                }*/
+                break;
             case PAUSE:
                 Mix_HaltChannel(-1);
                 break;
@@ -685,9 +682,11 @@ void Game::renderWinner(){
     if(currentBoss){
         if(base.active && !currentBoss->active && enemies.empty()){
             textSurface = TTF_RenderText_Blended(font, "YOU WIN!!!", color);
+            AudioManager::PlaySound(8, "win", 0);
         }
         else {
             textSurface = TTF_RenderText_Blended(font, "GAME OVER!!!", color);
+            AudioManager::PlaySound(7, "gameover", 0);
         }
     }
     else{
@@ -735,6 +734,7 @@ void Game::renderWinner(){
 
     // Hiển thị thêm vài giây nếu muốn
     SDL_Delay(2000);
+
 }
 
 void Game::showMenu() {
@@ -1170,14 +1170,15 @@ void Game::spawnEnemies() {
 
 void Game::spawnBoss(int level){
     switch(level){
-        case 0:
+        case 3:
             //currentBoss = make_unique<FireBoss>((MAP_WIDTH-5) * TILE_SIZE, 5 * TILE_SIZE, renderer);
-            currentBoss = new FireBoss((MAP_WIDTH-5) * TILE_SIZE, 5 * TILE_SIZE, renderer);
+            currentBoss = new FireBoss(((MAP_WIDTH / 2) - 2) * TILE_SIZE, ((MAP_HEIGHT /2 ) - 8.5) * TILE_SIZE, renderer);
+            //currentBoss = new FireBoss((MAP_WIDTH / 2) * TILE_SIZE, (MAP_HEIGHT /2 ) * TILE_SIZE, renderer);
             AudioManager::PlaySound(1, "fireboss", -1);
             break;
-        case 4:
+        case 0:
             //currentBoss = make_unique<IceBoss>(3 * TILE_SIZE, 5 * TILE_SIZE, renderer);
-            currentBoss = new IceBoss((MAP_WIDTH-5) * TILE_SIZE, 5 * TILE_SIZE, renderer);
+            currentBoss = new IceBoss(((MAP_WIDTH / 2) - 1.5) * TILE_SIZE, ((MAP_HEIGHT /2 ) - 1) * TILE_SIZE, renderer);
             AudioManager::PlaySound(2, "iceboss", -1);
             Mix_Volume(2, MIX_MAX_VOLUME / 6);
             break;

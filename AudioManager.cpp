@@ -31,6 +31,14 @@ void AudioManager::Init() {
         if (sounds["flame"] == nullptr) {
             cout << "Failed to load fl sound effect! SDL_mixer Error: " << Mix_GetError() << endl;
         }
+        sounds["gameover"] = Mix_LoadWAV("Sound//gameOver.wav"); //7
+        if (sounds["gameover"] == nullptr) {
+            cout << "Failed to load click sound effect! SDL_mixer Error: " << Mix_GetError() << endl;
+        }
+        sounds["win"] = Mix_LoadWAV("Sound//win.wav"); //8
+        if (sounds["win"] == nullptr) {
+            cout << "Failed to load click sound effect! SDL_mixer Error: " << Mix_GetError() << endl;
+        }
 }
 
 void AudioManager::CleanUp(){
@@ -45,6 +53,8 @@ void AudioManager::PlaySound(int channel, string id, int loop){
     if (Mix_PlayChannel(channel, sounds[id], loop) == -1) {
         cout << "Failed to play sound! SDL_mixer Error: " << Mix_GetError() << id << endl;
     }
+    cout << Mix_GetError() << endl;
+
 }
 
 void AudioManager::SetVolume(string id, int volume){

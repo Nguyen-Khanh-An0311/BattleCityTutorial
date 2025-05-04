@@ -22,6 +22,8 @@ const int SPAWN_FRAME_HEIGHT = 32;
 const int SPAWN_FRAME_COUNT = 10;
 const Uint32 SPAWN_FRAME_DURATION = 100;
 
+enum State {NORMAL, FROZEN};
+
 class PlayerTank{
 public:
     int x,y;
@@ -39,6 +41,8 @@ public:
     int score = 0;
     int feat = 0;
     bool active;
+    State state;
+    Uint32 frozenTime;
     vector<Bullet> bullets;
 
     PlayerTank(int, int, SDL_Renderer*, const char*);
@@ -48,9 +52,11 @@ public:
     //spawn
     Uint32 spawnStartTime;
     const Uint32 SPAWN_DURATION = 3000;
+    const Uint32 FROZEN_DURATION = 4000;
     Uint32 lastFrameTime;
     int currentFrame;
     bool doneSpawn();
+    bool doneFrozen();
 
     Uint32 lastShotTime = 0;
     int shootDelay = 150; // đơn vị: milliseconds (ms)
