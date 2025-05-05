@@ -13,6 +13,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add directory="BattleCityTutorial/include/&#x0A;&#x0A;" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -31,46 +32,24 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="AudioManager.cpp" />
-		<Unit filename="AudioManager.h" />
-		<Unit filename="Base.cpp" />
-		<Unit filename="Base.h" />
-		<Unit filename="Boss.cpp" />
-		<Unit filename="Boss.h" />
-		<Unit filename="Boss_Juior.cpp" />
-		<Unit filename="Bullet.cpp" />
-		<Unit filename="Bullet.h" />
-		<Unit filename="Bush.cpp" />
-		<Unit filename="Bush.h" />
-		<Unit filename="Effect.h" />
-		<Unit filename="EnemyTank.cpp" />
-		<Unit filename="EnemyTank.h" />
-		<Unit filename="Explosion.cpp" />
-		<Unit filename="Explosion.h" />
-		<Unit filename="Game.cpp" />
-		<Unit filename="Game.h" />
-		<Unit filename="Gate.cpp" />
-		<Unit filename="Gate.h" />
-		<Unit filename="Heart.cpp" />
-		<Unit filename="Heart.h" />
-		<Unit filename="Ice.cpp" />
-		<Unit filename="Ice.h" />
-		<Unit filename="Magazine.cpp" />
-		<Unit filename="Magazine.h" />
-		<Unit filename="Map.cpp" />
-		<Unit filename="Map.h" />
-		<Unit filename="PlayerTank.cpp" />
-		<Unit filename="PlayerTank.h" />
-		<Unit filename="Renderer.h" />
-		<Unit filename="Statistics.h" />
-		<Unit filename="Stone.cpp" />
-		<Unit filename="Stone.h" />
-		<Unit filename="Wall.cpp" />
-		<Unit filename="Wall.h" />
-		<Unit filename="Water.cpp" />
-		<Unit filename="Water.h" />
-		<Unit filename="magazine.h" />
-		<Unit filename="main.cpp" />
+		<Unit filename="src/AudioManager.cpp" />
+		<Unit filename="src/Base.cpp" />
+		<Unit filename="src/Boss.cpp" />
+		<Unit filename="src/Bullet.cpp" />
+		<Unit filename="src/Bush.cpp" />
+		<Unit filename="src/EnemyTank.cpp" />
+		<Unit filename="src/Explosion.cpp" />
+		<Unit filename="src/Game.cpp" />
+		<Unit filename="src/Gate.cpp" />
+		<Unit filename="src/Heart.cpp" />
+		<Unit filename="src/Ice.cpp" />
+		<Unit filename="src/Magazine.cpp" />
+		<Unit filename="src/Map.cpp" />
+		<Unit filename="src/PlayerTank.cpp" />
+		<Unit filename="src/Stone.cpp" />
+		<Unit filename="src/Wall.cpp" />
+		<Unit filename="src/Water.cpp" />
+		<Unit filename="src/main.cpp" />
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

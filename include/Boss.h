@@ -6,7 +6,6 @@
 #include <SDL_mixer.h>
 #include "Statistics.h"
 #include "Effect.h"
-#include "Boss_Juior.h"
 #include "Wall.h"
 #include "Stone.h"
 #include "PlayerTank.h"
