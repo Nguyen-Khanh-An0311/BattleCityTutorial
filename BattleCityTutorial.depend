@@ -5,7 +5,7 @@
 	"Game.h"
 	"Statistics.h"
 
-1746205788 c:\users\admin\documents\dev\battlecitytutorial\game.h
+1746418085 c:\users\admin\documents\dev\battlecitytutorial\game.h
 	<bits/stdc++.h>
 	<memory>
 	<iostream>
@@ -36,10 +36,10 @@
 	"Statistics.h"
 	<SDL_image.h>
 
-1746375882 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
+1746418460 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
 	"Game.h"
 
-1746378059 c:\users\admin\documents\dev\battlecitytutorial\playertank.h
+1746417074 c:\users\admin\documents\dev\battlecitytutorial\playertank.h
 	<iostream>
 	<SDL.h>
 	<SDL_image.h>
@@ -86,10 +86,10 @@
 	"PlayerTank.h"
 	"Base.h"
 
-1746198499 source:c:\users\admin\documents\dev\battlecitytutorial\enemytank.cpp
+1746417910 source:c:\users\admin\documents\dev\battlecitytutorial\enemytank.cpp
 	"EnemyTank.h"
 
-1742440092 c:\users\admin\documents\dev\battlecitytutorial\statistics.h
+1746418758 c:\users\admin\documents\dev\battlecitytutorial\statistics.h
 
 1745152736 source:c:\users\admin\documents\dev\battlecitytutorial\heart.cpp
 	"Heart.h"
@@ -120,10 +120,10 @@
 1744563966 source:c:\users\admin\documents\dev\battlecitytutorial\map.cpp
 	"Map.h"
 
-1746377812 source:c:\users\admin\documents\dev\battlecitytutorial\boss.cpp
+1746417910 source:c:\users\admin\documents\dev\battlecitytutorial\boss.cpp
 	"Boss.h"
 
-1746378283 c:\users\admin\documents\dev\battlecitytutorial\boss.h
+1746417942 c:\users\admin\documents\dev\battlecitytutorial\boss.h
 	<bits/stdc++.h>
 	<SDL.h>
 	<SDL_image.h>
@@ -490,7 +490,7 @@
 
 1745482235 source:c:\users\admin\documents\dev\battlecitytutorial\gate.cpp
 
-1746375882 c:\users\admin\documents\dev\battlecitytutorial\effect.h
+1746416579 c:\users\admin\documents\dev\battlecitytutorial\effect.h
 	<bits/stdc++.h>
 	<SDL.h>
 	<SDL_image.h>

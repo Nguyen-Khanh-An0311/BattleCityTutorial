@@ -20,7 +20,7 @@ Game::Game(){
 
 
             if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
-                cout << "SDL_image không thể khởi tạo! IMG_Error: " << IMG_GetError() << std::endl;
+                cout << "SDL_image không thể khởi tạo! IMG_Error: " << IMG_GetError() << endl;
                 running = false;
             }
             if (TTF_Init() == -1) {
@@ -31,7 +31,7 @@ Game::Game(){
             fontLarge = TTF_OpenFont("Font//prstartk.ttf", 35);
             fontScore = TTF_OpenFont("Font//prstartk.ttf", 60);
             if (!font) {
-                cout << "Failed to load font: " << TTF_GetError() << std::endl;
+                cout << "Failed to load font: " << TTF_GetError() << endl;
             }
 
             window = SDL_CreateWindow(
@@ -221,6 +221,41 @@ void Game::handleEvents() {
                     }
                 }
 }
+bool Game::isBulletHitCenter(const SDL_Rect& bulletRect, const SDL_Rect& bossRect) {
+    // Tính tâm viên đạn
+    int bulletCenterX = bulletRect.x + bulletRect.w / 2;
+    int bulletCenterY = bulletRect.y + bulletRect.h / 2;
+
+    // Xác định vùng giữa của boss (1/2 kích thước giữa)
+    int centerRegionX = bossRect.x + bossRect.w / 4;
+    int centerRegionY = bossRect.y + bossRect.h / 4;
+    int centerRegionW = bossRect.w / 2;
+    int centerRegionH = bossRect.h / 2;
+
+    // Kiểm tra xem tâm viên đạn có nằm trong vùng giữa của boss không
+    return (
+        bulletCenterX >= centerRegionX &&
+        bulletCenterX <= centerRegionX + centerRegionW &&
+        bulletCenterY >= centerRegionY &&
+        bulletCenterY <= centerRegionY + centerRegionH
+    );
+}
+bool Game::hasStrongIntersection(const SDL_Rect& a, const SDL_Rect& b, float requiredOverlapRatio = 0.05f){
+    SDL_Rect intersection;
+    if (!SDL_IntersectRect(&a, &b, &intersection)) {
+        return false;
+    }
+
+    int interArea = intersection.w * intersection.h;
+    int aArea = a.w * a.h;
+    int bArea = b.w * b.h;
+
+    // Kiểm tra nếu phần giao nhau > 50% diện tích của cả hai hình (hoặc một hình tùy bạn)
+    float ratioA = (float)interArea / aArea;
+    float ratioB = (float)interArea / bArea;
+
+    return (ratioA >= requiredOverlapRatio) && (ratioB >= requiredOverlapRatio);
+}
 void Game::update() {
     if(currentBoss){
         enemies.insert(enemies.begin(), currentBoss->enemiesFromHole.begin(), currentBoss->enemiesFromHole.end());
@@ -240,14 +275,14 @@ void Game::update() {
         if (gateOut.active) {
             SDL_Rect gateRect = gateOut.getRect();
                 if(mode == PVE){
-                    if (SDL_HasIntersection(&player1.rect, &gateRect)) {
+                    if (hasStrongIntersection(player1.rect, gateRect)) {
                         gateOut.active = false;
                         state = WIN;
                         initMode(mode); // gọi lại để load map mới
                     }
                 }
                 else {
-                    if (SDL_HasIntersection(&player1.rect, &gateRect) && SDL_HasIntersection(&player2.rect, &gateRect)) {
+                    if (hasStrongIntersection(player1.rect, gateRect) && hasStrongIntersection(player2.rect, gateRect)) {
                         gateOut.active = false;
                         state = WIN;
                         initMode(mode); // gọi lại để load map mới
@@ -361,7 +396,7 @@ void Game::update() {
         }
     }
     for (auto& bullet : player1.bullets) { // player 1 bắn boss
-        if (currentBoss && currentBoss->active && SDL_HasIntersection(&currentBoss->destRect, &bullet.rect)) {
+        if (currentBoss && currentBoss->active && isBulletHitCenter(bullet.rect, currentBoss->destRect)) {
             explosions.emplace_back(renderer, bullet.x, bullet.y);
             bullet.active = false;
             if((currentBoss->shield && currentBoss->shield->isExpired()) || !currentBoss->shield){
@@ -376,7 +411,7 @@ void Game::update() {
     if(currentBoss && currentBoss->active){ // dính chiêu của boss
         if(player1.cooldown == 0 && currentBoss->checkCollision(player1)){
             player1.RemainingLives -= 1;
-            player1.cooldown = 120;
+            player1.cooldown = 240;
         }
         if(player1.RemainingLives == 0){
             player1.active = false;
@@ -467,7 +502,7 @@ void Game::update() {
             }
         }
         for (auto& bullet : player2.bullets) { // player 2 bắn boss
-            if (currentBoss && currentBoss->active && SDL_HasIntersection(&currentBoss->destRect, &bullet.rect)) {
+            if (currentBoss && currentBoss->active && isBulletHitCenter(bullet.rect, currentBoss->destRect)) {
                 explosions.emplace_back(renderer, bullet.x, bullet.y);
                 bullet.active = false;
                 if((currentBoss->shield && currentBoss->shield->isExpired()) || !currentBoss->shield){
@@ -958,7 +993,6 @@ void Game::ChooseMode(){
                     case SDLK_KP_ENTER:
                         if (selectedMode == 0) {
                             mode = PVE;
-                            cout<<"Chon Mode 1 Nguoi Choi";
                             inChooseMode = false; // Ch?n 1P
                             initMode(mode);
                             state = PLAYING;
@@ -966,7 +1000,6 @@ void Game::ChooseMode(){
                         }
                         else if(selectedMode == 1){
                             mode = PVP;
-                            cout<<"Chon Mode 2 Nguoi Choi";
                             inChooseMode = false;//Ch?n 2p
                             initMode(mode);
                             state = PLAYING;
@@ -1176,7 +1209,7 @@ void Game::spawnBoss(int level){
             //currentBoss = new FireBoss((MAP_WIDTH / 2) * TILE_SIZE, (MAP_HEIGHT /2 ) * TILE_SIZE, renderer);
             AudioManager::PlaySound(1, "fireboss", -1);
             break;
-        case 0:
+        case 4:
             //currentBoss = make_unique<IceBoss>(3 * TILE_SIZE, 5 * TILE_SIZE, renderer);
             currentBoss = new IceBoss(((MAP_WIDTH / 2) - 1.5) * TILE_SIZE, ((MAP_HEIGHT /2 ) - 1) * TILE_SIZE, renderer);
             AudioManager::PlaySound(2, "iceboss", -1);

@@ -9,6 +9,22 @@ Shield* Boss::spawnShield(SDL_Texture* shieldTexture){
     Shield* shield = new Shield(x - 10, y - 10, shieldTexture);
     return shield;
 }
+bool Boss::hasStrongIntersection(const SDL_Rect& a, const SDL_Rect& b, float requiredOverlapRatio = 0.2f) {
+    SDL_Rect intersection;
+    if (!SDL_IntersectRect(&a, &b, &intersection)) {
+        return false;
+    }
+
+    int interArea = intersection.w * intersection.h;
+    int aArea = a.w * a.h;
+    int bArea = b.w * b.h;
+
+    // Kiểm tra nếu phần giao nhau > 50% diện tích của cả hai hình (hoặc một hình tùy bạn)
+    float ratioA = (float)interArea / aArea;
+    float ratioB = (float)interArea / bArea;
+
+    return (ratioA >= requiredOverlapRatio) && (ratioB >= requiredOverlapRatio);
+}
 void Boss::renderHP(SDL_Renderer* renderer){
     // Kích thước thanh máu
     int barWidth = 200;
@@ -256,26 +272,9 @@ void IceBoss::spawnIceZone(){
     }
 }
 
-bool IceBoss::hasStrongIntersection(const SDL_Rect& a, const SDL_Rect& b, float requiredOverlapRatio = 0.5f) {
-    SDL_Rect intersection;
-    if (!SDL_IntersectRect(&a, &b, &intersection)) {
-        return false;
-    }
-
-    int interArea = intersection.w * intersection.h;
-    int aArea = a.w * a.h;
-    int bArea = b.w * b.h;
-
-    // Kiểm tra nếu phần giao nhau > 50% diện tích của cả hai hình (hoặc một hình tùy bạn)
-    float ratioA = (float)interArea / aArea;
-    float ratioB = (float)interArea / bArea;
-
-    return (ratioA >= requiredOverlapRatio) && (ratioB >= requiredOverlapRatio);
-}
-
 bool IceBoss::checkCollision(PlayerTank& player){
     for(size_t i=0; i < iceZones.size(); i++){
-        if(SDL_HasIntersection(&player.rect, &iceZones[i]->rect)/*hasStrongIntersection(player.rect, iceZones[i]->rect)*/){
+        if(hasStrongIntersection(player.rect, iceZones[i]->rect)){
             player.state = FROZEN;
             player.frozenTime = SDL_GetTicks();
             cout << "state = FROZEN" << endl;

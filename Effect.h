@@ -8,25 +8,6 @@
 #include "EnemyTank.h"
 using namespace std;
 
-const int FIRE_FRAME_WIDTH = 80;
-const int FIRE_FRAME_HEIGHT = 266;
-const int FIRE_FRAME_COUNT = 18;
-
-const int ICE_FRAME_WIDTH = 113;
-const int ICE_FRAME_HEIGHT = 113;
-const int ICE_FRAME_COUNT = 7;
-const Uint32 FIRE_FRAME_DURATION = 100;
-
-const int HOLE_FRAME_WIDTH = 73;
-const int HOLE_FRAME_HEIGHT = 150;
-const int HOLE_FRAME_COUNT = 4;
-const Uint32 HOLE_FRAME_DURATION = 100;
-
-const int SHIELD_FRAME_WIDTH  = 82;
-const int SHIELD_FRAME_HEIGHT = 85;
-const int SHIELD_FRAME_COUNT = 2;
-const Uint32 SHIELD_FRAME_DURATION = 100;
-
 class Effect{
 public:
     int x, y;

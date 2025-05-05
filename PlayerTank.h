@@ -17,11 +17,6 @@ using namespace std;
 
 class EnemyTank;
 
-const int SPAWN_FRAME_WIDTH = 32;
-const int SPAWN_FRAME_HEIGHT = 32;
-const int SPAWN_FRAME_COUNT = 10;
-const Uint32 SPAWN_FRAME_DURATION = 100;
-
 enum State {NORMAL, FROZEN};
 
 class PlayerTank{

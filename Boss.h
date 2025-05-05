@@ -13,12 +13,6 @@
 #include "AudioManager.h"
 using namespace std;
 
-const int FRAME_WIDTH = 64;
-const int FRAME_HEIGHT = 64;
-const int FRAME_COUNT = 4;
-const int DIE_FRAME_COUNT = 9;
-const Uint32 FRAME_DURATION = 200;
-
 
 class Boss {  //base class
 public:
@@ -43,6 +37,7 @@ public:
     Uint32 lastFrameTime = SDL_GetTicks();
     SDL_Rect destRect = {x, y, TILE_SIZE * 6, TILE_SIZE * 6 };
 
+    bool hasStrongIntersection(const SDL_Rect& , const SDL_Rect& , float );
     virtual void update() = 0;
     virtual void render(SDL_Renderer* renderer) = 0;
 
@@ -111,7 +106,6 @@ public:
     void update() override;
     void render(SDL_Renderer* renderer) override ;
 
-    bool hasStrongIntersection(const SDL_Rect&, const SDL_Rect&, float);
     bool checkCollision(PlayerTank& player) override;
 
     void Die(SDL_Renderer*) override;

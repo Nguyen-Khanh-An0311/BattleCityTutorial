@@ -56,6 +56,10 @@ public:
     void update();
     void updateSoundState();
 
+
+    bool isBulletHitCenter(const SDL_Rect&, const SDL_Rect&);
+    bool hasStrongIntersection(const SDL_Rect& , const SDL_Rect& , float);
+
     //render
     void render();
     void renderMenu();

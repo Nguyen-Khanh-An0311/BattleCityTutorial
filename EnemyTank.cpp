@@ -100,15 +100,6 @@ void EnemyTank::move(vector<Wall>& walls, SDL_Renderer* renderer,
         if(--moveDelay > 0) return;
         moveDelay = 2;
 
-        /*if (abs(base.x - x) > abs(base.y - y)) {
-            // Ưu tiên trục ngang
-            dirX = (base.x > x) ? 5 : -5;
-            dirY = 0;
-        } else {
-            // Ưu tiên trục dọc
-            dirY = (base.y > y) ? 5 : -5;
-            dirX = 0;
-        }*/
         if (y < MAP_HEIGHT * TILE_SIZE){
             dirX = 0;
             dirY = 5;
@@ -122,30 +113,7 @@ void EnemyTank::move(vector<Wall>& walls, SDL_Renderer* renderer,
         int newX = x + dirX;
         int newY = y + dirY;
         SDL_Rect newRect = { newX, newY, TILE_SIZE - 2, TILE_SIZE - 2};
-        /*if (isBlocked(newRect, stones, waters)) {
-            bool found = false;
-            // Bị chắn bởi đá hoặc gì đó, thử hướng khác
-            const int directions[4][2] = { {5,0}, {-5,0}, {0,5}, {0,-5} };
-            for (auto& d : directions) {
-                SDL_Rect tryRect = { x + d[0], y + d[1], TILE_SIZE, TILE_SIZE };
-                if (!isBlocked(tryRect, stones, waters)) {
-                    dirX = d[0];
-                    dirY = d[1];
-                    newX = x + dirX;
-                    newY = y + dirY;
-                    newRect = {newX, newY, TILE_SIZE, TILE_SIZE};
-                    found = true;
-                    break;
-                }
-            }
-            if(!found) {
-                dirX = 0;
-                dirY = 0;
-                newX = x;
-                newY = y;
-                newRect = {newX, newY, TILE_SIZE, TILE_SIZE};
-            }
-        }*/
+
         if (isBlocked(newRect, stones, waters)) {
             vector<pair<int, int>> possibleDirs;
             int directions[4][2] = { {5, 0}, {-5, 0}, {0, 5}, {0, -5} };

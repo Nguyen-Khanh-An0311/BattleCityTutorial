@@ -9,7 +9,6 @@ const int SCREEN_HEIGHT = TILE_SIZE * 28;
 const int MAP_WIDTH = 25;
 const int MAP_HEIGHT = 26;
 
-
 using namespace std;
 
 
