@@ -6,8 +6,9 @@ PlayerTank::PlayerTank(int startX, int startY, SDL_Renderer* renderer, const cha
         RemainingLives = fullHP;
         x = startX;
         y = startY;
-        rect = {x, y, TILE_SIZE, TILE_SIZE};
+        rect = {x, y, TILE_SIZE - 4, TILE_SIZE - 4};
         angle = 0;
+        bulletNumber = fullBullet;
         SDL_Surface* tempSurface = IMG_Load(imagePath);
         if (!tempSurface) {
             printf("Failed to load surface: %s\n", IMG_GetError());
@@ -37,8 +38,9 @@ void PlayerTank::init(int startX, int startY, SDL_Renderer* renderer, const char
         RemainingLives = 3;
         x = startX;
         y = startY;
-        rect = {x, y, TILE_SIZE - 2, TILE_SIZE - 2};
+        rect = {x, y, TILE_SIZE - 4, TILE_SIZE - 4};
         angle = 0;
+        bulletNumber = fullBullet;
         SDL_Surface* tempSurface = IMG_Load(imagePath);
         SDL_Surface* tempSurface2 = IMG_Load(spawnPath);
         if (!tempSurface) {
@@ -73,15 +75,18 @@ bool PlayerTank::doneSpawn(){
 }
 
 bool PlayerTank::doneFrozen(){
-    cout << "doneFrozen called" << endl;
     return SDL_GetTicks() - frozenTime > FROZEN_DURATION;
 }
 
 void PlayerTank::shoot(SDL_Renderer* renderer) {
-    if(doneSpawn() && SDL_GetTicks() - lastShotTime > shootDelay && state != FROZEN){
-        bullets.push_back(Bullet(x + TILE_SIZE / 2 - 5, y + TILE_SIZE / 2 - 5,
-        this->dirX, this->dirY, renderer));
-        lastShotTime = SDL_GetTicks();
+    if(bulletNumber > 0){
+        if(doneSpawn() && SDL_GetTicks() - lastShotTime > shootDelay && state != FROZEN){
+            bullets.push_back(Bullet(x + TILE_SIZE / 2 - 5, y + TILE_SIZE / 2 - 5,
+            this->dirX, this->dirY, renderer));
+            lastShotTime = SDL_GetTicks();
+            AudioManager::PlaySound(3, "shoot", 0);
+            bulletNumber--;
+        }
     }
 }
 
@@ -96,7 +101,7 @@ void PlayerTank::updateBullets() {
 }
 
 void PlayerTank::move(int dx, int dy, const vector<Wall>& walls, vector<Heart>& hearts, vector<EnemyTank>& enemies,
-                      vector<Stone>& stones, vector<Bush>& bushs, vector<Water>& waters) {
+                      vector<Stone>& stones, vector<Bush>& bushs, vector<Water>& waters, vector<Magazine>& magazines) {
     if(state == FROZEN && doneFrozen()){
         state = NORMAL;
         cout << "state = NORMAL";
@@ -113,7 +118,7 @@ void PlayerTank::move(int dx, int dy, const vector<Wall>& walls, vector<Heart>& 
             else if (dy >0) angle = 180;
             else angle = 0;
 
-            SDL_Rect newRect = { newX, newY, TILE_SIZE - 2 , TILE_SIZE - 2 };
+            SDL_Rect newRect = { newX, newY, TILE_SIZE - 4 , TILE_SIZE - 4 };
             for (int i = 0; i < walls.size(); i++) {
                 if (walls[i].active && SDL_HasIntersection(&newRect, &walls[i].rect)) {
                     return; // Prevent movement if colliding with a wall
@@ -152,6 +157,15 @@ void PlayerTank::move(int dx, int dy, const vector<Wall>& walls, vector<Heart>& 
                     break;
                 }
             }
+                for(int i=0; i<magazines.size(); i++){
+                if (magazines[i].active && SDL_HasIntersection(&newRect, &magazines[i].rect) ){
+                    magazines[i].active = false;
+                    bulletNumber += 10;
+                    if(bulletNumber > fullBullet) bulletNumber = fullBullet;
+                    //hearts.erase(hearts.begin() + i);
+                    break;
+                }
+            }
         }
     }
 }
@@ -179,6 +193,23 @@ void PlayerTank::render(SDL_Renderer* renderer){
 }
 
 void PlayerTank::renderHP(SDL_Renderer* renderer){
+    //thanh đạn
+    int manaBarWidth = 35;
+    int manaBarHeight = 5;
+    int x_mana = rect.x; //position.x + (position.w - barWidth) / 2;
+    int y_mana = rect.y - 20; // nằm phía trên boss
+
+    // Thanh nền (xám)
+    SDL_Rect mnbg = { x_mana, y_mana, manaBarWidth, manaBarHeight };
+    SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255);
+    SDL_RenderFillRect(renderer, &mnbg);
+
+    // Thanh máu (nâu)
+    int manaWidth = static_cast<int>((double)bulletNumber / fullBullet * manaBarWidth);
+    SDL_Rect mnfg = { x_mana, y_mana, manaWidth, manaBarHeight };
+    SDL_SetRenderDrawColor(renderer, 0, 0, 128, 255);
+    SDL_RenderFillRect(renderer, &mnfg);
+
     // Kích thước thanh máu
     int barWidth = 35;
     int barHeight = 5;

@@ -1,11 +1,11 @@
 # depslib dependency file v1.0
-1746120599 source:c:\users\admin\documents\dev\battlecitytutorial\main.cpp
+1746418758 source:c:\users\admin\documents\dev\battlecitytutorial\main.cpp
 	<iostream>
 	<SDL.h>
 	"Game.h"
 	"Statistics.h"
 
-1746418085 c:\users\admin\documents\dev\battlecitytutorial\game.h
+1746447997 c:\users\admin\documents\dev\battlecitytutorial\game.h
 	<bits/stdc++.h>
 	<memory>
 	<iostream>
@@ -24,6 +24,7 @@
 	"Boss.h"
 	"Base.h"
 	"Gate.h"
+	"Magazine.h"
 	"AudioManager.h"
 
 1745152736 source:c:\users\admin\documents\dev\battlecitytutorial\wall.cpp
@@ -36,10 +37,10 @@
 	"Statistics.h"
 	<SDL_image.h>
 
-1746418460 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
+1746447652 source:c:\users\admin\documents\dev\battlecitytutorial\game.cpp
 	"Game.h"
 
-1746417074 c:\users\admin\documents\dev\battlecitytutorial\playertank.h
+1746447613 c:\users\admin\documents\dev\battlecitytutorial\playertank.h
 	<iostream>
 	<SDL.h>
 	<SDL_image.h>
@@ -51,8 +52,10 @@
 	"Heart.h"
 	"EnemyTank.h"
 	"Map.h"
+	"Magazine.h"
+	"AudioManager.h"
 
-1746377577 source:c:\users\admin\documents\dev\battlecitytutorial\playertank.cpp
+1746447613 source:c:\users\admin\documents\dev\battlecitytutorial\playertank.cpp
 	"PlayerTank.h"
 
 1745911906 source:c:\users\admin\documents\dev\battlecitytutorial\bullet.cpp
@@ -509,4 +512,12 @@
 
 1746375452 source:c:\users\admin\documents\dev\battlecitytutorial\audiomanager.cpp
 	"AudioManager.h"
+
+1746441611 c:\users\admin\documents\dev\battlecitytutorial\magazine.h
+	<iostream>
+	"SDL.h"
+	<SDL_image.h>
+
+1746441952 source:c:\users\admin\documents\dev\battlecitytutorial\magazine.cpp
+	"Magazine.h"
 

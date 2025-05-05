@@ -13,6 +13,8 @@
 #include "Heart.h"
 #include "EnemyTank.h"
 #include "Map.h"
+#include "Magazine.h"
+#include "AudioManager.h"
 using namespace std;
 
 class EnemyTank;
@@ -35,6 +37,8 @@ public:
     int cooldown;
     int score = 0;
     int feat = 0;
+    const int fullBullet = 50;
+    int bulletNumber;
     bool active;
     State state;
     Uint32 frozenTime;
@@ -57,7 +61,7 @@ public:
     int shootDelay = 150; // đơn vị: milliseconds (ms)
 
 
-    void move(int, int, const vector<Wall>&, vector<Heart>&, vector<EnemyTank>&, vector<Stone>&, vector<Bush>&, vector<Water>&);
+    void move(int, int, const vector<Wall>&, vector<Heart>&, vector<EnemyTank>&, vector<Stone>&, vector<Bush>&, vector<Water>&, vector<Magazine>&);
     void shoot(SDL_Renderer*);
     void updateBullets();
 

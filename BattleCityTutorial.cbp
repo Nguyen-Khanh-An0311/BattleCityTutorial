@@ -55,6 +55,8 @@
 		<Unit filename="Heart.h" />
 		<Unit filename="Ice.cpp" />
 		<Unit filename="Ice.h" />
+		<Unit filename="Magazine.cpp" />
+		<Unit filename="Magazine.h" />
 		<Unit filename="Map.cpp" />
 		<Unit filename="Map.h" />
 		<Unit filename="PlayerTank.cpp" />
@@ -67,6 +69,7 @@
 		<Unit filename="Wall.h" />
 		<Unit filename="Water.cpp" />
 		<Unit filename="Water.h" />
+		<Unit filename="magazine.h" />
 		<Unit filename="main.cpp" />
 		<Extensions />
 	</Project>

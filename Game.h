@@ -16,6 +16,7 @@
 #include "Boss.h"
 #include "Base.h"
 #include "Gate.h"
+#include "Magazine.h"
 #include "AudioManager.h"
 using namespace std;
 
@@ -48,7 +49,6 @@ public:
     void handleEvents();
     void showMenu();
     void ChooseMode();
-    void renderInstruction();
     int menuSelection = 0; // 0: PVE, 1: PVP
     const int MENU_COUNT = 3;
 
@@ -88,6 +88,7 @@ public:
     void generateWalls();
     void spawnEnemies();
     void spawnHearts();
+    void spawnMagazine();
     bool bossSpawn = true;
     void spawnBoss(int);
     Base base;
@@ -100,6 +101,8 @@ public:
     vector<EnemyTank> enemies;
     int heartNumber = 5;
     vector<Heart> hearts;
+    int magazineNumber;
+    vector<Magazine> magazines;
     Map gameMap;
     vector<Wall> walls;
     vector<Water> waters;
