@@ -13,7 +13,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
-					<Add directory="BattleCityTutorial/include/&#x0A;&#x0A;" />
+					<Add directory="include/&#x0A;&#x0A;" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
